@@ -18,17 +18,17 @@ water.reg.abrvs = c("PF","IE","SPF","SFS","SF")
 n.w = length(water.regimes)
 
 # stream flow permanence criteria
-perm.levels = c("Perennial","Intermittent","Ephemeral")
-perm.abrvs = c("1","2","3")
+perm.levels = c("Perennial","Intermittent")
+perm.abrvs = c("1","2")
 n.p = length(perm.abrvs)
 
 # make vectors for buffer scenarios
-buf.dists = c("1","10","20","100")
+buf.dists = c("1","10","20")
 buf.cols = paste("buf", buf.dists, sep="")
 n.b = length(buf.dists)
 
 # read in flood dataframe
-wetland.df = read.csv("IL_WS_Step18_AreaHeight_GAP_Cnty_FloodVol.csv")
+wetland.df = read.csv("IL_WS_Step12_GAP_Union_CntyInt_FloodVol.csv")
 
 # update columns
 nhd.col.base = paste("Waters_Intersect", perm.abrvs, sep="_")
@@ -54,7 +54,7 @@ wetland.df$unit_flood_lower = wetland.df$Area_Acres * 1 * (10^6) / 264.172
 wetland.df$unit_flood_upper = wetland.df$Area_Acres * 1.5 * (10^6) / 264.172
 
 # update column name for GIS-based estimate of flood storage volume
-colnames(wetland.df)[which(colnames(wetland.df) == "flood_volume_m3")] = "gis_flood_vol_m3"
+colnames(wetland.df)[which(colnames(wetland.df) == "flood_volu")] = "gis_flood_vol_m3"
 
 # make protection level column
 wetland.df$Protection_Level = rep("Unprotected", nrow(wetland.df))
@@ -69,15 +69,15 @@ wetland.df$Protection_Status = 1 - 1*(wetland.df$Protection_Level == "Unprotecte
 # sum total and unprotected non-jursidicational floodwaters
 sum.cols = c("Area_Ha","unit_flood_lower","unit_flood_upper","gis_flood_vol_m3")
 n.sum.cols = length(sum.cols)
-nw.sum.df = data.frame(matrix(nrow=n.w*(n.p-1)*(n.b-1), ncol=3+n.sum.cols))
-up.nw.sum.df = data.frame(matrix(nrow=n.w*(n.p-1)*(n.b-1), ncol=3+n.sum.cols))
+nw.sum.df = data.frame(matrix(nrow=n.w*n.p*n.b, ncol=3+n.sum.cols))
+up.nw.sum.df = data.frame(matrix(nrow=n.w*n.p*n.b, ncol=3+n.sum.cols))
 colnames(nw.sum.df) = c("water_cutoff","perm_level","buf_dist",sum.cols)
 colnames(up.nw.sum.df) = c("water_cutoff","perm_level","buf_dist",sum.cols)
 n = 1
 wetland.df.sub = wetland.df[which(wetland.df$Protection_Status == 0),]
 for (i in 1:n.w) {
-  for (j in 1:(n.p-1)) {
-    for (k in 1:(n.b-1)) {
+  for (j in 1:n.p) {
+    for (k in 1:n.b) {
       nw.sum.df[n,"water_cutoff"] = water.reg.labels[i]
       nw.sum.df[n,"perm_level"] = perm.levels[j]
       nw.sum.df[n,"buf_dist"] = buf.dists[k]
@@ -179,15 +179,6 @@ setwd("C:/Users/Chels/OneDrive - University of Illinois - Urbana/Ch6_CASC_Projec
 ggsave("Supp_Figures/FigureB1_GIS_UnitArea_Flood_Volume_Comparison.jpeg", 
        plot=p3, width=32, height=14, units="cm", dpi = 600)
 
-# print flood storage volumes for table
-wr.reg.inds = rep(0, n.w)
-for (i in 1:n.w) { wr.reg.inds[i] = which(nw.stats.df.gis$water_cutoff == rev(water.reg.labels)[i])}
-signif(gis.stats.df[which(gis.stats.df$type == "Unprotected Non-WOTUS"),][wr.reg.inds,c("mean_vol","min_vol","max_vol")]/(10^6),4)
-signif(gis.stats.df[which(gis.stats.df$type == "Total Non-WOTUS"),][wr.reg.inds,c("mean_vol","min_vol","max_vol")]/(10^6),4)
-
-signif(unit.stats.df[which(unit.stats.df$type == "Unprotected Non-WOTUS"),][wr.reg.inds,c("mean_vol","min_vol","max_vol")]/(10^9),4)
-signif(unit.stats.df[which(unit.stats.df$type == "Total Non-WOTUS"),][wr.reg.inds,c("mean_vol","min_vol","max_vol")]/(10^9),4)
-
 ################################################################################
 # sum up unprotected non-WOTUS flood storage volume by county for both the GIS
 # and unit-area estimate
@@ -220,7 +211,8 @@ for (j in 1:n.w) {
   county.df$Lower_Difference = county.df$Unit_Estimate_Lower - county.df$DEM_Vol_Estimate
   county.df$Upper_Difference = county.df$Unit_Estimate_Upper - county.df$DEM_Vol_Estimate
   write.csv(county.df, 
-            paste(paste("County_Volume_Totals", water.reg.abrvs[j],sep="_"),".csv",sep=""),
+            paste(paste("County_Volume_Sums",
+                        water.reg.abrvs[j],sep="_"),".csv",sep=""),
             row.names=F)
 }
-  
+
