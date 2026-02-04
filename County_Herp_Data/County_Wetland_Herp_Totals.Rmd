@@ -1,0 +1,65 @@
+---
+title: "County-level Estimates of Wetland-Dependent Herp Species in Illinois"
+output: html_notebook
+---
+
+#### Set working directory and read libraries
+
+```{r setup}
+knitr::opts_knit$set(root.dir = normalizePath("C:/Users/Chels/OneDrive - University of Illinois - Urbana/Ch6_CASC_Project/County_Herp_Data"))
+library(dplyr)
+```
+
+#### Read in lists of all species in Illinois and species by county
+```{r}
+il.herp.df = read.csv("Illinois_Herp_Species_Wetland_Requirements.csv")
+colnames(il.herp.df)[17] = "Wetland.dependent"
+il.cnty.lists = read.csv("Illinois_Herp_Species_By_County.csv")
+```
+
+#### Trim white space on scientific names
+```{r}
+il.herp.df$Scientific.name = trimws(il.herp.df$Scientific.name)
+il.cnty.lists$Scientific.name = trimws(il.cnty.lists$Scientific.name)
+```
+
+#### Add yes/no columns for groups
+```{r}
+il.herp.df$wet.frog.toad = (il.herp.df$Category == "Frogs and toads" & il.herp.df$Wetland.dependent == 1)
+il.herp.df$wet.salamander = (il.herp.df$Category == "Salamanders" & il.herp.df$Wetland.dependent == 1)
+il.herp.df$wet.turtle = (il.herp.df$Category == "Turtles" & il.herp.df$Wetland.dependent == 1)
+il.herp.df$wet.liz.snake = (il.herp.df$Category == "Lizards and snakes" & il.herp.df$Wetland.dependent == 1)
+```
+
+#### Join county-level lists with wetland dependence column
+```{r}
+il.cnty.lists.join.wetland = left_join(il.cnty.lists,
+                                       il.herp.df[,c("Scientific.name","Wetland.dependent",
+                                                     "wet.frog.toad","wet.salamander",
+                                                     "wet.turtle","wet.liz.snake")],
+                                       by="Scientific.name")
+sum(is.na(il.cnty.lists.join.wetland$Wetland.dependent))
+```
+
+#### Sum total wetland-dependent species by county
+```{r}
+il.cnty.sums = il.cnty.lists.join.wetland %>%
+               group_by(County) %>%
+               summarize(Tot_wet_dependent = sum(Wetland.dependent),
+                         Frog_toad = sum(wet.frog.toad),
+                         Salamander = sum(wet.salamander),
+                         Turtle = sum(wet.turtle),
+                         Liz_snake = sum(wet.liz.snake),
+                         Amphibian = sum(wet.frog.toad) + sum(wet.salamander),
+                         Reptile = sum(wet.turtle) + sum(wet.liz.snake))
+```
+
+#### Write results to file
+```{r}
+il.cnty.sums$County = trimws(il.cnty.sums$County)
+il.cnty.sums$County[which(il.cnty.sums$County == "DeWitt")] = "De Witt"
+write.csv(il.cnty.sums, "Illinois_County_Herp_Richness.csv", row.names=F)
+```
+
+
+

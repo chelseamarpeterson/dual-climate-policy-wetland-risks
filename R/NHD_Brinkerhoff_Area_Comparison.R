@@ -6,7 +6,7 @@ library(patchwork)
 
 # read in NWI polygon file before small (<0.1 ac) wetlands were removed
 nwi.df.all = read.csv("IL_WS_Step10_WaterRegime.csv")
-total.state.wetland.area = sum(nwi.df.all$Area_Ha)
+total.state.wetland.area = sum(nwi.df.all$Polygon_Area_Ha_Geodesic)
 
 # read in NWI polygon file intersected with GAP and county layers
 nwi.df = read.csv("IL_WS_Step11_AreaThreshold.csv")
@@ -24,7 +24,7 @@ perm.abrvs = c("1","2")
 n.p = length(perm.abrvs)
 
 # make vectors for buffer scenarios
-buf.dists = c("1","10","20")
+buf.dists = c("1","10")
 buf.cols = paste("buf", buf.dists, sep="")
 n.b = length(buf.dists)
 
@@ -62,7 +62,7 @@ for (i in 1:n.w) {
         
         # identify all wetland polygons that (1) don't meet the flood frequency cutoff,
         # (2) occur within a leveed area, or (3) don't intersect the WOTUS buffer
-        area.df[n,"area"] = sum(nwi.df[which(wrs.inds | (nwi.df$Within_Levee == 1 | nwi.df[,buf.ws.col] == 0)),"Area_Ha"])
+        area.df[n,"area"] = sum(nwi.df[which(wrs.inds | (nwi.df$Within_Levee == 1 | nwi.df[,buf.ws.col] == 0)),"Polygon_Area_Ha_Geodesic"])
         
         # increment counter
         n = n + 1
@@ -116,6 +116,7 @@ p1 = ggplot(area.stats.df,
                  group="",color="",linetype="") + 
             theme(legend.position="none",
                   text=element_text(size=15))
+p1
 p2 = ggplot(percent.stats.df, 
             aes(x=mean, 
                 y=factor(water_cutoff, levels=water.regimes),
@@ -134,6 +135,7 @@ p2 = ggplot(percent.stats.df,
                  group="",color="",linetype="") + 
             theme(axis.text.y=element_blank(),
                   text=element_text(size=15))
+p2
 p3 = p1 + p2
 setwd("C:/Users/Chels/OneDrive - University of Illinois - Urbana/Ch6_CASC_Project/Manuscript")
 ggsave("Supp_Figures/FigureA2_NHD_Brinkerhoff_NonWOTUS_Comparison.jpeg", 

@@ -146,9 +146,9 @@ p1 = ggplot(gis.stats.df,
                             group=type,
                             color=type,
                             linetype=type), alpha=0.2) +
-       labs(x="Millions of meters cubed (m3)",
+       labs(x="Flood Storage Volume (millions m3)",
             y="Wetland Flood-Frequency Cutoff",
-            title="DEM-based estimate",
+            title="DEM-Based Estimate",
             group="",color="",linetype="") +
        scale_x_continuous(limits=c(1.5,6.5),breaks=seq(2,6)) + 
        theme(text=element_text(size=15))
@@ -166,8 +166,8 @@ p2 = ggplot(unit.stats.df,
                             group=type,
                             color=type,
                             linetype=type), alpha=0.2) +
-            labs(x="Billions of meters cubed (m3)",y="",
-                 title="Unit-area estimate",
+            labs(x="Flood Storage Volume (billions m3)",y="",
+                 title="Unit-Area Estimate",
                  group="",color="",linetype="") +
             scale_x_continuous(limits=c(2,4)) +
             theme(axis.text.y=element_blank(),
@@ -198,29 +198,31 @@ all.counties = sort(unique(wetland.df$NAME))
 n.ct = length(all.counties)
 
 # loop through sum of DEM-based and unit-area estimates of flood storage volume
-sum.cols.long = c("Wetland_Area","DEM_Vol_Estimate","Unit_Estimate_Lower","Unit_Estimate_Upper")
+sum.cols.long = c("Wetland_Area","DEM_Vol","Unit_Vol_Low","Unit_Vol_High")
 sum.cols.short = c("Area_Ha","gis_flood_vol_m3","unit_flood_lower","unit_flood_upper")
 n.sum.cols = length(sum.cols.long)
+county.df.all = data.frame(matrix(nrow=0, ncol=8))
+colnames(county.df.all) = c("Name","Water_Cutoff","Wetland_Area","DEM_Vol",
+                            "Unit_Vol_Low","Unit_Vol_High","Low_Diff","High_Diff")
 for (j in 1:n.w) {
-  county.df = data.frame(matrix(nrow=n.ct, ncol=6))
-  colnames(county.df) = c("Name","Water_Cutoff","Wetland_Area","DEM_Vol_Estimate",
-                          "Unit_Estimate_Lower","Unit_Estimate_Upper")
-  county.df$Water_Cutoff = water.reg.labels[j]
+  county.df.w = data.frame(matrix(nrow=n.ct, ncol=6))
+  colnames(county.df.w) = c("Name","Water_Cutoff","Wetland_Area","DEM_Vol","Unit_Vol_Low","Unit_Vol_High")
+  county.df.w$Water_Cutoff = water.reg.labels[j]
   for (i in 1:n.ct) {
     cnty.i = all.counties[i]
-    county.df[i,"Name"] = cnty.i
+    county.df.w[i,"Name"] = cnty.i
     county.rows = wetland.df[which(wetland.df$NAME == cnty.i & wetland.df$Protection_Status == 0),]
     buf.ws.col = paste("Brinkerhoff_Intersect","1","1", sep="_")
     wrs.inds = !(county.rows$WATER_REGI %in% water.regimes[1:j])
     for (c in 1:n.sum.cols) {
       nonwotus.ind = which(wrs.inds | (county.rows$Within_Lev == 1 | county.rows[,buf.ws.col] == 0))
-      county.df[i, sum.cols.long[c]] = sum(county.rows[nonwotus.ind, sum.cols.short[c]])
+      county.df.w[i, sum.cols.long[c]] = sum(county.rows[nonwotus.ind, sum.cols.short[c]])
     }
   }
-  county.df$Lower_Difference = county.df$Unit_Estimate_Lower - county.df$DEM_Vol_Estimate
-  county.df$Upper_Difference = county.df$Unit_Estimate_Upper - county.df$DEM_Vol_Estimate
-  write.csv(county.df, 
-            paste(paste("County_Volume_Totals", water.reg.abrvs[j],sep="_"),".csv",sep=""),
-            row.names=F)
+  county.df.w$Low_Diff = county.df.w$Unit_Vol_Low - county.df.w$DEM_Vol
+  county.df.w$High_Diff = county.df.w$Unit_Vol_High - county.df.w$DEM_Vol
+  county.df.all = rbind(county.df.all, county.df.w)
+  write.csv(county.df.w, paste(water.reg.abrvs[j], "County_Volume_Totals.csv", sep="_"))
 }
+write.csv(county.df.all, "County_Volume_Totals.csv")
   

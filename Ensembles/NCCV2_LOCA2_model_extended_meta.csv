@@ -1,0 +1,73 @@
+MODEL,RIPF,EXP,ECS_filter (very likely),ECS_filter (likely),NCA5_BMA_weight,GWL_1.5_start_year,GWL_1.5_end_year,GWL_2.0_start_year,GWL_2.0_end_year,GWL_3.0_start_year,GWL_3.0_end_year,country_code,model_center,LOCA2_BMA_weight
+ACCESS-CM2,r1i1p1f1,ssp245,1,0,0.0412,2019,2038,2031,2050,2062,2081,AU,CSIRO-ARCCSS CSIRO and Austr. Res. Council Centre of Excellence for Climate System Science Australia,0.0182
+ACCESS-CM2,r1i1p1f1,ssp370,1,0,0.0412,2018,2037,2030,2049,2053,2072,AU,CSIRO-ARCCSS CSIRO and Austr. Res. Council Centre of Excellence for Climate System Science Australia,0.0182
+ACCESS-CM2,r1i1p1f1,ssp585,1,0,0.0412,2016,2035,2029,2048,2046,2065,AU,CSIRO-ARCCSS CSIRO and Austr. Res. Council Centre of Excellence for Climate System Science Australia,0.0182
+ACCESS-ESM1-5,r1i1p1f1,ssp245,1,1,0.0581,2020,2039,2036,2055,-999,-999,AU,CSIRO Commonwealth Scientific and Industrial Research  Organisation Australia,0.0317
+ACCESS-ESM1-5,r1i1p1f1,ssp370,1,1,0.0581,2024,2043,2039,2058,2060,2079,AU,CSIRO Commonwealth Scientific and Industrial Research  Organisation Australia,0.0317
+ACCESS-ESM1-5,r1i1p1f1,ssp585,1,1,0.0581,2018,2037,2030,2049,2051,2070,AU,CSIRO Commonwealth Scientific and Industrial Research  Organisation Australia,0.0317
+AWI-CM-1-1-MR,r1i1p1f1,ssp245,1,1,0,2011,2030,2030,2049,-999,-999,DE,AWI Alfred Wegener Institute Germany,0.0526
+AWI-CM-1-1-MR,r1i1p1f1,ssp370,1,1,0,2013,2032,2028,2047,2055,2074,DE,AWI Alfred Wegener Institute Germany,0.0526
+AWI-CM-1-1-MR,r1i1p1f1,ssp585,1,1,0,2010,2029,2027,2046,2050,2069,DE,AWI Alfred Wegener Institute Germany,0.0526
+BCC-CSM2-MR,r1i1p1f1,ssp245,1,1,0.0723,2026,2045,2048,2067,-999,-999,CN,"BCC Beijing Climate Centre, China",0.0569
+BCC-CSM2-MR,r1i1p1f1,ssp370,1,1,0.0723,2023,2042,2037,2056,2065,2084,CN,"BCC Beijing Climate Centre, China",0.0569
+BCC-CSM2-MR,r1i1p1f1,ssp585,1,1,0.0723,2021,2040,2034,2053,2056,2075,CN,"BCC Beijing Climate Centre, China",0.0569
+CESM2-LENS,r1i1p1f1,ssp370,0,0,0,2016,2035,2032,2051,2057,2076,US,NCAR National Center for Atmospheric Research USA,0.0143
+CNRM-CM6-1-HR,r1i1p1f2,ssp585,1,0,0,2009,2028,2020,2039,2042,2061,FR,CNRM Centre National de Recherches Météorologiques and CERFACS Centre Européen de Recherche et de Formation Avancée en Calcul Scientifique France,0.0217
+CNRM-CM6-1,r1i1p1f2,ssp245,1,0,0,2021,2040,2039,2058,2075,2094,FR,CNRM Centre National de Recherches Météorologiques and CERFACS Centre Européen de Recherche et de Formation Avancée en Calcul Scientifique France,0.0159
+CNRM-CM6-1,r1i1p1f2,ssp370,1,0,0,2023,2042,2036,2055,2057,2076,FR,CNRM Centre National de Recherches Météorologiques and CERFACS Centre Européen de Recherche et de Formation Avancée en Calcul Scientifique France,0.0159
+CNRM-CM6-1,r1i1p1f2,ssp585,1,0,0,2019,2038,2031,2050,2049,2068,FR,CNRM Centre National de Recherches Météorologiques and CERFACS Centre Européen de Recherche et de Formation Avancée en Calcul Scientifique France,0.0159
+CNRM-ESM2-1,r1i1p1f2,ssp245,1,0,0,2028,2047,2046,2065,2079,2098,FR,CNRM Centre National de Recherches Météorologiques and CERFACS Centre Européen de Recherche et de Formation Avancée en Calcul Scientifique France,0.0167
+CNRM-ESM2-1,r1i1p1f2,ssp370,1,0,0,2027,2046,2043,2062,2063,2082,FR,CNRM Centre National de Recherches Météorologiques and CERFACS Centre Européen de Recherche et de Formation Avancée en Calcul Scientifique France,0.0167
+CNRM-ESM2-1,r1i1p1f2,ssp585,1,0,0,2023,2042,2036,2055,2055,2074,FR,CNRM Centre National de Recherches Météorologiques and CERFACS Centre Européen de Recherche et de Formation Avancée en Calcul Scientifique France,0.0167
+CanESM5,r1i1p1f1,ssp245,0,0,0.029,2004,2023,2015,2034,2040,2059,CA,CCCMa Canadian Centre for Climate Modelling and Analysis Canada,0.0112
+CanESM5,r1i1p1f1,ssp370,0,0,0.029,2004,2023,2014,2033,2034,2053,CA,CCCMa Canadian Centre for Climate Modelling and Analysis Canada,0.0112
+CanESM5,r1i1p1f1,ssp585,0,0,0.029,2003,2022,2013,2032,2031,2050,CA,CCCMa Canadian Centre for Climate Modelling and Analysis Canada,0.0112
+EC-Earth3-Veg,r1i1p1f1,ssp245,1,0,0,2001,2020,2024,2043,2058,2077,EU,EC-Earth Consortium Europe,0.0225
+EC-Earth3-Veg,r1i1p1f1,ssp370,1,0,0,2002,2021,2023,2042,2048,2067,EU,EC-Earth Consortium Europe,0.0225
+EC-Earth3-Veg,r1i1p1f1,ssp585,1,0,0,2002,2021,2018,2037,2041,2060,EU,EC-Earth Consortium Europe,0.0225
+EC-Earth3,r1i1p1f1,ssp245,0,0,0.0498,2013,2032,2035,2054,2076,2095,EU,EC-Earth Consortium Europe,0.0248
+EC-Earth3,r1i1p1f1,ssp370,0,0,0.0498,2013,2032,2029,2048,2054,2073,EU,EC-Earth Consortium Europe,0.0248
+EC-Earth3,r1i1p1f1,ssp585,0,0,0.0498,2015,2034,2026,2045,2048,2067,EU,EC-Earth Consortium Europe,0.0248
+FGOALS-g3,r1i1p1f1,ssp245,1,1,0.0716,2022,2041,2056,2075,-999,-999,CN,CAS Chinese Academy of Sciences China,0.0568
+FGOALS-g3,r1i1p1f1,ssp370,1,1,0.0716,2018,2037,2037,2056,2075,2094,CN,CAS Chinese Academy of Sciences China,0.0568
+FGOALS-g3,r1i1p1f1,ssp585,1,1,0.0716,2020,2039,2038,2057,2065,2084,CN,CAS Chinese Academy of Sciences China,0.0568
+GFDL-CM4,r1i1p1f1,ssp245,0,0,0,2022,2041,2040,2059,-999,-999,US,"NOAA-GFDL National Oceanic and Atmospheric Administration, Geophysical Fluid Dynamics Laboratory USA",0.0302
+GFDL-CM4,r1i1p1f1,ssp585,0,0,0,2020,2039,2032,2051,2050,2069,US,"NOAA-GFDL National Oceanic and Atmospheric Administration, Geophysical Fluid Dynamics Laboratory USA",0.0302
+GFDL-ESM4,r1i1p1f1,ssp245,0,0,0.0589,2037,2056,2064,2083,-999,-999,US,"NOAA-GFDL National Oceanic and Atmospheric Administration, Geophysical Fluid Dynamics Laboratory USA",0.0628
+GFDL-ESM4,r1i1p1f1,ssp370,0,0,0.0589,2032,2051,2048,2067,2074,2093,US,"NOAA-GFDL National Oceanic and Atmospheric Administration, Geophysical Fluid Dynamics Laboratory USA",0.0628
+GFDL-ESM4,r1i1p1f1,ssp585,0,0,0.0589,2030,2049,2043,2062,2066,2085,US,"NOAA-GFDL National Oceanic and Atmospheric Administration, Geophysical Fluid Dynamics Laboratory USA",0.0628
+HadGEM3-GC31-LL,r1i1p1f3,ssp245,0,0,0,2010,2029,2024,2043,2052,2071,GB,MOHC Met Office Hadley Centre UK,0.0114
+HadGEM3-GC31-LL,r1i1p1f3,ssp585,0,0,0,2011,2030,2021,2040,2038,2057,GB,MOHC Met Office Hadley Centre UK,0.0114
+HadGEM3-GC31-MM,r1i1p1f3,ssp585,0,0,0,2016,2035,2025,2044,2040,2059,GB,MOHC Met Office Hadley Centre UK,0.0127
+INM-CM4-8,r1i1p1f1,ssp245,0,0,0.0646,2026,2045,2054,2073,-999,-999,RU,INM Institute for Numerical Mathematics Russian Federation,0.0641
+INM-CM4-8,r1i1p1f1,ssp370,0,0,0.0646,2026,2045,2043,2062,2074,2093,RU,INM Institute for Numerical Mathematics Russian Federation,0.0641
+INM-CM4-8,r1i1p1f1,ssp585,0,0,0.0646,2021,2040,2037,2056,2060,2079,RU,INM Institute for Numerical Mathematics Russian Federation,0.0641
+INM-CM5-0,r1i1p1f1,ssp245,0,0,0.0649,2028,2047,2063,2082,-999,-999,RU,INM Institute for Numerical Mathematics Russian Federation,0.0638
+INM-CM5-0,r1i1p1f1,ssp370,0,0,0.0649,2023,2042,2041,2060,2075,2094,RU,INM Institute for Numerical Mathematics Russian Federation,0.0638
+INM-CM5-0,r1i1p1f1,ssp585,0,0,0.0649,2021,2040,2037,2056,2065,2084,RU,INM Institute for Numerical Mathematics Russian Federation,0.0638
+IPSL-CM6A-LR,r1i1p1f1,ssp245,1,0,0.0449,2009,2028,2024,2043,2056,2075,FR,IPSL Institut Pierre-Simon Laplace France,0.0182
+IPSL-CM6A-LR,r1i1p1f1,ssp370,1,0,0.0449,2010,2029,2025,2044,2046,2065,FR,IPSL Institut Pierre-Simon Laplace France,0.0182
+IPSL-CM6A-LR,r1i1p1f1,ssp585,1,0,0.0449,2009,2028,2025,2044,2041,2060,FR,IPSL Institut Pierre-Simon Laplace France,0.0182
+KACE-1-0-G,r1i1p1f1,ssp245,1,0,0,2004,2023,2014,2033,2041,2060,KR,"NIMS-KMA National Institute of Meteorological Sciences, Korea Meteorological Administration Republic of Korea",0.0176
+KACE-1-0-G,r1i1p1f1,ssp370,1,0,0,2005,2024,2015,2034,2037,2056,KR,"NIMS-KMA National Institute of Meteorological Sciences, Korea Meteorological Administration Republic of Korea",0.0176
+KACE-1-0-G,r1i1p1f1,ssp585,1,0,0,2005,2024,2014,2033,2034,2053,KR,"NIMS-KMA National Institute of Meteorological Sciences, Korea Meteorological Administration Republic of Korea",0.0176
+MIROC6,r1i1p1f1,ssp245,1,1,0.0767,2037,2056,2064,2083,-999,-999,JP,"MIROC Consortium JAMSTEC, AORI, NIES, R-CCS Japan",0.0625
+MIROC6,r1i1p1f1,ssp370,1,1,0.0767,2034,2053,2050,2069,-999,-999,JP,"MIROC Consortium JAMSTEC, AORI, NIES, R-CCS Japan",0.0625
+MIROC6,r1i1p1f1,ssp585,1,1,0.0767,2031,2050,2044,2063,2067,2086,JP,"MIROC Consortium JAMSTEC, AORI, NIES, R-CCS Japan",0.0625
+MPI-ESM1-2-HR,r1i1p1f1,ssp245,1,1,0.0731,2028,2047,2054,2073,-999,-999,DE,MPI-M Max Planck Institute for Meteorology Germany,0.055
+MPI-ESM1-2-HR,r1i1p1f1,ssp370,1,1,0.0731,2025,2044,2041,2060,2072,2091,DE,MPI-M Max Planck Institute for Meteorology Germany,0.055
+MPI-ESM1-2-HR,r1i1p1f1,ssp585,1,1,0.0731,2024,2043,2040,2059,2064,2083,DE,MPI-M Max Planck Institute for Meteorology Germany,0.055
+MPI-ESM1-2-LR,r1i1p1f1,ssp245,1,1,0.0755,2027,2046,2048,2067,-999,-999,DE,MPI-M Max Planck Institute for Meteorology Germany,0.0563
+MPI-ESM1-2-LR,r1i1p1f1,ssp370,1,1,0.0755,2026,2045,2043,2062,2069,2088,DE,MPI-M Max Planck Institute for Meteorology Germany,0.0563
+MPI-ESM1-2-LR,r1i1p1f1,ssp585,1,1,0.0755,2025,2044,2039,2058,2062,2081,DE,MPI-M Max Planck Institute for Meteorology Germany,0.0563
+MRI-ESM2-0,r1i1p1f1,ssp245,1,1,0.073,2021,2040,2040,2059,-999,-999,JP,MRI Meteorological Research Institute Japan,0.052
+MRI-ESM2-0,r1i1p1f1,ssp370,1,1,0.073,2022,2041,2036,2055,2064,2083,JP,MRI Meteorological Research Institute Japan,0.052
+MRI-ESM2-0,r1i1p1f1,ssp585,1,1,0.073,2017,2036,2029,2048,2055,2074,JP,MRI Meteorological Research Institute Japan,0.052
+NorESM2-LM,r1i1p1f1,ssp245,1,1,0.0736,2046,2065,2076,2095,-999,-999,NO,NCC NorESM Climate Modelling Consortium Norway,0.0628
+NorESM2-LM,r1i1p1f1,ssp370,1,1,0.0736,2042,2061,2060,2079,-999,-999,NO,NCC NorESM Climate Modelling Consortium Norway,0.0628
+NorESM2-LM,r1i1p1f1,ssp585,1,1,0.0736,2033,2052,2047,2066,2068,2087,NO,NCC NorESM Climate Modelling Consortium Norway,0.0628
+NorESM2-MM,r1i1p1f1,ssp245,1,1,0.0727,2037,2056,2069,2088,-999,-999,NO,NCC NorESM Climate Modelling Consortium Norway,0.0652
+NorESM2-MM,r1i1p1f1,ssp370,1,1,0.0727,2037,2056,2053,2072,2081,2100,NO,NCC NorESM Climate Modelling Consortium Norway,0.0652
+NorESM2-MM,r1i1p1f1,ssp585,1,1,0.0727,2030,2049,2045,2064,2067,2086,NO,NCC NorESM Climate Modelling Consortium Norway,0.0652
+TaiESM1,r1i1p1f1,ssp245,1,0,0,2022,2041,2034,2053,2059,2078,CN,"AS-RCEC Research Center for Environmental Changes, Academia Sinica Taiwan, China",0.022
+TaiESM1,r1i1p1f1,ssp370,1,0,0,2024,2043,2034,2053,2052,2071,CN,"AS-RCEC Research Center for Environmental Changes, Academia Sinica Taiwan, China",0.022

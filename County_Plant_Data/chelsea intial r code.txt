@@ -1,0 +1,22 @@
+setwd("C:/Users/jzinn/OneDrive/Desktop/make chelsea data")
+
+d=read.csv("Model_masterlist.csv")
+counties=read.csv("IL_County_records_new.csv")
+
+d.IL=subset(d[,c(1,5,7)])
+d.IL=na.omit(d.IL)
+
+d.IL.wet=subset(d.IL,d.IL$WV=="FAC"|d.IL$WV=="FACW"|d.IL$WV=="OBL")
+d.IL.wet.2=merge(d.IL.wet,counties,by="Spp.")
+
+
+county.spp=data.frame(unique(counties$Spp.))
+names(county.spp)[1]="Spp."
+require(dplyr)
+
+
+potential.mismatches=anti_join(d.IL.wet,county.spp,by="Spp.") #fix these manually
+
+county.means=d.IL.wet.2 %>%
+  group_by(County) %>%
+  dplyr::summarize(Mean.C = mean(IL_CC, na.rm=TRUE))
