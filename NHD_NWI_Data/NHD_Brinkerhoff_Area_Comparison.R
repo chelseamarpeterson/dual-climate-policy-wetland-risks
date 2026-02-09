@@ -80,14 +80,15 @@ area.stats.df = area.df %>%
 percent.stats.df = area.stats.df
 percent.stats.df[,c("mean","min","max")] = percent.stats.df[,c("mean","min","max")]/total.state.wetland.area*100
 
-# print area stats for table
+# print total non-WOTUS area stats for table
 nhd.areas = area.stats.df[which(area.stats.df$version == "NHD-based"),]
 brf.areas = area.stats.df[which(area.stats.df$version == "Brinkerhoff-updated"),]
 wr.ind = rep(0,n.w)
 for (i in 1:n.w) { wr.ind[i] = which(nhd.areas$water_cutoff == rev(water.regimes)[i]) }
 round(data.frame(nhd.areas[wr.ind,c("mean","min","max")]),1)
 round(data.frame(brf.areas[wr.ind,c("mean","min","max")]),1)
-
+round(data.frame(brf.areas[wr.ind,c("mean","min","max")]) - data.frame(nhd.areas[wr.ind,c("mean","min","max")]),1)
+  
 # print percent stats for table
 nhd.percents = percent.stats.df[which(percent.stats.df$version == "NHD-based"),]
 brf.percents = percent.stats.df[which(percent.stats.df$version == "Brinkerhoff-updated"),]
@@ -95,6 +96,7 @@ wr.ind = rep(0,n.w)
 for (i in 1:n.w) { wr.ind[i] = which(nhd.percents$water_cutoff == rev(water.regimes)[i]) }
 round(data.frame(nhd.percents[wr.ind,c("mean","min","max")]),1)
 round(data.frame(brf.percents[wr.ind,c("mean","min","max")]),1)
+round(data.frame(brf.percents[wr.ind,c("mean","min","max")]) - data.frame(nhd.percents[wr.ind,c("mean","min","max")]),1)
 
 # plot area comparison between each NHD version
 p1 = ggplot(area.stats.df, 
@@ -137,8 +139,9 @@ p2 = ggplot(percent.stats.df,
                   text=element_text(size=15))
 p2
 p3 = p1 + p2
+p3
 setwd("C:/Users/Chels/OneDrive - University of Illinois - Urbana/Ch6_CASC_Project/Manuscript")
-ggsave("Supp_Figures/FigureA2_NHD_Brinkerhoff_NonWOTUS_Comparison.jpeg", 
+ggsave("Supp_Figures/FigureA3_NHD_Brinkerhoff_NonWOTUS_Comparison.jpeg", 
        plot=p3, width=38, height=14, units="cm", dpi=600)
 
 ################################################################################
@@ -146,7 +149,7 @@ ggsave("Supp_Figures/FigureA2_NHD_Brinkerhoff_NonWOTUS_Comparison.jpeg",
 setwd("C:/Users/Chels/OneDrive - University of Illinois - Urbana/Ch6_CASC_Project/NWI_Wetlands")
 
 # read in NWI files intersected with county and GAP layers
-gap.df = read.csv("IL_WS_Step12_GAP_Union_CntyIntersect.csv")
+gap.df = read.csv("IL_WS_Step13_GAP_Union_CntyIntersect.csv")
 
 # specify counties with stormwater ordinances that protect wetlands
 pro.cnties = c("Cook","DeKalb","DuPage","Grundy","Kane","McHenry","Lake","Will")
@@ -157,7 +160,7 @@ gap.df$Protected_Status = rep("Unprotected", nrow(gap.df))
 for (i in seq(1,2)) {gap.df$Protected_Status[which(gap.df$GAP_Sts == i)] = "Managed for biodiversity"}
 gap.df$Protected_Status[which((gap.df$NAME %in% pro.cnties) & !(gap.df$GAP_Sts %in% c(1,2)))] = "County stormwater ordinance"
 gap.df$Protected_Status[which(!(gap.df$NAME %in% pro.cnties) & (gap.df$GAP_Sts == 3))] = "Managed for multiple uses"
-gap.df$Protected_Status[which(!(gap.df$NAME %in% pro.cnties) & (gap.df$GAP_Sts == 4))] = "Unprotected"
+gap.df$Protected_Status[which(!(gap.df$NAME %in% pro.cnties) & (gap.df$GAP_Sts == 4))] = "State regulated (IWPA of 1989)"
 
 # sum unprotected non-WOTUS area in each gap category
 unpro.area.df = data.frame(matrix(nrow=n.w*n.p*n.b*n.v, ncol=5))
@@ -178,7 +181,7 @@ for (i in 1:n.w) {
           buf.ws.col = paste("Brinkerhoff_Intersect", perm.abrvs[j], buf.dists[k], sep="_")
         }
         wrs.inds = !(gap.df.sub$WATER_REGI %in% water.regimes[1:i])
-        unpro.area.df[n,"area"] = sum(gap.df.sub[which(wrs.inds | (gap.df.sub$Within_Levee == 1 | gap.df.sub[,buf.ws.col] == 0)),"Area_Ha"])
+        unpro.area.df[n,"area"] = sum(gap.df.sub[which(wrs.inds | (gap.df.sub$Within_Levee == 1 | gap.df.sub[,buf.ws.col] == 0)),"Polygon_Area_Ha_Geodesic"])
         n = n + 1 
       }
     }
@@ -201,6 +204,7 @@ wr.ind = rep(0,n.w)
 for (i in 1:n.w) { wr.ind[i] = which(unpro.nhd.areas$water_cutoff == rev(water.regimes)[i]) }
 round(data.frame(unpro.nhd.areas[wr.ind,c("mean","min","max")]),1)
 round(data.frame(unpro.brf.areas[wr.ind,c("mean","min","max")]),1)
+round(data.frame(unpro.brf.areas[wr.ind,c("mean","min","max")])-data.frame(unpro.nhd.areas[wr.ind,c("mean","min","max")]),1)
 
 # print percent stats for table
 unpro.nhd.percents = unpro.percent.stats.df[which(unpro.percent.stats.df$version == "NHD-based"),]
@@ -209,6 +213,7 @@ wr.ind = rep(0,n.w)
 for (i in 1:n.w) { wr.ind[i] = which(unpro.nhd.percents$water_cutoff == rev(water.regimes)[i]) }
 round(data.frame(unpro.nhd.percents[wr.ind,c("mean","min","max")]),1)
 round(data.frame(unpro.brf.percents[wr.ind,c("mean","min","max")]),1)
+round(data.frame(unpro.brf.percents[wr.ind,c("mean","min","max")])-data.frame(unpro.nhd.percents[wr.ind,c("mean","min","max")]),1)
 
 # plot area comparison between each NHD version
 p1 = ggplot(unpro.area.stats.df, 
@@ -249,6 +254,7 @@ p2 = ggplot(unpro.percent.stats.df,
             theme(axis.text.y=element_blank(),
                   text=element_text(size=15))
 p3 = p1 + p2
+p3
 setwd("C:/Users/Chels/OneDrive - University of Illinois - Urbana/Ch6_CASC_Project/Manuscript")
-ggsave("Supp_Figures/FigureA3_NHD_Brinkerhoff_UnprotectedNonWOTUS_Comparison.jpeg", 
+ggsave("Supp_Figures/FigureA4_NHD_Brinkerhoff_UnprotectedNonWOTUS_Comparison.jpeg", 
        plot=p3, width=38, height=14, units="cm", dpi = 600)

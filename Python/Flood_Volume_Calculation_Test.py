@@ -79,14 +79,14 @@ for i in range(n_p):
                 print(f"Polygon {index} is outside DEM extent or invalid geometry, assigning 0 volume.")
                 volumes.append(0)
                 
-    # add the volumes back to the GeoDataFrame
-    polygons['flood_volume_m3'] = volumes
+# add the volumes back to the GeoDataFrame
+polygons['flood_volume_m3'] = volumes
     
-    # Write the GeoDataFrame to a shapefile
-    shape_path = str(shapefile_paths[i])
-    polygons.to_file(shape_path)
+# Write the GeoDataFrame to a shapefile
+shape_path = str(shapefile_paths[i])
+polygons.to_file(shape_path)
     
-    # wirte the attribute table to a csv file
-    out_csv = str(csv_paths[i])
-    polygons = polygons.drop(columns=['geometry'])
-    polygons.to_csv(out_csv, index=False)
+# write the attribute table to a csv file
+out_csv = str(csv_paths[i])
+polygons = polygons.drop(columns=['geometry'])
+polygons.to_csv(out_csv, index=False)

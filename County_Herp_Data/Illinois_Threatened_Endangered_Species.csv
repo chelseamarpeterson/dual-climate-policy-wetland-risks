@@ -1,0 +1,514 @@
+Taxon,Common Name,Scientific Name,Illinois Listing Status,Threatened,Endangered,Federal Listing Status,Subtaxon
+Amphibians,Jefferson Salamander,Ambystoma jeffersonianum,Threatened,1,0,,Salamanders
+Amphibians,Silvery Salamander,Ambystoma platineum,Endangered,0,1,,Salamanders
+Amphibians,Hellbender,Cryptobranchus alleganiensis,Endangered,0,1,,Salamanders
+Amphibians,Spotted Dusky Salamander,Desmognathus conanti,Endangered,0,1,,Salamanders
+Amphibians,Eastern Narrow-mouthed Toad,Gastrophryne carolinensis,Threatened,1,0,,Frogs and Toads
+Amphibians,Four-toed Salamander,Hemidactylium scutatum,Threatened,1,0,,Salamanders
+Amphibians,Bird-voiced Treefrog,Hyla avivoca,Threatened,1,0,,Frogs and Toads
+Amphibians,Mudpuppy,Necturus maculosus,Threatened,1,0,,Salamanders
+Amphibians,Illinois Chorus Frog,Pseudacris illinoensis,Threatened,1,0,,Frogs and Toads
+Birds,Chuck-wills-widow,Antrostomus carolinensis,Threatened,1,0,,
+Birds,Short-eared Owl,Asio flammeus,Endangered,0,1,,
+Birds,Upland Sandpiper,Bartramia longicauda,Endangered,0,1,,
+Birds,American Bittern,Botaurus lentiginosus,Endangered,0,1,,
+Birds,Swainsons Hawk,Buteo swainsoni,Endangered,0,1,,
+Birds,Rufa Red Knot,Calidris canutus rufa,Threatened,1,0,Federally Threatened,
+Birds,Piping Plover,Charadrius melodus,Endangered,0,1,Federally Endangered,
+Birds,Black Tern,Chlidonias niger,Endangered,0,1,,
+Birds,Northern Harrier,Circus hudsonius,Endangered,0,1,,
+Birds,Black-billed Cuckoo,Coccyzus erythropthalmus,Threatened,1,0,,
+Birds,Little Blue Heron,Egretta caerulea,Endangered,0,1,,
+Birds,Snowy Egret,Egretta thula,Endangered,0,1,,
+Birds,Common Gallinule,Gallinula galeata,Endangered,0,1,,
+Birds,Least Bittern,Ixobrychus exilis,Threatened,1,0,,
+Birds,Loggerhead Shrike,Lanius ludovicianus,Endangered,0,1,,
+Birds,Black Rail,Laterallus jamaicensis,Endangered,0,1,,
+Birds,Swainsons Warbler,Limnothlypis swainsonii,Endangered,0,1,,
+Birds,Yellow-crowned Night-Heron,Nyctanassa violacea,Endangered,0,1,,
+Birds,Black-crowned Night-Heron,Nycticorax nycticorax,Endangered,0,1,,
+Birds,Osprey,Pandion haliaetus,Threatened,1,0,,
+Birds,Wilsons Phalarope,Phalaropus tricolor,Endangered,0,1,,
+Birds,King Rail,Rallus elegans,Endangered,0,1,,
+Birds,Cerulean Warbler,Setophaga cerulea,Threatened,1,0,,
+Birds,Forsters Tern,Sterna forsteri,Endangered,0,1,,
+Birds,Common Tern,Sterna hirundo,Endangered,0,1,,
+Birds,Least Tern,Sternula antillarum,Endangered,0,1,,
+Birds,Bewicks Wren,Thryomanes bewickii,Endangered,0,1,,
+Birds,Greater Prairie-Chicken,Tympanuchus cupido,Endangered,0,1,,
+Birds,Yellow-headed Blackbird,Xanthocephalus xanthocephalus,Endangered,0,1,,
+Fishes,Lake Sturgeon,Acipenser fulvescens,Endangered,0,1,,
+Fishes,Ironcolor Shiner,Alburnops chalybaeus,Threatened,1,0,,
+Fishes,Weed Shiner,Alburnops texanus,Endangered,0,1,,
+Fishes,Western Sand Darter,Ammocrypta clara,Endangered,0,1,,
+Fishes,Eastern Sand Darter,Ammocrypta pellucida,Threatened,1,0,,
+Fishes,Longnose Sucker,Catostomus catostomus,Threatened,1,0,,
+Fishes,Cisco,Coregonus artedi,Endangered,0,1,,
+Fishes,Mottled Sculpin,Cottus bairdii,Threatened,1,0,,
+Fishes,Crystal Darter,Crystallaria asprella,Endangered,0,1,,
+Fishes,Banded Pygmy Sunfish,Elassoma zonatum,Threatened,1,0,,
+Fishes,Streamline Chub,Erimystax dissimilis,Threatened,1,0,,
+Fishes,Gravel Chub,Erimystax x-punctatus,Threatened,1,0,,
+Fishes,Harlequin Darter,Etheostoma histrio,Endangered,0,1,,
+Fishes,Shawnee Hills Cavefish,Forbesichthys papilliferus,Threatened,1,0,,
+Fishes,Western Banded Killifish,Fundulus diaphanus subsp. menona,Threatened,1,0,,
+Fishes,Starhead Topminnow,Fundulus dispar,Threatened,1,0,,
+Fishes,Brassy Minnow,Hybognathus hankinsoni,Endangered,0,1,,
+Fishes,Cypress Minnow,Hybognathus hayi,Endangered,0,1,,
+Fishes,Bigeye Chub,Hybopsis amblops,Threatened,1,0,,
+Fishes,Pallid Shiner,Hybopsis amnis,Endangered,0,1,,
+Fishes,Northern Brook Lamprey,Ichthyomyzon fossor,Endangered,0,1,,
+Fishes,Least Brook Lamprey,Lampetra aepyptera,Threatened,1,0,,
+Fishes,Redspotted Sunfish,Lepomis miniatus,Threatened,1,0,,
+Fishes,Bantam Sunfish,Lepomis symmetricus,Threatened,1,0,,
+Fishes,American Brook Lamprey,Lethenteron appendix,Threatened,1,0,,
+Fishes,Sturgeon Chub,Macrhybopsis gelida,Endangered,0,1,,
+Fishes,Bigeye Shiner,Miniellus boops,Endangered,0,1,,
+Fishes,Blackchin Shiner,Miniellus heterodon,Threatened,1,0,,
+Fishes,Ozark Minnow,Miniellus nubilus,Threatened,1,0,,
+Fishes,River Redhorse,Moxostoma carinatum,Threatened,1,0,,
+Fishes,Greater Redhorse,Moxostoma valenciennesi,Endangered,0,1,,
+Fishes,River Chub,Nocomis micropogon,Endangered,0,1,,
+Fishes,Bluebreast Darter,Nothonotus camurus,Threatened,1,0,,
+Fishes,Tippecanoe Darter,Nothonotus tippecanoe,Threatened,1,0,,
+Fishes,Pugnose Shiner,Notropis anogenus,Endangered,0,1,,
+Fishes,Blacknose Shiner,Notropis heterolepis,Endangered,0,1,,
+Fishes,Taillight Shiner,Notropis maculatus,Endangered,0,1,,
+Fishes,Northern Madtom,Noturus stigmosus,Endangered,0,1,,
+Fishes,Trout-perch,Percopsis omiscomaycus,Threatened,1,0,,
+Fishes,Pallid Sturgeon,Scaphirhynchus albus,Endangered,0,1,Federally Endangered,
+Invertebrates,Red-tailed Prairie Leafhopper,Aflexia rubranura,Threatened,1,0,,Leafhoppers
+Invertebrates,Eastern Scaly Miner Bee,Andrena quintilis,Endangered,0,1,,Bees
+Invertebrates,Virginia Mining Bee,Andrena virginiana,Endangered,0,1,,Bees
+Invertebrates,Walshs Anthophora,Anthophora walshii,Threatened,1,0,,Bees
+Invertebrates,Aphrodite Fritillary,Argynnis aphrodite,Threatened,1,0,,Butterflies and Moths
+Invertebrates,Western Regal Fritillary,Argynnis idalia occidentalis,Threatened,1,0,,Butterflies and Moths
+Invertebrates,Balls Athysanella,Athysanella balli,Endangered,0,1,,Leafhoppers
+Invertebrates,Leafhopper,Athysanella incongrua,Endangered,0,1,,Leafhoppers
+Invertebrates,Rusty-patched Bumble Bee,Bombus affinis,Endangered,0,1,Federally Endangered,Bees
+Invertebrates,Isopod,Caecidotea lesliei,Endangered,0,1,,Crustaceans
+Invertebrates,Swamp Metalmark,Calephelis muticum,Endangered,0,1,,Butterflies and Moths
+Invertebrates,Rainbow,Cambarunio iris,Endangered,0,1,,Mussels
+Invertebrates,Common Striped Scorpion,Centruroides vittatus,Endangered,0,1,,Scorpions
+Invertebrates,Alumroot Cellophane Bee,Colletes aestivalis,Endangered,0,1,,Bees
+Invertebrates,Andrews Cellophane Bee,Colletes andrewsi,Endangered,0,1,,Bees
+Invertebrates,Leafhopper,Commellus colon,Endangered,0,1,,Leafhoppers
+Invertebrates,Anomalous Spring Amphipod,Crangonyx anomalus,Endangered,0,1,,Crustaceans
+Invertebrates,Packards Cave Amphipod,Crangonyx packardi,Endangered,0,1,,Crustaceans
+Invertebrates,Spectaclecase,Cumberlandia monodonta,Endangered,0,1,Federally Endangered,Mussels
+Invertebrates,Purple Wartyback,Cyclonaias tuberculata,Threatened,1,0,,Mussels
+Invertebrates,Fanshell,Cyprogenia stegaria,Endangered,0,1,Federally Endangered,Mussels
+Invertebrates,Bakers Nomia,Dieunomia nevadensis bakeri,Threatened,1,0,,Bees
+Invertebrates,Robust Springfly,Diploperla robusta,Endangered,0,1,,Stoneflies
+Invertebrates,Iowa Pleistocene Snail,Discus macclintocki,Endangered,0,1,Federally Endangered,Snails
+Invertebrates,Butterfly,Ellipsaria lineolata,Threatened,1,0,,Mussels
+Invertebrates,Elephant-ear,Elliptio crassidens,Endangered,0,1,,Mussels
+Invertebrates,Ainslies Epeolus,Epeolus ainsliei,Endangered,0,1,,Bees
+Invertebrates,Interrupted Epeolus,Epeolus interruptus,Endangered,0,1,,Bees
+Invertebrates,Northern Riffleshell,Epioblasma rangiana,Endangered,0,1,Federally Endangered,Mussels
+Invertebrates,Snuffbox,Epioblasma triquetra,Endangered,0,1,Federally Endangered,Mussels
+Invertebrates,Spike,Eurynia dilatata,Endangered,0,1,,Mussels
+Invertebrates,Indiana Crayfish,Faxonius indianensis,Endangered,0,1,,Crustaceans
+Invertebrates,Kentucky Crayfish,Faxonius kentuckiensis,Endangered,0,1,,Crustaceans
+Invertebrates,Shrimp Crayfish,Faxonius lancifer,Endangered,0,1,,Crustaceans
+Invertebrates,Bigclaw Crayfish,Faxonius placidus,Endangered,0,1,,Crustaceans
+Invertebrates,Little Wabash Crayfish,Faxonius stannardi,Endangered,0,1,,Crustaceans
+Invertebrates,Fitchs Elephanthopper,Fitchiella robertsonii,Threatened,1,0,,Leafhoppers
+Invertebrates,Leafhopper,Flexamia albida,Threatened,1,0,,Leafhoppers
+Invertebrates,Sand Reed Leafhopper,Flexamia grammica,Endangered,0,1,,Leafhoppers
+Invertebrates,Hydrobiid Cave Snail,Fontigens antroecetes,Endangered,0,1,,Snails
+Invertebrates,Illinois Cave Amphipod,Gammarus acherondytes,Endangered,0,1,Federally Endangered,Crustaceans
+Invertebrates,Cobweb Skipper,Hesperia metea,Endangered,0,1,,Butterflies and Moths
+Invertebrates,Hoary Elfin,Incisalia polios,Endangered,0,1,,Butterflies and Moths
+Invertebrates,Pink Mucket,Lampsilis abrupta,Endangered,0,1,Federally Endangered,Mussels
+Invertebrates,Wavy-rayed Lampmussel,Lampsilis fasciola,Endangered,0,1,,Mussels
+Invertebrates,Higgins Eye,Lampsilis higginsii,Endangered,0,1,Federally Endangered,Mussels
+Invertebrates,Scaleshell,Leptodea leptodon,Endangered,0,1,Federally Endangered,Mussels
+Invertebrates,Onyx Rocksnail,Leptoxis praerosa,Endangered,0,1,,Snails
+Invertebrates,Shawnee Rocksnail,Lithasia obovata,Endangered,0,1,,Snails
+Invertebrates,Naked Oil-collecting Bee,Macropis nuda,Endangered,0,1,,Bees
+Invertebrates,Pickerelweed Long-nosed Bee,Melissodes apicatus,Endangered,0,1,,Bees
+Invertebrates,Elfin Skimmer,Nannothemis bella,Endangered,0,1,,Dragonflies
+Invertebrates,Nortons Nomia,Nomia nortoni,Threatened,1,0,,Bees
+Invertebrates,Eryngium Stem Borer,Papaipema eryngii,Threatened,1,0,,Butterflies and Moths
+Invertebrates,Orangefoot Pimpleback,Plethobasus cooperianus,Endangered,0,1,Federally Endangered,Mussels
+Invertebrates,Sheepnose,Plethobasus cyphyus,Endangered,0,1,Federally Endangered,Mussels
+Invertebrates,Clubshell,Pleurobema clava,Endangered,0,1,Federally Endangered,Mussels
+Invertebrates,Ohio Pigtoe,Pleurobema cordatum,Endangered,0,1,,Mussels
+Invertebrates,Planthopper,Poblicia fuliginosa,Threatened,1,0,,Leafhoppers
+Invertebrates,Ross Polyamia,Polyamia rossi,Threatened,1,0,,Leafhoppers
+Invertebrates,Fat Pocketbook,Potamilus capax,Endangered,0,1,Federally Endangered,Mussels
+Invertebrates,Central Forestfly,Prostoia ozarkensis,Endangered,0,1,,Stoneflies
+Invertebrates,Mining Bee,Protandrena bancrofti,Threatened,1,0,,Bees
+Invertebrates,Kidneyshell,Ptychobranchus fasciolaris,Endangered,0,1,,Mussels
+Invertebrates,Madonna Cave Springtail,Pygmarrhopalites madonnensis,Endangered,0,1,,Springtails
+Invertebrates,Monkeyface,Quadrula metanevra,Threatened,1,0,,Mussels
+Invertebrates,Ebonyshell,Reginaia ebenus,Endangered,0,1,,Mussels
+Invertebrates,Salamander Mussel,Simpsonaias ambigua,Endangered,0,1,,Mussels
+Invertebrates,Hines Emerald Dragonfly,Somatochlora hineana,Endangered,0,1,Federally Endangered,Dragonflies
+Invertebrates,Iowa Amphipod,Stygobromus iowae,Endangered,0,1,,Crustaceans
+Invertebrates,Purplish Copper,Tharsalea helloides,Threatened,1,0,,Butterflies and Moths
+Invertebrates,Rabbitsfoot,Theliderma cylindrica,Endangered,0,1,Federally Threatened,Mussels
+Invertebrates,Purple Lilliput,Toxolasma lividum,Endangered,0,1,,Mussels
+Mammals,Gray/Timber Wolf,Canis lupus,Endangered,0,1,Federally Endangered,
+Mammals,Rafinesques Big-eared Bat,Corynorhinus rafinesquii,Endangered,0,1,,
+Mammals,Southeastern Myotis,Myotis austroriparius,Endangered,0,1,,
+Mammals,Gray Bat,Myotis grisescens,Endangered,0,1,Federally Endangered,
+Mammals,Eastern Small-footed Bat,Myotis leibii,Threatened,1,0,,
+Mammals,Northern Long-eared Bat,Myotis septentrionalis,Endangered,0,1,Federally Endangered,
+Mammals,Indiana Bat,Myotis sodalis,Endangered,0,1,Federally Endangered,
+Mammals,Franklins Ground Squirrel,Poliocitellus franklinii,Threatened,1,0,,
+Plants,American Bugbane,Actaea podocarpa,Endangered,0,1,,Angiosperms - Dicots
+Plants,False Bugbane,Actaea racemosa,Endangered,0,1,,Angiosperms - Dicots
+Plants,Black Cohosh,Actaea rubifolia,Endangered,0,1,,Angiosperms - Dicots
+Plants,Moschatel,Adoxa moschatellina,Endangered,0,1,,Angiosperms - Dicots
+Plants,Pale False Foxglove,Agalinis skinneriana,Threatened,1,0,,Angiosperms - Dicots
+Plants,Speckled Alder,Alnus incana subsp. rugosa,Endangered,0,1,,Angiosperms - Dicots
+Plants,Shadbush,Amelanchier interior,Threatened,1,0,,Angiosperms - Dicots
+Plants,Shadbush,Amelanchier sanguinea,Endangered,0,1,,Angiosperms - Dicots
+Plants,Marram Grass,Ammophila breviligulata,Threatened,1,0,,Angiosperms - Monocots
+Plants,Smooth False Indigo,Amorpha nitens,Endangered,0,1,,Angiosperms - Dicots
+Plants,Bog Rosemary,Andromeda glaucophylla,Endangered,0,1,,Angiosperms - Dicots
+Plants,Bearberry,Arctostaphylos uva-ursi,Endangered,0,1,,Angiosperms - Dicots
+Plants,Dragon Wormwood,Artemisia dracunculus,Endangered,0,1,,Angiosperms - Dicots
+Plants,Wooly Milkweed,Asclepias lanuginosa,Endangered,0,1,,Angiosperms - Dicots
+Plants,Meads Milkweed,Asclepias meadii,Endangered,0,1,Federally Threatened,Angiosperms - Dicots
+Plants,Oval Milkweed,Asclepias ovalifolia,Endangered,0,1,,Angiosperms - Dicots
+Plants,Narrow-leaved Green Milkweed,Asclepias stenophylla,Endangered,0,1,,Angiosperms - Dicots
+Plants,Bradleys Spleenwort,Asplenium bradleyi,Endangered,0,1,,Ferns and Allies
+Plants,Black Spleenwort,Asplenium resiliens,Endangered,0,1,,Ferns and Allies
+Plants,Large Ground Plum,Astragalus crassicarpus var. trichocalyx,Endangered,0,1,,Angiosperms - Dicots
+Plants,Bent Milk Vetch,Astragalus distortus,Endangered,0,1,,Angiosperms - Dicots
+Plants,Tennessee Milk Vetch,Astragalus tennesseensis,Endangered,0,1,,Angiosperms - Dicots
+Plants,Hairgrass,Avenella flexuosa,Endangered,0,1,,Angiosperms - Monocots
+Plants,Yellow Wild Indigo,Baptisia tinctoria,Endangered,0,1,,Angiosperms - Dicots
+Plants,Screwstem,Bartonia paniculata,Endangered,0,1,,Angiosperms - Dicots
+Plants,American Slough Grass,Beckmannia syzigachne,Endangered,0,1,,Angiosperms - Monocots
+Plants,Supple Jack,Berchemia scandens,Endangered,0,1,,Angiosperms - Dicots
+Plants,Yellow Birch,Betula alleghaniensis,Endangered,0,1,,Angiosperms - Dicots
+Plants,Water Marigold,Bidens beckii,Endangered,0,1,,Angiosperms - Dicots
+Plants,Decurrent False Aster,Boltonia decurrens,Threatened,1,0,Federally Threatened,Angiosperms - Dicots
+Plants,Prairie Moonwort,Botrychium campestre,Endangered,0,1,,Ferns and Allies
+Plants,Daisyleaf Grape Fern,Botrychium matricariifolium,Endangered,0,1,,Ferns and Allies
+Plants,Dwarf Grape Fern,Botrychium simplex,Endangered,0,1,,Ferns and Allies
+Plants,Blue Grama,Bouteloua gracilis,Endangered,0,1,,Angiosperms - Monocots
+Plants,Bluehearts,Buchnera americana,Threatened,1,0,,Angiosperms - Dicots
+Plants,Sea Rocket,Cakile edentula var. lacustris,Threatened,1,0,,Angiosperms - Dicots
+Plants,Hollow Reed Grass,Calamagrostis porteri subsp. insperata,Endangered,0,1,,Angiosperms - Monocots
+Plants,Water Arum,Calla palustris,Endangered,0,1,,Angiosperms - Monocots
+Plants,Oklahoma Grass Pink Orchid,Calopogon oklahomensis,Endangered,0,1,,Angiosperms - Monocots
+Plants,Grass Pink Orchid,Calopogon tuberosus,Endangered,0,1,,Angiosperms - Monocots
+Plants,Wild Hyacinth,Camassia angusta,Endangered,0,1,,Angiosperms - Monocots
+Plants,Pink Corydalis,Capnoides sempervirens,Endangered,0,1,,Angiosperms - Dicots
+Plants,Cuckoo Flower,Cardamine pratensis var. palustris,Endangered,0,1,,Angiosperms - Dicots
+Plants,Winged Sedge,Carex alata,Endangered,0,1,,Angiosperms - Monocots
+Plants,Bellows Beak Sedge,Carex albicans var. australis,Endangered,0,1,,Angiosperms - Monocots
+Plants,Greenish-white Oval Sedge,Carex albolutescens,Endangered,0,1,,Angiosperms - Monocots
+Plants,Arkansas Sedge,Carex arkansana,Endangered,0,1,,Angiosperms - Monocots
+Plants,Sedge,Carex atlantica,Threatened,1,0,,Angiosperms - Monocots
+Plants,Golden Sedge,Carex aurea,Threatened,1,0,,Angiosperms - Monocots
+Plants,Sedge,Carex bromoides,Threatened,1,0,,Angiosperms - Monocots
+Plants,Brownish Sedge,Carex brunnescens,Endangered,0,1,,Angiosperms - Monocots
+Plants,Silvery Sedge,Carex canescens,Endangered,0,1,,Angiosperms - Monocots
+Plants,Cordroot Sedge,Carex chordorrhiza,Endangered,0,1,,Angiosperms - Monocots
+Plants,Crawfords Sedge,Carex crawfordii,Endangered,0,1,,Angiosperms - Monocots
+Plants,Yellow Sedge,Carex cryptolepis,Threatened,1,0,,Angiosperms - Monocots
+Plants,Sedge,Carex cumulata,Endangered,0,1,,Angiosperms - Monocots
+Plants,White-edge Sedge,Carex debilis,Endangered,0,1,,Angiosperms - Monocots
+Plants,Cypress-knee Sedge,Carex decomposita,Endangered,0,1,,Angiosperms - Monocots
+Plants,Sedge,Carex diandra,Endangered,0,1,,Angiosperms - Monocots
+Plants,Shortleaf Sedge,Carex disperma,Endangered,0,1,,Angiosperms - Monocots
+Plants,Sedge,Carex echinata,Endangered,0,1,,Angiosperms - Monocots
+Plants,Sedge,Carex formosa,Endangered,0,1,,Angiosperms - Monocots
+Plants,Elk Sedge,Carex garberi,Endangered,0,1,,Angiosperms - Monocots
+Plants,Large Sedge,Carex gigantea,Endangered,0,1,,Angiosperms - Monocots
+Plants,Plains Sedge,Carex inops subsp. heliophila,Endangered,0,1,,Angiosperms - Monocots
+Plants,Swollen Sedge,Carex intumescens,Threatened,1,0,,Angiosperms - Monocots
+Plants,Mud Sedge,Carex limosa,Endangered,0,1,,Angiosperms - Monocots
+Plants,Black-edged Sedge,Carex nigromarginata,Endangered,0,1,,Angiosperms - Monocots
+Plants,Few-seeded Sedge,Carex oligosperma,Endangered,0,1,,Angiosperms - Monocots
+Plants,Opaque Oval Sedge,Carex opaca,Endangered,0,1,,Angiosperms - Monocots
+Plants,Sharp-scaled Sedge,Carex oxylepis var. oxylepis,Threatened,1,0,,Angiosperms - Monocots
+Plants,Pale Sedge,Carex pallescens,Endangered,0,1,,Angiosperms - Monocots
+Plants,Plantain-leaved Sedge,Carex plantaginea,Endangered,0,1,,Angiosperms - Monocots
+Plants,Drooping Sedge,Carex prasina,Threatened,1,0,,Angiosperms - Monocots
+Plants,Reniform Sedge,Carex reniformis,Endangered,0,1,,Angiosperms - Monocots
+Plants,Eastern Straw Sedge,Carex straminea,Endangered,0,1,,Angiosperms - Monocots
+Plants,Three-seeded Sedge,Carex trisperma,Endangered,0,1,,Angiosperms - Monocots
+Plants,Tuckermans Sedge,Carex tuckermanii,Endangered,0,1,,Angiosperms - Monocots
+Plants,Little Green Sedge,Carex viridula,Threatened,1,0,,Angiosperms - Monocots
+Plants,Willdenows Sedge,Carex willdenowii,Threatened,1,0,,Angiosperms - Monocots
+Plants,Water Hickory,Carya aquatica,Endangered,0,1,,Angiosperms - Dicots
+Plants,Pale Hickory,Carya pallida,Endangered,0,1,,Angiosperms - Dicots
+Plants,Downy Yellow Painted Cup,Castilleja sessiliflora,Endangered,0,1,,Angiosperms - Dicots
+Plants,Redroot,Ceanothus herbaceus,Endangered,0,1,,Angiosperms - Dicots
+Plants,Leatherleaf,Chamaedaphne calyculata,Threatened,1,0,,Angiosperms - Dicots
+Plants,Fairy Wand,Chamaelirium luteum,Endangered,0,1,,Angiosperms - Monocots
+Plants,Spotted Wintergreen,Chimaphila maculata,Endangered,0,1,,Angiosperms - Dicots
+Plants,Pipsissewa,Chimaphila umbellata,Endangered,0,1,,Angiosperms - Dicots
+Plants,Small Enchanters Nightshade,Circaea alpina,Endangered,0,1,,Angiosperms - Dicots
+Plants,Pitchers (Dune) Thistle,Cirsium pitcheri,Endangered,0,1,Federally Threatened,Angiosperms - Dicots
+Plants,Yellowwood,Cladrastis kentukea,Endangered,0,1,,Angiosperms - Dicots
+Plants,Blue Jasmine,Clematis crispa,Endangered,0,1,,Angiosperms - Dicots
+Plants,Leatherflower,Clematis viorna,Endangered,0,1,,Angiosperms - Dicots
+Plants,Violet Collinsia,Collinsia violacea,Endangered,0,1,,Angiosperms - Dicots
+Plants,Sweetfern,Comptonia peregrina,Endangered,0,1,,Angiosperms - Dicots
+Plants,Hemlock Parsley,Conioselinum chinense,Endangered,0,1,,Angiosperms - Dicots
+Plants,Spotted Coral-root Orchid,Corallorhiza maculata,Endangered,0,1,,Angiosperms - Monocots
+Plants,Bunchberry,Cornus canadensis,Endangered,0,1,,Angiosperms - Dicots
+Plants,Golden Corydalis,Corydalis aurea,Endangered,0,1,,Angiosperms - Dicots
+Plants,Hales Corydalis,Corydalis halei,Endangered,0,1,,Angiosperms - Dicots
+Plants,Beaked Hazelnut,Corylus cornuta,Endangered,0,1,,Angiosperms - Dicots
+Plants,Cynosciadium,Cynosciadium digitatum,Endangered,0,1,,Angiosperms - Dicots
+Plants,Umbrella Sedge,Cyperus grayoides,Threatened,1,0,,Angiosperms - Monocots
+Plants,Galingale,Cyperus lancastriensis,Threatened,1,0,,Angiosperms - Monocots
+Plants,Moccasin Flower,Cypripedium acaule,Endangered,0,1,,Angiosperms - Monocots
+Plants,Small Yellow Ladys Slipper,Cypripedium parviflorum var. makasin,Endangered,0,1,,Angiosperms - Monocots
+Plants,Showy Ladys Slipper,Cypripedium reginae,Endangered,0,1,,Angiosperms - Monocots
+Plants,Leafy Prairie Clover,Dalea foliosa,Endangered,0,1,Federally Endangered,Angiosperms - Dicots
+Plants,Hill Prairie Larkspur,Delphinium carolinianum,Endangered,0,1,,Angiosperms - Dicots
+Plants,Ground Pine,Dendrolycopodium dendroideum,Endangered,0,1,,Ferns and Allies
+Plants,Hickeys Groundpine,Dendrolycopodium hickeyi,Endangered,0,1,,Ferns and Allies
+Plants,Hay-scented Fern,Dennstaedtia punctilobula,Endangered,0,1,,Ferns and Allies
+Plants,Northern Panic Grass,Dichanthelium boreale,Endangered,0,1,,Angiosperms - Monocots
+Plants,Panic Grass,Dichanthelium joorii,Endangered,0,1,,Angiosperms - Monocots
+Plants,Hemlock Panic Grass,Dichanthelium portoricense,Endangered,0,1,,Angiosperms - Monocots
+Plants,Ravenels Panic Grass,Dichanthelium ravenelii,Endangered,0,1,,Angiosperms - Monocots
+Plants,Panic Grass,Dichanthelium yadkinense,Endangered,0,1,,Angiosperms - Monocots
+Plants,Frenchs Shootingstar,Dodecatheon frenchii,Threatened,1,0,,Angiosperms - Dicots
+Plants,Whitlow Grass,Draba cuneifolia,Endangered,0,1,,Angiosperms - Dicots
+Plants,Narrow-leaved Sundew,Drosera intermedia,Threatened,1,0,,Angiosperms - Dicots
+Plants,Round-leaved Sundew,Drosera rotundifolia,Endangered,0,1,,Angiosperms - Dicots
+Plants,Log Fern,Dryopteris celsa,Endangered,0,1,,Ferns and Allies
+Plants,Small Burhead,Echinodorus tenellus,Endangered,0,1,,Angiosperms - Monocots
+Plants,Capitate Spikerush,Eleocharis olivacea,Endangered,0,1,,Angiosperms - Monocots
+Plants,Few-flowered Spikerush,Eleocharis quinqueflora,Endangered,0,1,,Angiosperms - Monocots
+Plants,Beaked Spike Rush,Eleocharis rostellata,Threatened,1,0,,Angiosperms - Monocots
+Plants,Bearded Wheat Grass,Elymus trachycaulus,Endangered,0,1,,Angiosperms - Monocots
+Plants,Downy Willow Herb,Epilobium strictum,Endangered,0,1,,Angiosperms - Dicots
+Plants,Meadow Horsetail,Equisetum pratense,Threatened,1,0,,Ferns and Allies
+Plants,Dwarf Scouring Rush,Equisetum scirpoides,Endangered,0,1,,Ferns and Allies
+Plants,Woodland Horsetail,Equisetum sylvaticum,Endangered,0,1,,Ferns and Allies
+Plants,Slender Cotton Sedge,Eriophorum gracile,Endangered,0,1,,Angiosperms - Monocots
+Plants,Rusty Cotton Grass,Eriophorum virginicum,Endangered,0,1,,Angiosperms - Monocots
+Plants,Eryngo,Eryngium prostratum,Endangered,0,1,,Angiosperms - Dicots
+Plants,Yellow Monkey Flower,Erythranthe geyeri,Endangered,0,1,,Angiosperms - Dicots
+Plants,American Strawberry Bush,Euonymus americanus,Threatened,1,0,,Angiosperms - Dicots
+Plants,Hyssop-leaved Thoroughwort,Eupatorium hyssopifolium var. laciniatum,Endangered,0,1,,Angiosperms - Dicots
+Plants,Seaside Spurge,Euphorbia polygonifolia,Threatened,1,0,,Angiosperms - Dicots
+Plants,Spurge,Euphorbia spathulata,Endangered,0,1,,Angiosperms - Dicots
+Plants,Forked Aster,Eurybia furcata,Threatened,1,0,,Angiosperms - Dicots
+Plants,Cluster Fescue,Festuca paradoxa,Threatened,1,0,,Angiosperms - Monocots
+Plants,Queen-of-the-Prairie,Filipendula rubra,Threatened,1,0,,Angiosperms - Dicots
+Plants,Vahls Fimbry,Fimbristylis vahlii,Endangered,0,1,,Angiosperms - Monocots
+Plants,Dwarf Bedstraw,Galium virgatum,Endangered,0,1,,Angiosperms - Dicots
+Plants,Northern Cranesbill,Geranium bicknellii,Endangered,0,1,,Angiosperms - Dicots
+Plants,Arkansas Manna Grass,Glyceria arkansana,Endangered,0,1,,Angiosperms - Monocots
+Plants,Hedge Hyssop,Gratiola quartermaniae,Endangered,0,1,,Angiosperms - Dicots
+Plants,Oak Fern,Gymnocarpium dryopteris,Endangered,0,1,,Ferns and Allies
+Plants,Stickseed,Hackelia deflexa var. americana,Endangered,0,1,,Angiosperms - Dicots
+Plants,Silverbell Tree,Halesia carolina,Endangered,0,1,,Angiosperms - Dicots
+Plants,Narrow-leaved Sunflower,Helianthus angustifolius,Endangered,0,1,,Angiosperms - Dicots
+Plants,Tall Sunflower,Helianthus giganteus,Endangered,0,1,,Angiosperms - Dicots
+Plants,Slender Heliotrope,Heliotropium tenellum,Endangered,0,1,,Angiosperms - Dicots
+Plants,Mud Plantain,Heteranthera reniformis,Endangered,0,1,,Angiosperms - Monocots
+Plants,Crested Coralroot Orchid,Hexalectris spicata,Endangered,0,1,,Angiosperms - Monocots
+Plants,False Heather,Hudsonia tomentosa,Endangered,0,1,,Angiosperms - Dicots
+Plants,Cliff Clubmoss,Huperzia porophila,Threatened,1,0,,Ferns and Allies
+Plants,One-flowered Hydrolea,Hydrolea uniflora,Endangered,0,1,,Angiosperms - Dicots
+Plants,American Orpine,Hylotelephium telephioides,Threatened,1,0,,Angiosperms - Dicots
+Plants,Old Plainsman,Hymenopappus scabiosaeus,Endangered,0,1,,Angiosperms - Dicots
+Plants,Shore St. Johns Wort,Hypericum adpressum,Endangered,0,1,,Angiosperms - Dicots
+Plants,Kalms St. Johns Wort,Hypericum kalmianum,Endangered,0,1,,Angiosperms - Dicots
+Plants,Swinks St. Johns Wort,Hypericum swinkianum,Endangered,0,1,,Angiosperms - Dicots
+Plants,Kankakee Mallow,Iliamna remota,Endangered,0,1,,Angiosperms - Dicots
+Plants,Bloodleaf,Iresine rhizomatosa,Endangered,0,1,,Angiosperms - Dicots
+Plants,Butlers Quillwort,Isoetes butleri,Endangered,0,1,,Ferns and Allies
+Plants,Small Whorled Pogonia,Isotria medeoloides,Endangered,0,1,Federally Threatened,Angiosperms - Monocots
+Plants,Whorled Pogonia,Isotria verticillata,Endangered,0,1,,Angiosperms - Monocots
+Plants,Butternut,Juglans cinerea,Endangered,0,1,,Angiosperms - Dicots
+Plants,Richardsons Rush,Juncus alpinoarticulatus,Threatened,1,0,,Angiosperms - Monocots
+Plants,Vaseys Rush,Juncus vaseyi,Endangered,0,1,,Angiosperms - Monocots
+Plants,Ground Juniper,Juniperus communis,Endangered,0,1,,Gymnosperms
+Plants,Trailing Juniper,Juniperus horizontalis,Endangered,0,1,,Gymnosperms
+Plants,Water Willow,Justicia ovata,Endangered,0,1,,Angiosperms - Dicots
+Plants,Boykins Dioclea,Lackeya multiflora,Endangered,0,1,,Angiosperms - Dicots
+Plants,Tamarack,Larix laricina,Endangered,0,1,,Gymnosperms
+Plants,Pale Vetchling,Lathyrus ochroleucus,Threatened,1,0,,Angiosperms - Dicots
+Plants,Savanna Pinweed,Lechea intermedia,Endangered,0,1,,Angiosperms - Dicots
+Plants,Prairie Bush Clover,Lespedeza leptostachya,Endangered,0,1,Federally Threatened,Angiosperms - Dicots
+Plants,Red Honeysuckle,Lonicera dioica var. glaucescens,Endangered,0,1,,Angiosperms - Dicots
+Plants,Yellow Honeysuckle,Lonicera flava,Endangered,0,1,,Angiosperms - Dicots
+Plants,Round-fruited Loosestrife,Ludwigia sphaerocarpa,Endangered,0,1,,Angiosperms - Dicots
+Plants,Hairy Woodrush,Luzula acuminata,Endangered,0,1,,Angiosperms - Monocots
+Plants,Bog Clubmoss,Lycopodiella inundata,Endangered,0,1,,Ferns and Allies
+Plants,Running Pine,Lycopodium clavatum,Endangered,0,1,,Ferns and Allies
+Plants,Creeping Loosestrife,Lysimachia radicans,Endangered,0,1,,Angiosperms - Dicots
+Plants,Narrow-leaved Crabapple,Malus angustifolia,Endangered,0,1,,Angiosperms - Dicots
+Plants,False Mallow,Malvastrum hispidum,Endangered,0,1,,Angiosperms - Dicots
+Plants,Climbing Milkweed,Matelea decipiens,Endangered,0,1,,Angiosperms - Dicots
+Plants,Indian Cucumber Root,Medeola virginiana,Endangered,0,1,,Angiosperms - Monocots
+Plants,White Melanthera,Melanthera nivea,Endangered,0,1,,Angiosperms - Dicots
+Plants,Virginia Bunchflower,Melanthium virginicum,Endangered,0,1,,Angiosperms - Monocots
+Plants,Two-Flowered Melic Grass,Melica mutica,Endangered,0,1,,Angiosperms - Monocots
+Plants,Squirting Cucumber,Melothria pendula,Threatened,1,0,,Angiosperms - Dicots
+Plants,Stickleaf,Mentzelia oligosperma,Endangered,0,1,,Angiosperms - Dicots
+Plants,Buckbean,Menyanthes trifoliata,Threatened,1,0,,Angiosperms - Dicots
+Plants,Early Saxifrage,Micranthes virginiensis,Endangered,0,1,,Angiosperms - Dicots
+Plants,Cats Claw,Mimosa nuttallii,Endangered,0,1,,Angiosperms - Dicots
+Plants,Slender Sandwort,Minuartia patula,Threatened,1,0,,Angiosperms - Dicots
+Plants,Hairy Umbrella-wort,Mirabilis hirsuta,Endangered,0,1,,Angiosperms - Dicots
+Plants,White Bergamot,Monarda clinopodia,Threatened,1,0,,Angiosperms - Dicots
+Plants,Baby Blue-Eyes,Nemophila aphylla,Endangered,0,1,,Angiosperms - Dicots
+Plants,Prairie Dandelion,Nothocalais cuspidata,Endangered,0,1,,Angiosperms - Dicots
+Plants,Fragile Prickly Pear,Opuntia fragilis,Endangered,0,1,,Angiosperms - Dicots
+Plants,Clustered Broomrape,Orobanche fasciculata,Endangered,0,1,,Angiosperms - Dicots
+Plants,Broomrape,Orobanche ludoviciana,Threatened,1,0,,Angiosperms - Dicots
+Plants,Illinois Wood Sorrel,Oxalis illinoensis,Threatened,1,0,,Angiosperms - Dicots
+Plants,Large-flowered Beard Tongue,Penstemon grandiflorus,Endangered,0,1,,Angiosperms - Dicots
+Plants,Tube Beard Tongue,Penstemon tubaeflorus,Endangered,0,1,,Angiosperms - Dicots
+Plants,Careys Heartsease,Persicaria careyi,Endangered,0,1,,Angiosperms - Dicots
+Plants,Ozark Phacelia,Phacelia gilioides,Endangered,0,1,,Angiosperms - Dicots
+Plants,Leas Bog Lichen,Phaeophyscia leana,Threatened,1,0,,Lichen
+Plants,Long Beech Fern,Phegopteris connectilis,Endangered,0,1,,Ferns and Allies
+Plants,Fameflower,Phemeranthus calycinus,Endangered,0,1,,Angiosperms - Dicots
+Plants,Small Flower-of-an-hour,Phemeranthus parviflorus,Threatened,1,0,,Angiosperms - Dicots
+Plants,Sangamon Phlox,Phlox pilosa subsp. sangamonensis,Endangered,0,1,,Angiosperms - Dicots
+Plants,Silvery Bladderpod,Physaria ludoviciana,Endangered,0,1,,Angiosperms - Dicots
+Plants,Jack Pine,Pinus banksiana,Endangered,0,1,,Gymnosperms
+Plants,Shortleaf Pine,Pinus echinata,Endangered,0,1,,Gymnosperms
+Plants,Red Pine,Pinus resinosa,Endangered,0,1,,Gymnosperms
+Plants,Water Elm,Planera aquatica,Threatened,1,0,,Angiosperms - Dicots
+Plants,Heart-leaved Plantain,Plantago cordata,Endangered,0,1,,Angiosperms - Dicots
+Plants,Orange Fringed Orchid,Platanthera ciliaris,Endangered,0,1,,Angiosperms - Monocots
+Plants,Wood Orchid,Platanthera clavellata,Endangered,0,1,,Angiosperms - Monocots
+Plants,Tubercled Orchid,Platanthera flava var. flava,Threatened,1,0,,Angiosperms - Monocots
+Plants,Eastern Prairie Fringed Orchid,Platanthera leucophaea,Endangered,0,1,Federally Threatened,Angiosperms - Monocots
+Plants,Purple Fringed Orchid,Platanthera psycodes,Endangered,0,1,,Angiosperms - Monocots
+Plants,Grove Bluegrass,Poa alsodes,Endangered,0,1,,Angiosperms - Monocots
+Plants,Weak Bluegrass,Poa saltuensis subsp. languida,Endangered,0,1,,Angiosperms - Monocots
+Plants,Wolfs Bluegrass,Poa wolfii,Endangered,0,1,,Angiosperms - Monocots
+Plants,Snake-mouth,Pogonia ophioglossoides,Endangered,0,1,,Angiosperms - Monocots
+Plants,James Clammyweed,Polanisia jamesii,Endangered,0,1,,Angiosperms - Dicots
+Plants,Pink Milkwort,Polygala incarnata,Endangered,0,1,,Angiosperms - Dicots
+Plants,Downy Solomons Seal,Polygonatum pubescens,Endangered,0,1,,Angiosperms - Monocots
+Plants,Balsam Poplar,Populus balsamifera,Endangered,0,1,,Angiosperms - Dicots
+Plants,Grass-leaved Pondweed,Potamogeton gramineus,Threatened,1,0,,Angiosperms - Monocots
+Plants,White-stemmed Pondweed,Potamogeton praelongus,Endangered,0,1,,Angiosperms - Monocots
+Plants,Spotted Pondweed,Potamogeton pulcher,Endangered,0,1,,Angiosperms - Monocots
+Plants,Fern Pondweed,Potamogeton robbinsii,Endangered,0,1,,Angiosperms - Monocots
+Plants,Stiff Pondweed,Potamogeton strictifolius,Endangered,0,1,,Angiosperms - Monocots
+Plants,Birds-eye Primrose,Primula mistassinica,Endangered,0,1,,Angiosperms - Dicots
+Plants,Mock Bishops Weed,Ptilimnium nuttallii,Endangered,0,1,,Angiosperms - Dicots
+Plants,Rock Chestnut Oak,Quercus montana,Threatened,1,0,,Angiosperms - Dicots
+Plants,Willow Oak,Quercus phellos,Threatened,1,0,,Angiosperms - Dicots
+Plants,Nuttalls Oak,Quercus texana,Endangered,0,1,,Angiosperms - Dicots
+Plants,Harveys Buttercup,Ranunculus harveyi,Threatened,1,0,,Angiosperms - Dicots
+Plants,Prairie Buttercup,Ranunculus rhomboideus,Endangered,0,1,,Angiosperms - Dicots
+Plants,Alder Buckthorn,Rhamnus alnifolia,Endangered,0,1,,Angiosperms - Dicots
+Plants,Dull Meadow Beauty,Rhexia mariana,Endangered,0,1,,Angiosperms - Dicots
+Plants,Beaked Rush,Rhynchospora alba,Endangered,0,1,,Angiosperms - Monocots
+Plants,Clustered Beak Rush,Rhynchospora glomerata,Endangered,0,1,,Angiosperms - Monocots
+Plants,Northern Gooseberry,Ribes hirtellum,Endangered,0,1,,Angiosperms - Dicots
+Plants,Bristly Rose,Rosa acicularis,Endangered,0,1,,Angiosperms - Dicots
+Plants,Dwarf Raspberry,Rubus pubescens,Threatened,1,0,,Angiosperms - Dicots
+Plants,Bristly Blackberry,Rubus setosus,Threatened,1,0,,Angiosperms - Dicots
+Plants,Missouri Orange Coneflower,Rudbeckia missouriensis,Threatened,1,0,,Angiosperms - Dicots
+Plants,Prairie Rose Gentian,Sabatia campestris,Endangered,0,1,,Angiosperms - Dicots
+Plants,Arrowhead,Sagittaria australis,Endangered,0,1,,Angiosperms - Monocots
+Plants,Dune Willow,Salix cordata,Endangered,0,1,,Angiosperms - Dicots
+Plants,Autumn Willow,Salix serissima,Endangered,0,1,,Angiosperms - Dicots
+Plants,Blue Sage,Salvia azurea var. grandiflora,Threatened,1,0,,Angiosperms - Dicots
+Plants,Red-berried Elder,Sambucus racemosa subsp. pubens,Endangered,0,1,,Angiosperms - Dicots
+Plants,American Burnet,Sanguisorba canadensis,Endangered,0,1,,Angiosperms - Dicots
+Plants,Southern Black Snakeroot,Sanicula smallii,Endangered,0,1,,Angiosperms - Dicots
+Plants,Pitcher Plant,Sarracenia purpurea,Endangered,0,1,,Angiosperms - Dicots
+Plants,Southern Grape Fern,Sceptridium biternatum,Endangered,0,1,,Ferns and Allies
+Plants,Northern Grape Fern,Sceptridium multifidum,Endangered,0,1,,Ferns and Allies
+Plants,False Melic Grass,Schizachne purpurascens,Endangered,0,1,,Angiosperms - Monocots
+Plants,Halls Bulrush,Schoenoplectiella hallii,Threatened,1,0,,Angiosperms - Monocots
+Plants,Purshs Bulrush,Schoenoplectiella purshiana,Endangered,0,1,,Angiosperms - Monocots
+Plants,Smiths Bulrush,Schoenoplectiella smithii,Endangered,0,1,,Angiosperms - Monocots
+Plants,Bulrush,Scirpus hattorianus,Endangered,0,1,,Angiosperms - Monocots
+Plants,Small-fruited Bulrush,Scirpus microcarpus,Endangered,0,1,,Angiosperms - Monocots
+Plants,Leafy Bulrush,Scirpus polyphyllus,Endangered,0,1,,Angiosperms - Monocots
+Plants,Muhlenbergs Nut Rush,Scleria muhlenbergii,Endangered,0,1,,Angiosperms - Monocots
+Plants,Littlehead Nutrush,Scleria oligantha,Endangered,0,1,,Angiosperms - Monocots
+Plants,Carolina Whipgrass,Scleria pauciflora,Endangered,0,1,,Angiosperms - Monocots
+Plants,Buffaloberry,Shepherdia canadensis,Endangered,0,1,,Angiosperms - Dicots
+Plants,Wooly Buckthorn,Sideroxylon lanuginosum,Endangered,0,1,,Angiosperms - Dicots
+Plants,Ovate Catchfly,Silene ovata,Endangered,0,1,,Angiosperms - Dicots
+Plants,Royal Catchfly,Silene regia,Endangered,0,1,,Angiosperms - Dicots
+Plants,Eastern Blue-eyed Grass,Sisyrinchium atlanticum,Endangered,0,1,,Angiosperms - Monocots
+Plants,Mountain Blue-eyed Grass,Sisyrinchium montanum,Endangered,0,1,,Angiosperms - Monocots
+Plants,Cliff Goldenrod,Solidago sciaphila,Threatened,1,0,,Angiosperms - Dicots
+Plants,American Mountain Ash,Sorbus americana,Endangered,0,1,,Angiosperms - Dicots
+Plants,American Bur-reed,Sparganium americanum,Endangered,0,1,,Angiosperms - Monocots
+Plants,Green-fruited Bur-reed,Sparganium emersum,Endangered,0,1,,Angiosperms - Monocots
+Plants,Yellow-lipped Ladies Tresses,Spiranthes lucida,Endangered,0,1,,Angiosperms - Monocots
+Plants,Spring Ladies Tresses,Spiranthes vernalis,Endangered,0,1,,Angiosperms - Monocots
+Plants,Great Chickweed,Stellaria pubera,Endangered,0,1,,Angiosperms - Dicots
+Plants,Grass-leaved Lily,Stenanthium gramineum,Threatened,1,0,,Angiosperms - Monocots
+Plants,Pattersons Bindweed,Stylisma pickeringii var. pattersonii,Endangered,0,1,,Angiosperms - Dicots
+Plants,Storax,Styrax americanus,Threatened,1,0,,Angiosperms - Dicots
+Plants,Bigleaf Snowbell Bush,Styrax grandifolius,Endangered,0,1,,Angiosperms - Dicots
+Plants,Sullivantia,Sullivantia sullivantii,Threatened,1,0,,Angiosperms - Dicots
+Plants,Snowberry,Symphoricarpos albus var. albus,Endangered,0,1,,Angiosperms - Dicots
+Plants,Hairy Synandra,Synandra hispidula,Threatened,1,0,,Angiosperms - Dicots
+Plants,Kitten Tails,Synthyris bullii,Threatened,1,0,,Angiosperms - Dicots
+Plants,Lakeside Daisy,Tetraneuris herbacea,Endangered,0,1,Federally Threatened,Angiosperms - Dicots
+Plants,New York Fern,Thelypteris noveboracensis,Endangered,0,1,,Ferns and Allies
+Plants,White Basswood,Tilia americana var. heterophylla,Endangered,0,1,,Angiosperms - Dicots
+Plants,Pole Manna-Grass,Torreyochloa pallida,Endangered,0,1,,Angiosperms - Monocots
+Plants,Halberd-leaved Tearthumb,Tracaulon arifolium,Endangered,0,1,,Angiosperms - Dicots
+Plants,Prairie Spiderwort,Tradescantia bracteata,Endangered,0,1,,Angiosperms - Monocots
+Plants,False Asphodel,Triantha glutinosa,Threatened,1,0,,Angiosperms - Monocots
+Plants,Tufted Bulrush,Trichophorum cespitosum,Endangered,0,1,,Angiosperms - Monocots
+Plants,Star-flower,Trientalis borealis,Endangered,0,1,,Angiosperms - Dicots
+Plants,Buffalo Clover,Trifolium reflexum,Threatened,1,0,,Angiosperms - Dicots
+Plants,Common Bog Arrowgrass,Triglochin maritima,Threatened,1,0,,Angiosperms - Monocots
+Plants,Slender Bog Arrowgrass,Triglochin palustris,Threatened,1,0,,Angiosperms - Monocots
+Plants,Nodding Trillium,Trillium cernuum,Endangered,0,1,,Angiosperms - Monocots
+Plants,Ill-scented Trillium,Trillium erectum,Endangered,0,1,,Angiosperms - Monocots
+Plants,Green Trillium,Trillium viride,Endangered,0,1,,Angiosperms - Monocots
+Plants,Rock Elm,Ulmus thomasii,Endangered,0,1,,Angiosperms - Dicots
+Plants,Nettle,Urtica chamaedryoides,Threatened,1,0,,Angiosperms - Dicots
+Plants,Horned Bladderwort,Utricularia cornuta,Endangered,0,1,,Angiosperms - Dicots
+Plants,Flat-leaved Bladderwort,Utricularia intermedia,Threatened,1,0,,Angiosperms - Dicots
+Plants,Small Bladderwort,Utricularia minor,Endangered,0,1,,Angiosperms - Dicots
+Plants,Hair Bladderwort,Utricularia subulata,Endangered,0,1,,Angiosperms - Dicots
+Plants,Florida Bellwort,Uvularia floridana,Threatened,1,0,,Angiosperms - Monocots
+Plants,Highbush Blueberry,Vaccinium corymbosum,Endangered,0,1,,Angiosperms - Dicots
+Plants,Large Cranberry,Vaccinium macrocarpon,Endangered,0,1,,Angiosperms - Dicots
+Plants,Small Cranberry,Vaccinium oxycoccos,Endangered,0,1,,Angiosperms - Dicots
+Plants,Deerberry,Vaccinium stamineum,Endangered,0,1,,Angiosperms - Dicots
+Plants,Marsh Valerian,Valeriana uliginosa,Endangered,0,1,,Angiosperms - Dicots
+Plants,Corn Salad,Valerianella umbilicata,Endangered,0,1,,Angiosperms - Dicots
+Plants,Filmy Fern,Vandenboschia boschiana,Endangered,0,1,,Ferns and Allies
+Plants,American Brooklime,Veronica americana,Endangered,0,1,,Angiosperms - Dicots
+Plants,Marsh Speedwell,Veronica scutellata,Threatened,1,0,,Angiosperms - Dicots
+Plants,Arrowwood,Viburnum molle,Threatened,1,0,,Angiosperms - Dicots
+Plants,Wood Vetch,Vicia caroliniana,Endangered,0,1,,Angiosperms - Dicots
+Plants,Hairy White Violet,Viola blanda,Endangered,0,1,,Angiosperms - Dicots
+Plants,Canada Violet,Viola canadensis,Endangered,0,1,,Angiosperms - Dicots
+Plants,Primrose Violet,Viola primulifolia,Endangered,0,1,,Angiosperms - Dicots
+Plants,Western Tall White Violet,Viola rugulosa,Endangered,0,1,,Angiosperms - Dicots
+Plants,Limestone Riverbank Violet,Viola viarum,Endangered,0,1,,Angiosperms - Dicots
+Plants,Rusty Woodsia,Woodsia ilvensis,Endangered,0,1,,Ferns and Allies
+Plants,White Camass,Zigadenus elegans,Endangered,0,1,,Angiosperms - Monocots
+Reptiles,Smooth Softshell,Apalone mutica,Threatened,1,0,,Turtles
+Reptiles,Spotted Turtle,Clemmys guttata,Endangered,0,1,,Turtles
+Reptiles,Kirtlands Snake,Clonophis kirtlandii,Threatened,1,0,,Snakes
+Reptiles,Timber Rattlesnake,Crotalus horridus,Threatened,1,0,,Snakes
+Reptiles,Blandings Turtle,Emydoidea blandingii,Endangered,0,1,,Turtles
+Reptiles,Plains Hog-nosed Snake,Heterodon nasicus,Threatened,1,0,,Snakes
+Reptiles,Yellow Mud Turtle,Kinosternon flavescens,Endangered,0,1,,Turtles
+Reptiles,Alligator Snapping Turtle,Macrochelys temminckii,Endangered,0,1,,Turtles
+Reptiles,Mississippi Green Watersnake,Nerodia cyclopion,Threatened,1,0,,Snakes
+Reptiles,Great Plains Ratsnake,Pantherophis emoryi,Endangered,0,1,,Snakes
+Reptiles,River Cooter,Pseudemys concinna,Endangered,0,1,,Turtles
+Reptiles,Eastern Massasauga,Sistrurus catenatus,Endangered,0,1,Federally Threatened,Snakes
+Reptiles,Flat-headed Snake,Tantilla gracilis,Threatened,1,0,,Snakes
+Reptiles,Ornate Box Turtle,Terrapene ornata,Threatened,1,0,,Turtles
+Reptiles,Eastern Ribbonsnake,Thamnophis saurita,Threatened,1,0,,Snakes
+Reptiles,Lined Snake,Tropidoclonion lineatum,Threatened,1,0,,Snakes
