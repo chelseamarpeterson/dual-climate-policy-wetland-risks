@@ -204,7 +204,7 @@ wr.ind = rep(0,n.w)
 for (i in 1:n.w) { wr.ind[i] = which(unpro.nhd.areas$water_cutoff == rev(water.regimes)[i]) }
 round(data.frame(unpro.nhd.areas[wr.ind,c("mean","min","max")]),1)
 round(data.frame(unpro.brf.areas[wr.ind,c("mean","min","max")]),1)
-round(data.frame(unpro.brf.areas[wr.ind,c("mean","min","max")])-data.frame(unpro.nhd.areas[wr.ind,c("mean","min","max")]),1)
+round(data.frame(unpro.brf.areas[wr.ind,c("mean","min","max")]) - data.frame(unpro.nhd.areas[wr.ind,c("mean","min","max")]),1)
 
 # print percent stats for table
 unpro.nhd.percents = unpro.percent.stats.df[which(unpro.percent.stats.df$version == "NHD-based"),]
