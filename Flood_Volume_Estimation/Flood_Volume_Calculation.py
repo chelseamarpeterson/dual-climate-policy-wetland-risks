@@ -13,12 +13,7 @@ import numpy as np
 # set the flood level field
 flood_level_field = "Z_Min"
 
-# input paths
-n_p = 5                 
-
-#for i in range(4,n_p):
-    # get polygon path
-    #part = i + 1
+# read in wetland polygons
 polygons = gpd.read_file("F:/Wetland_Climate_Impacts/Flood_Volume_Estimation/IL_WS_Step19_WaterRegime_Filter.shp")
 
 # ensure the polygons layer has the necessary flood level field
@@ -31,7 +26,6 @@ volumes = []
 # open the DEM (using rasterio to get metadata easily within the loop)
 dem_path = "F:/WIM_Rasters/IL_DEM_3m.tif"
 with rasterio.open(dem_path) as dem:
-     fcgbuh
     # ensure consistent CRS (optional but recommended)
     if polygons.crs != dem.crs:
         polygons = polygons.to_crs(dem.crs)

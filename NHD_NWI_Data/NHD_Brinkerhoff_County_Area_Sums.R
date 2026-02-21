@@ -53,7 +53,7 @@ ws.df$Protected_Status = rep("No protection", nrow(ws.df))
 for (i in seq(1,2)) {ws.df$Protected_Status[which(ws.df$GAP_Sts == i)] = "Managed for biodiversity"}
 ws.df$Protected_Status[which((ws.df$NAME %in% pro.cnties) & !(ws.df$GAP_Sts %in% c(1,2)))] = "County stormwater ordinance"
 ws.df$Protected_Status[which(!(ws.df$NAME %in% pro.cnties) & ws.df$GAP_Sts == 3)] = "Managed for multiple uses"
-ws.df$Protected_Status[which(!(ws.df$NAME %in% pro.cnties) & ws.df$GAP_Sts == 4)] = "State regulated (IWPA of 1989)"
+ws.df$Protected_Status[which(!(ws.df$NAME %in% pro.cnties) & (ws.df$GAP_Sts == 4))] = "Unprotected"
 
 # protected status categories
 pro.cats = sort(unique(ws.df$Protected_Status))
@@ -141,6 +141,19 @@ for (i in 1:n.v) {
   }
 }
 
+# calculate differences for each scenario
+stats = c("mean","min","max")
+n.s = length(stats)
+for (i in 1:n.s) {
+  for (j in 1:n.w) {
+    nhd_col = paste(stats[i], wr.abrevs[j], "nhd", sep="_")
+    brinkerhoff_col = paste(stats[i], wr.abrevs[j], "brinkerhoff", sep="_")
+    diff_col = paste(stats[i], wr.abrevs[j], "difference", sep="_")
+    area.wide.df[,diff_col] = area.wide.df[,brinkerhoff_col] - area.wide.df[,nhd_col]
+    percent.wide.df[,diff_col] = percent.wide.df[,brinkerhoff_col] - percent.wide.df[,nhd_col]
+  }
+}
+  
 # write file
 write.csv(area.wide.df, "IL_WS_Step13_County_Wetland_Area_Statistics.csv", row.names=F)
 write.csv(percent.wide.df, "IL_WS_Step13_County_Wetland_Percent_Statistics.csv", row.names=F)

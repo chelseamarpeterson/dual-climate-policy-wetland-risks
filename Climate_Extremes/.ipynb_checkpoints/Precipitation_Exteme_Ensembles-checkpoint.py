@@ -1,10 +1,9 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Feb 12 11:30:09 2026
 
-# Sample code for applying model weights to the USGS NCCV hydrology files found at: 
-# https://www.sciencebase.gov/catalog/item/651c8100d34e44db0e2ce2d9
-# 
-# This code requires the NCCV2_LOCA2_model_extended_meta.csv file to load either 
-# LOCA2-specific model weights or the weights found in the NCA5 assessment.
+@author: Chels
+"""
 
 # In[1]:
 
@@ -21,54 +20,25 @@ import multiprocessing
 
 # In[2]:
 
-# Define your paths and which variables you'd like to include. Keep in mind, 
-# xarray uses lazy loading, so variables you don't use won't be loaded anyway.
-
-data_path = 'F:/Wetland_Climate_Impacts/Climate_Data/USGS_Water_Balance'
+# Define paths
+data_path = 'F:/Wetland_Climate_Impacts/Climate_Data/USGS_Thresholds_Weighted/Grid/pr/all_metrics'
 meta_data_file = 'F:/Wetland_Climate_Impacts/Climate_Data/USGS_Water_Balance/NCCV2_LOCA2_model_extended_meta.csv'
-variables = ['aet','deficit','pet','runoff','snow','stor']
+
+# Specify weight type
 weight_type = 'NCA5_BMA_weight' # or 'LOCA2_BMA_weight'
 
-# In[3]:
-
-# When using the LOCA2-specific weights, the number of models vary based on SSP (ssp245=24, ssp370=23, ssp585=25 models). 
-# Since the number of models vary, the weighted ensemble mean will be slightly different because of the inclusion 
-# or exclusion of one or two models. For the sake of the example, I am only processing one SSP at a time.
-# 
-# If you want to use the NCA5_BMA_weight, there are 16 GCMs regardless of SSP, 
-# so you could use a single weighted historical for all SSP245, 370, and 585. 
-# You could do the same with the LOCA2-specific weights if you manually made sure only to use the common models, 
-# forcing n=23 for all scenarios.
-# 
-# Just be careful you aren't mixing different ensemble means that were made with a different balance of weights.
-
+# GHG emission scenarios
 scenarios = np.array(['ssp245','ssp370','ssp585'])
 n_s = len(scenarios)
 
+# Future year intervals
 start_dates = np.array(['2041-01-01','2071-01-01'])
 end_dates = np.array(['2070-12-31','2100-12-31'])
 n_y = len(start_dates)
 
-mwbm_vars = np.array(['stor','runoff','deficit','aet','pet','snow'])
-
 # In[4]:
-
-# Using xarray's open_mfdataset function, we can easily open and combine all the files at once. 
-# However, they need something to align on, so we use a preprocessor function (read the docs) 
-# to find the CMIP metadata in each file and construct a ensemble ID (as we did the the metadata DataFrame). 
-# We use this ensemble ID to create a new 4th dimension for each model. 
-# This allows us to load all models at once.
-#
-# Some of the variables were loading as float64, which takes more memory and is not needed, 
-# so I cast them all to float32 datatype.
     
-def get_ensemble_id_from_netcdf_metadata(ds):
-    ensemble = f"{ds.attrs['model']}.{ds.attrs['experiment']}.{ds.attrs['ripf']}"
-    return ds.expand_dims('ensemble').assign_coords(ensemble=[ensemble]).astype('float32')
-
-# In[5]:
-    
-def create_ensemble(scenario, start_date, end_date):      
+def create_ensemble(scenario):      
     # Load the metadata file, filter only for our selected SSP, and create a unqiue ensemble ID (model.scenario.ripf).
     df = pd.read_csv(meta_data_file, encoding="ISO-8859-1")
     df = df[df['EXP'] == scenario]
@@ -82,25 +52,23 @@ def create_ensemble(scenario, start_date, end_date):
     
     # Use Python expansions to build our list of files
     hist_files = [
-        f'{data_path}/{var}/historical/{var}_MWBM_LOCA2.{ensemble_id.replace(scenario, 'historical')}_1950-2014.nc'
-        for ensemble_id,var in product(list(weight_da.ensemble.values), variables)
+        f'{data_path}/historical/{ensemble_id.replace(scenario, 'historical')}.1950-2014.LOCA_16thdeg_pr_metrics.nc'
+        for ensemble_id in list(weight_da.ensemble.values)
     ]
 
     ssp_files = [
-        f'{data_path}/{var}/{scenario}/{var}_MWBM_LOCA2.{ensemble_id}_2015-2100.nc'
-        for ensemble_id,var in product(list(weight_da.ensemble.values), variables)
+        f'{data_path}/{scenario}/{ensemble_id}.2015-2100.LOCA_16thdeg_pr_metrics.nc'
+        for ensemble_id in list(weight_da.ensemble.values)
     ]
 
     # Using the preprocessor, we can now load and combine all historical files.
     ds_hist = xr.open_mfdataset(hist_files, 
                                 chunks={}, 
-                                preprocess=get_ensemble_id_from_netcdf_metadata, 
                                 combine_attrs="drop_conflicts")
 
     # We do the same for the selected SSP files
     ds_ssp = xr.open_mfdataset(ssp_files, 
                                chunks={}, 
-                               preprocess=get_ensemble_id_from_netcdf_metadata, 
                                combine_attrs="drop_conflicts")
 
     # Rename the historical ensemble ID from model.historical.ripf to model.ssp.ripf so they can be concatenated. 
@@ -129,20 +97,14 @@ def create_ensemble(scenario, start_date, end_date):
     # For example, if you want to create the weighted ensemble climatology, 
     # it is likely best to calculate the climatology first for each model, then apply the multimodel weights.
     ds_clim_historical = ds.sel(time=slice('1981-01-01','2010-12-31')).mean(dim="time")
-    ds_clim_future = ds.sel(time=slice(start_date, end_date)).mean(dim="time")
+    ds_clim_future = ds.sel(time=slice(start_dates[0], end_dates[0])).mean(dim="time")
     weighted_ds_clim_historical = ds_clim_historical.weighted(ds_clim_historical.weights).mean(dim="ensemble", keep_attrs=True).drop_vars("weights")
     weighted_ds_clim_future = ds_clim_future.weighted(ds_clim_future.weights).mean(dim="ensemble", keep_attrs=True).drop_vars("weights")
     weighted_ds_clim_change = weighted_ds_clim_future - weighted_ds_clim_historical
     
-    # Let's plot snow just as an example. This is the point where xarray and Dask will start loading and processing data. 
-    #This step can take a couple minutes. If you have the Dask dashboard open in your browser,
-    # you should now see a lot of activity as it loads and processes the data.
-    #weighted_ds_clim_change.aet.plot()
-    #weighted_ds_clim_change.snow.plot()
-    #weighted_ds_clim_change.deficit.plot()
-    #weighted_ds_clim_change.pet.plot()
-    #weighted_ds_clim_change.runoff.plot()
-    #weighted_ds_clim_change['stor'].plot()
+    # plot example
+    #weighted_ds_clim_change.prmax1day.plot()
+    #weighted_ds_clim_change.pr_above_nonzero_99th.plot()
 
     # You are pretty much done at this point. You could save variables out to a new NetCDF or just do plotting. 
     # As I showed above, I would favor doing whatever averaging or summary you need to do first, 
@@ -150,27 +112,27 @@ def create_ensemble(scenario, start_date, end_date):
     # 
     # You are probably fine to spatially average grids -> HUCs using the weighted ensemble, 
     # but I would do temporal averaging before the model weighting just in case the order of operation matters.
-    for v in mwbm_vars:
-        print(v)
-        nc_filename = "F:/Wetland_Climate_Impacts/Climate_Data/USGS_Water_Balance/weighted_differences/NCA5_BMA_Weighted_Ensemble_Difference_{}_{}_{}_{}.nc".format(v, scenario, start_date.split('-')[0], end_date.split('-')[0])
+    start_year = start_dates[0].split('-')[0]
+    end_year = end_dates[0].split('-')[0]
+    for v in list(weighted_ds_clim_change.keys())[1:len(weighted_ds_clim_change.keys())]:
+        nc_filename = "F:/Wetland_Climate_Impacts/Climate_Data/USGS_Thresholds_Weighted/Grid/pr/bma_weighted_differences/{}/NCA5_BMA_Weighted_Ensemble_Difference_{}_{}_{}_{}.nc".format(scenario, v, scenario, start_year, end_year)
         weighted_ds_clim_change[v].to_netcdf(nc_filename)
-        
-# In[118]:
+
+# In[5]:
 
 # Due to the size of the data, we will use Dask to calculate the weighted multimodel mean.
-hostname = platform.uname()[1]
-cluster = LocalCluster() 
-client = Client(cluster)
-print(f"Dask Dashboard is available at: {client.dashboard_link.replace("127.0.0.1", hostname)}")
+#hostname = platform.uname()[1]
+#cluster = LocalCluster() 
+#client = Client(cluster)
+#print(f"Dask Dashboard is available at: {client.dashboard_link.replace("127.0.0.1", hostname)}")
 
 if __name__ == '__main__':
-    #create_ensemble(scenarios[0],start_dates[0],end_dates[0])
-    #create_ensemble(scenarios[0],start_dates[1],end_dates[1])
-    #create_ensemble(scenarios[1],start_dates[0],end_dates[0])
-    #create_ensemble(scenarios[1],start_dates[1],end_dates[1])
-    #create_ensemble(scenarios[2],start_dates[0],end_dates[0])
-    create_ensemble(scenarios[2],start_dates[1],end_dates[1])
-
+    multiprocessing.freeze_support()
+    for s in scenarios:
+        p = multiprocessing.Process(target=create_ensemble, args=s)
+        p.start()
+        p.join() 
+        print("Main process finished")
+    
 # Close the Dask dashboard.
 #client.close()
-

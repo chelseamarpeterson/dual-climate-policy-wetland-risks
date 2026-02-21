@@ -141,7 +141,7 @@ p2
 p3 = p1 + p2
 p3
 setwd("C:/Users/Chels/OneDrive - University of Illinois - Urbana/Ch6_CASC_Project/Manuscript")
-ggsave("Supp_Figures/FigureA3_NHD_Brinkerhoff_NonWOTUS_Comparison.jpeg", 
+ggsave("Supp_Figures/WetlandArea/FigureA3_NHD_Brinkerhoff_NonWOTUS_Comparison.jpeg", 
        plot=p3, width=38, height=14, units="cm", dpi=600)
 
 ################################################################################
@@ -160,9 +160,10 @@ gap.df$Protected_Status = rep("Unprotected", nrow(gap.df))
 for (i in seq(1,2)) {gap.df$Protected_Status[which(gap.df$GAP_Sts == i)] = "Managed for biodiversity"}
 gap.df$Protected_Status[which((gap.df$NAME %in% pro.cnties) & !(gap.df$GAP_Sts %in% c(1,2)))] = "County stormwater ordinance"
 gap.df$Protected_Status[which(!(gap.df$NAME %in% pro.cnties) & (gap.df$GAP_Sts == 3))] = "Managed for multiple uses"
-gap.df$Protected_Status[which(!(gap.df$NAME %in% pro.cnties) & (gap.df$GAP_Sts == 4))] = "State regulated (IWPA of 1989)"
+gap.df$Protected_Status[which(!(gap.df$NAME %in% pro.cnties) & (gap.df$GAP_Sts == 4))] = "Unprotected"
+sort(unique(gap.df$Protected_Status))
 
-# sum unprotected non-WOTUS area in each gap category
+# sum unprotected non-WOTUS area for each policy scenario and NHD version
 unpro.area.df = data.frame(matrix(nrow=n.w*n.p*n.b*n.v, ncol=5))
 colnames(unpro.area.df) = c("water_cutoff","perm_level","buf_dist","version","area")
 n = 1
@@ -256,5 +257,5 @@ p2 = ggplot(unpro.percent.stats.df,
 p3 = p1 + p2
 p3
 setwd("C:/Users/Chels/OneDrive - University of Illinois - Urbana/Ch6_CASC_Project/Manuscript")
-ggsave("Supp_Figures/FigureA4_NHD_Brinkerhoff_UnprotectedNonWOTUS_Comparison.jpeg", 
+ggsave("Supp_Figures/WetlandArea/FigureA4_NHD_Brinkerhoff_UnprotectedNonWOTUS_Comparison.jpeg", 
        plot=p3, width=38, height=14, units="cm", dpi = 600)
