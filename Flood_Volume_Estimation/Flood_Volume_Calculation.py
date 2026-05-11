@@ -14,7 +14,8 @@ import numpy as np
 flood_level_field = "Z_Min"
 
 # read in wetland polygons
-polygons = gpd.read_file("F:/Wetland_Climate_Impacts/Flood_Volume_Estimation/IL_WS_Step19_WaterRegime_Filter.shp")
+#polygons = gpd.read_file("F:/Wetland_Climate_Impacts/Flood_Volume_Estimation/IL_WS_Step19_WaterRegime_Filter.shp")
+polygons = gpd.read_file("F:/Wetland_Climate_Impacts/Flood_Volume_Estimation/IL_WS_Step20_AreaThreshold_Filter.shp")
 
 # ensure the polygons layer has the necessary flood level field
 if flood_level_field not in polygons.columns:
@@ -72,9 +73,25 @@ with rasterio.open(dem_path) as dem:
 polygons['flood_volume_m3'] = volumes
     
 # Write the GeoDataFrame to a shapefile
-polygons.to_file(str("F:/Wetland_Climate_Impacts/Flood_Volume_Estimation/IL_WS_Step20_WaterRegime_FloodVol.shp"))
-    
+#polygons.to_file(str("F:/Wetland_Climate_Impacts/Flood_Volume_Estimation/IL_WS_Step20_WaterRegime_FloodVol.shp"))
+polygons.to_file(str("F:/Wetland_Climate_Impacts/Flood_Volume_Estimation/IL_WS_Step21_AreaThreshold_FloodVol.shp"))
+
 # write the attribute table to a csv file
 polygons = polygons.drop(columns=['geometry'])
-polygons.to_csv(str("F:/Wetland_Climate_Impacts/Flood_Volume_Estimation/IL_WS_Step20_WaterRegime_FloodVol.csv"), 
-                index=False)
+#polygons.to_csv(str("F:/Wetland_Climate_Impacts/Flood_Volume_Estimation/IL_WS_Step20_WaterRegime_FloodVol.csv"), index=False)
+polygons.to_csv(str("F:/Wetland_Climate_Impacts/Flood_Volume_Estimation/IL_WS_Step21_AreaThreshold_FloodVol.csv"), index=False)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -5,88 +5,76 @@ Created on Tue Dec 23 15:56:58 2025
 @author: Chels
 """
 
-import geopandas as gpd
-import pandas as pd
 import numpy as np
+import pandas as pd
+import geopandas as gpd
 from rasterstats import zonal_stats
-import rasterio as rio
-#import rioxarray
 import xarray as xr
-from rasterio.transform import Affine
 
-# categories
+# climate extreme categories
 categories = np.array(["pr","temp"])
 n_c = len(categories)
 
 # future climate scenarios
 scenarios = np.array(["ssp245","ssp370","ssp585"])
+n_s = len(scenarios)
 
-# time ranges
+# future 
 intervals = np.array(["2041_2070","2071_2100"])
-n_t = len(intervals)
+n_y = len(intervals)
 
 # zones vector file
-county_shapefile = "F:/Databases/Census/tl_2023_us_county/tl_2023_il_county_clipped.shp"
+county_shapefile = "F:/Databases/Census/tl_2023_us_county/tl_2023_il_county_clipped_project.shp"
+polygons = gpd.read_file(county_shapefile)
 
-# variables
+# read in metadata 
 meta_data = "C:/Users/Chels/OneDrive - University of Illinois - Urbana/Ch6_CASC_Project/Dual-Risk-Repo/Climate_Extremes/climate_threshold_extreme_variables.csv"
 meta_data_df = pd.read_csv(meta_data)
+
+# temperature variables
 temp_variables = meta_data_df["Temperature"].to_numpy(dtype=str)
 temp_variables = temp_variables[temp_variables != 'nan']
-temp_variables
 
+# precipitation variables
 precip_variables = meta_data_df["Precipitation"].to_numpy(dtype=str)
-precip_variables
+precip_abbreviations = np.array(["dry_days","dry_spells",
+                                 "pr_anz90","pr_anz95","pr_anz99",
+                                 "pr_annual",
+                                 "pr_danz90","pr_danz95","pr_danz99",
+                                 "pr_dge1in","pr_dge2in","pr_dge3in",
+                                 "pr_dge4in","pr_dge5in","prmax1day",
+                                 "prmax5day","prmax10day",
+                                "wet_spell","wet_days"])
+temp_abbreviations = temp_variables
+day_unit_vars = np.array(["FD","ID",
+                          "SU","TR",
+                          "TX90pDAYS",
+                          "TX95pDAYS",
+                          "TXge90F",
+                          "TXge95F",
+                          "TXge100F",
+                          "TXge105F",
+                          "TXge110F"])
 
-# test zonal averaging for specific case before making for loop
+# put all variables into a dictionary
+variable_names = dict(pr = precip_variables, temp = temp_variables)
+variable_abbreviations = dict(pr = precip_abbreviations, temp = temp_abbreviations)
 
-category = "pr"
-scenario = "ssp245"
-interval = "2041_2070"
-variable = "pr_annual"
-
-# make file path
-category_path = f"F:/Wetland_Climate_Impacts/Climate_Data/USGS_Thresholds_Weighted/Grid/{category}/bma_weighted_differences/{scenario}/{interval}"
-file_name = f"NCA5_BMA_Weighted_Ensemble_Difference_{variable}_{scenario}_{interval}.nc"
-file_path = category_path + "/" + file_name
-file_path
-
-# open raster
-raster_da = xr.open_dataset(file_path, engine="netcdf4")
-
-# assign coordinate system
-raster_da.rio.write_crs("EPSG:4326", inplace=True)
-raster_da[variable].plot()
-
-# read in zone file
-polygons = gpd.read_file(county_shapefile)
-polygons = polygons.to_crs(raster_da.rio.crs)
-polygons.plot()
-
-# convert raster to .tif format
-var_array = raster_da[variable]
-output_path = "F:/Wetland_Climate_Impacts/Climate_Data/USGS_Thresholds_Weighted/Grid/temp_output_raster.tif"
-fixed_path = "F:/Wetland_Climate_Impacts/Climate_Data/USGS_Thresholds_Weighted/Grid/fixed_output_raster.tif"
-var_array = var_array.rename({'lat': 'y','lon': 'x'})
-var_array.rio.to_raster(output_path, driver="GTiff", compress="lzw")
-
-# fix affine transformation in raster
-with rio.open(output_path) as src:
-    
-    # Get the existing transform and data
-    transform = src.transform
-    data = src.read()
-    meta = src.meta.copy()
-    
-    # Check if y cell size (e) is positive and fix it
-    if transform.e > 0:
-        new_transform = Affine(transform.a, transform.b, transform.c,
-                               transform.d, -transform.e, transform.f) # make e negative
-        meta['transform'] = new_transform
-     
-    with rio.open(fixed_path, 'w', **meta) as dst:
-        dst.write(data)
-      
-# retry zonal statistics
-stats = zonal_stats(polygons, fixed_path, stats="mean", all_touched=True)
-    
+# average rasters over county polygons
+nanoseconds_per_day = 24 * 60 * 60 * 1e9
+for c in categories:                 
+    for s in scenarios:
+        for i in intervals:
+            polygons_c_v_s = polygons
+            for j in range(len(variable_names[c])):
+                v1 = variable_names[c][j]
+                v2 = variable_abbreviations[c][j]
+                input_path = f"F:/Wetland_Climate_Impacts/Climate_Data/USGS_Thresholds_Weighted/Raster/{c}/bma_weighted_differences/{s}/{i}/NCA5_BMA_Weighted_Ensemble_Difference_{v1}_{s}_{i}.tif"                   
+                stats = zonal_stats(polygons, input_path, stats="mean")
+                stats_df = pd.DataFrame(stats)
+                if v1 in day_unit_vars:
+                    stats_df["mean"] = stats_df["mean"] / nanoseconds_per_day              
+                stats_df.columns = np.array([v2])
+                polygons_c_v_s = pd.concat([polygons_c_v_s, stats_df], axis=1)
+            output_path = f"F:/Wetland_Climate_Impacts/Climate_Data/USGS_Thresholds_Weighted/County/{c}/bma_weighted_differences/{s}/{i}/NCA5_BMA_Weighted_Ensemble_Difference_County_Means_{s}_{i}.shp"                   
+            polygons_c_v_s.to_file(output_path)
