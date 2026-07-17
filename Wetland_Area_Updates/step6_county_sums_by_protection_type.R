@@ -1,3 +1,4 @@
+setwd("C:/Users/Chels/OneDrive - University of Illinois - Urbana/Ch5_CASC_Project")
 
 library(dplyr)
 library(tidyr)
@@ -10,18 +11,17 @@ library(patchwork)
 # conversion
 AcPerHa = 2.47105
 
-# read in wetland table
-setwd("C:/Users/Chels/OneDrive - University of Illinois - Urbana/Ch6_CASC_Project")
-
-# check area sums
-#sum(ws.df$Polygon_Area_Ha_Geodesic)
-#sum(ws.df$Polygon_Area_Ac_Geodesic)
-#sum(ws.df$Polygon_Area_Ha_Planar)
-#sum(ws.df$Polygon_Area_Ac_Planar)
-
 # nlcd years
 years = c("2023","2024")
 n.y = length(years)
+
+# read in wetland tables
+gap_wetland_dfs = list()
+tot_wetland_dfs = list()
+for (i in 1:n.y) {
+  gap_wetland_dfs[[years[i]]] = read.csv(paste("NWI_Wetlands/IL_WS_Step13_",years[i],"NLCD_GAP_Union_CntyIntersect.csv",sep=""))
+  tot_wetland_dfs[[years[i]]] = read.csv(paste("NWI_Wetlands/IL_WS_Step10_",years[i],"NLCD_WaterRegime_CntyIntersect.csv",sep=""))
+}
 
 # nhd versions
 versions = c("nhd","brinkerhoff")
@@ -29,8 +29,9 @@ version.labs = c("NHD-based","Brinkerhoff-updated")
 n.v = length(versions)
 
 # water regimes
-water.regimes = c("Permanently Flooded","Intermittently Exposed","Semipermanently Flooded","Seasonally Flooded/Saturated","Seasonally Flooded")
-water.reg.labels = c("Permanently Flooded","Intermittently Exposed","Semipermanently Flooded","Seasonally Flooded/Saturated","Seasonally Flooded")
+water.regimes = c("Permanently Flooded","Intermittently Exposed","Semipermanently Flooded","Seasonally Flooded")
+water.reg.labels = c("Permanently Flooded","Intermittently Exposed","Semipermanently Flooded","Seasonally Flooded")
+wr.abrevs = c("PF","IE","SPF","SF")
 n.w = length(water.regimes)
 
 # buffer distance scenarios
@@ -41,24 +42,20 @@ n.b = length(buf.dists)
 perm.levels = seq(1,2)
 n.p = length(perm.levels)
 
-# all counties
-all.counties = sort(unique(ws.df$NAME))
-n.c = length(all.counties)
-
 # counties with protection
 pro.cnties = c("Cook","DeKalb","DuPage","Grundy","Kane","McHenry","Lake","Will")
 n.cp = length(pro.cnties)
 
-# protected status categories
-pro.cats = sort(unique(ws.df$protected_status))
-n.cats = length(pro.cats)
+# all counties
+all.counties = sort(unique(gap_wetland_dfs[[years[1]]]$NAME))
+n.c = length(all.counties)
 
 ################################################################################
 # step 2: estimate area with different types of protection
 
 # sum wetland area in each protection status category by county and water cutoff
-county.area.df = data.frame(matrix(nrow=n.y*n.v*n.c*n.w*n.p*n.b, ncol=14))
-colnames(county.area.df) = c("year","version","NAME","water_cutoff","stream_perm","buf_dist",
+county.area.df = data.frame(matrix(nrow=n.y*n.v*n.c*n.w*n.p*n.b, ncol=15))
+colnames(county.area.df) = c("year","version","NAME","water_cutoff","stream_perm","buf_dist","total_area",
                              "wotus_locally_unprotected_area","nonwotus_locally_unprotected_area",
                              "wotus_managed_biodiversity_area","nonwotus_managed_biodiversity_area",
                              "wotus_managed_multuses_area","nonwotus_managed_multuses_area",
@@ -66,21 +63,23 @@ colnames(county.area.df) = c("year","version","NAME","water_cutoff","stream_perm
 n = 1
 for (y in 1:n.y) {
   # read in wetland dataframe for corresponding year
-  ws.df = read.csv(paste("NWI_Wetlands/IL_WS_Step13_",years[y],"NLCD_GAP_Union_CntyIntersect.csv",sep=""))
+  gap.df = gap_wetland_dfs[[years[y]]]
+  tot.df = tot_wetland_dfs[[years[y]]]
   
   # created new protected status column
-  ws.df$protected_status = rep("Unprotected", nrow(ws.df))
-  for (i in seq(1,2)) {ws.df$protected_status[which(ws.df$GAP_Sts == i)] = "Managed for biodiversity"}
-  ws.df$protected_status[which((ws.df$NAME %in% pro.cnties) & !(ws.df$GAP_Sts %in% c(1,2)))] = "County permitting and mitigation"
-  ws.df$protected_status[which(!(ws.df$NAME %in% pro.cnties) & ws.df$GAP_Sts == 3)] = "Managed for multiple uses"
-  ws.df$protected_status[which(!(ws.df$NAME %in% pro.cnties) & (ws.df$GAP_Sts == 4))] = "Locally unprotected"
+  gap.df$protected_status = "Locally unprotected"
+  for (i in seq(1,2)) {gap.df$protected_status[which(gap.df$GAP_Sts == i)] = "Managed for biodiversity"}
+  gap.df$protected_status[which((gap.df$NAME %in% pro.cnties) & !(gap.df$GAP_Sts %in% c(1,2)))] = "County permitting and mitigation"
+  gap.df$protected_status[which(!(gap.df$NAME %in% pro.cnties) & gap.df$GAP_Sts == 3)] = "Managed for multiple uses"
+  gap.df$protected_status[which(!(gap.df$NAME %in% pro.cnties) & (gap.df$GAP_Sts == 4))] = "Locally unprotected"
   
   # create column based on protection status
-  ws.df$not_protected = 1*(ws.df$protected_status == "Unprotected")
+  gap.df$not_protected = 1*(gap.df$protected_status == "Locally unprotected")
   for (v in 1:n.v) {
     version = versions[v]
     for (i in 1:n.c) {
-      cnty.df.sub = ws.df[ws.df$NAME == all.counties[i],]
+      gap.df.sub = gap.df[gap.df$NAME == all.counties[i],]
+      tot.df.sub = tot.df[tot.df$NAME == all.counties[i],]
       for (j in 1:n.w) {
         for (k in 1:n.p) {
           for (b in 1:n.b) {
@@ -91,30 +90,31 @@ for (y in 1:n.y) {
             county.area.df[n,"stream_perm"] = perm.levels[k]
             county.area.df[n,"buf_dist"] = buf.dists[b]
             wrs = water.regimes[1:j]
-            wrs.inds = !(cnty.df.sub$WATER_REGI %in% wrs)
+            wrs.inds = !(gap.df.sub$WATER_REGI %in% wrs)
             if (years[y] == "2023") {
               if (version == "nhd") {
                 buf.ws.col = paste("Waters_Intersect", perm.levels[k], buf.dists[b], sep="_")
               } else {
                 buf.ws.col = paste("Brinkerhoff_Intersect", perm.levels[k], buf.dists[b], sep="_")
               }
-              non.jurisdictional.inds = (wrs.inds | (cnty.df.sub$Within_Levee == 1 | cnty.df.sub[,buf.ws.col] == 0))
+              non.jurisdictional.inds = (wrs.inds | (gap.df.sub$Within_Levee == 1 | gap.df.sub[,buf.ws.col] == 0))
             } else if (years[y] == "2024") {
               if (version == "nhd") {
                 buf.ws.col = paste("NHDIn", perm.levels[k], "_", buf.dists[b], sep="")
               } else {
                 buf.ws.col = paste("BRFIn", perm.levels[k], "_", buf.dists[b], sep="")
               }
-              non.jurisdictional.inds = (wrs.inds | (cnty.df.sub$Within_Lev == 1 | cnty.df.sub[,buf.ws.col] == 0))
+              non.jurisdictional.inds = (wrs.inds | (gap.df.sub$Within_Lev == 1 | gap.df.sub[,buf.ws.col] == 0))
             }
-            county.area.df[n,"wotus_locally_unprotected_area"] = sum(cnty.df.sub[non.jurisdictional.inds == 0 & cnty.df.sub$not_protected == 1,"Polygon_Area_Ha_Geodesic"])
-            county.area.df[n,"nonwotus_locally_unprotected_area"] = sum(cnty.df.sub[non.jurisdictional.inds == 1 & cnty.df.sub$not_protected == 1,"Polygon_Area_Ha_Geodesic"])
-            county.area.df[n,"wotus_managed_biodiversity_area"] = sum(cnty.df.sub[non.jurisdictional.inds == 0 & cnty.df.sub$protected_status == "Managed for biodiversity","Polygon_Area_Ha_Geodesic"])
-            county.area.df[n,"nonwotus_managed_biodiversity_area"] = sum(cnty.df.sub[non.jurisdictional.inds == 1 & cnty.df.sub$protected_status == "Managed for biodiversity","Polygon_Area_Ha_Geodesic"])
-            county.area.df[n,"wotus_managed_multuses_area"] = sum(cnty.df.sub[non.jurisdictional.inds == 0 & cnty.df.sub$protected_status == "Managed for multiple uses","Polygon_Area_Ha_Geodesic"])
-            county.area.df[n,"nonwotus_managed_multuses_area"] = sum(cnty.df.sub[non.jurisdictional.inds == 1 & cnty.df.sub$protected_status == "Managed for multiple uses","Polygon_Area_Ha_Geodesic"])
-            county.area.df[n,"wotus_county_ordinance_area"] = sum(cnty.df.sub[non.jurisdictional.inds == 0 & cnty.df.sub$protected_status == "County permitting and mitigation","Polygon_Area_Ha_Geodesic"])
-            county.area.df[n,"nonwotus_county_ordinance_area"] = sum(cnty.df.sub[non.jurisdictional.inds == 1 & cnty.df.sub$protected_status == "County permitting and mitigation","Polygon_Area_Ha_Geodesic"])
+            county.area.df[n,"total_area"] = sum(tot.df.sub[,"Polygon_Area_Ha_Geodesic"])
+            county.area.df[n,"wotus_locally_unprotected_area"] = sum(gap.df.sub[non.jurisdictional.inds == 0 & gap.df.sub$not_protected == 1,"Polygon_Area_Ha_Geodesic"])
+            county.area.df[n,"nonwotus_locally_unprotected_area"] = sum(gap.df.sub[non.jurisdictional.inds == 1 & gap.df.sub$not_protected == 1,"Polygon_Area_Ha_Geodesic"])
+            county.area.df[n,"wotus_managed_biodiversity_area"] = sum(gap.df.sub[non.jurisdictional.inds == 0 & gap.df.sub$protected_status == "Managed for biodiversity","Polygon_Area_Ha_Geodesic"])
+            county.area.df[n,"nonwotus_managed_biodiversity_area"] = sum(gap.df.sub[non.jurisdictional.inds == 1 & gap.df.sub$protected_status == "Managed for biodiversity","Polygon_Area_Ha_Geodesic"])
+            county.area.df[n,"wotus_managed_multuses_area"] = sum(gap.df.sub[non.jurisdictional.inds == 0 & gap.df.sub$protected_status == "Managed for multiple uses","Polygon_Area_Ha_Geodesic"])
+            county.area.df[n,"nonwotus_managed_multuses_area"] = sum(gap.df.sub[non.jurisdictional.inds == 1 & gap.df.sub$protected_status == "Managed for multiple uses","Polygon_Area_Ha_Geodesic"])
+            county.area.df[n,"wotus_county_ordinance_area"] = sum(gap.df.sub[non.jurisdictional.inds == 0 & gap.df.sub$protected_status == "County permitting and mitigation","Polygon_Area_Ha_Geodesic"])
+            county.area.df[n,"nonwotus_county_ordinance_area"] = sum(gap.df.sub[non.jurisdictional.inds == 1 & gap.df.sub$protected_status == "County permitting and mitigation","Polygon_Area_Ha_Geodesic"])
             n = n + 1
           }
         }
@@ -123,55 +123,75 @@ for (y in 1:n.y) {
   }
 }
 
-# calculate statistics
-protection_groups = c("wotus_locally_unprotected_area","nonwotus_locally_unprotected_area",
-                      "wotus_managed_biodiversity_area","nonwotus_managed_biodiversity_area",
-                      "wotus_managed_multuses_area","nonwotus_managed_multuses_area",
-                      "wotus_county_ordinance_area","nonwotus_county_ordinance_area")
-area_cols = c("WOT_UP_AR","NWOT_UP_AR",
-              "WOT_MB_AR","NWOT_MB_AR",
-              "WOT_MU_AR","NWOT_MU_AR",
-              "WOT_CO_AR","NWOT_CO_AR")
-n.g = length(protection_groups)
+# calculate total areas by protection category
+area.cols.long = c("wotus_locally_unprotected_area","nonwotus_locally_unprotected_area",
+                   "wotus_managed_biodiversity_area","nonwotus_managed_biodiversity_area",
+                   "wotus_managed_multuses_area","nonwotus_managed_multuses_area",
+                   "wotus_county_ordinance_area","nonwotus_county_ordinance_area")
+area.cols.short = c("WOT_UP_AR","NWOT_UP_AR",
+                    "WOT_MB_AR","NWOT_MB_AR",
+                    "WOT_MU_AR","NWOT_MU_AR",
+                    "WOT_CO_AR","NWOT_CO_AR")
+n.ac = length(area.cols.long)
 for (y in 1:n.y) {
-  for (k in 1:n.g) {
+  for (k in 1:n.ac) {
     # calculate mean, min, and max areas across scenarios for each county and water regime
-    group.area.df = county.area.df[county.area.df$year == years[y],c("version","NAME","water_cutoff","stream_perm","buf_dist", protection_groups[k])] 
-    colnames(group.area.df)[6] = "area"
-    area.stats.sum = group.area.df %>% 
-                     group_by(version, NAME, water_cutoff) %>%
-                     summarize(mean = mean(area),
-                               min = min(area),
-                               max = max(area))
+    group.area.df = county.area.df[county.area.df$year == years[y],
+                                   c("version","NAME","water_cutoff","stream_perm","buf_dist", area.cols.long[k], "total_area")] 
+    colnames(group.area.df)[6:7] = c("partial_area","total_area")
+    area.stats = group.area.df %>% 
+                 group_by(version, NAME, water_cutoff) %>%
+                 summarize(mean = mean(partial_area),
+                           min = min(partial_area),
+                           max = max(partial_area))
+    percent.stats = group.area.df %>% 
+                    group_by(version, NAME, water_cutoff) %>%
+                    summarize(mean = mean(partial_area/total_area*100),
+                              min = min(partial_area/total_area*100),
+                              max = max(partial_area/total_area*100))
     
     # reshape to get areas for each county in the columns
-    wr.abrevs = c("PF","IE","SPF","SFS","SF")
-    for (i in 1:n.w) { area.stats.sum$water_cutoff[area.stats.sum$water_cutoff == water.regimes[i]] = wr.abrevs[i] }
+    for (i in 1:n.w) { area.stats$water_cutoff[area.stats$water_cutoff == water.regimes[i]] = wr.abrevs[i] }
+    for (i in 1:n.w) { percent.stats$water_cutoff[percent.stats$water_cutoff == water.regimes[i]] = wr.abrevs[i] }
+    
     area.wide.df = data.frame(matrix(nrow=n.c, ncol=0))
+    percent.wide.df = data.frame(matrix(nrow=n.c, ncol=0))
     area.wide.df$NAME = all.counties
+    percent.wide.df$NAME = all.counties
     for (i in 1:n.v) {
-      v = versions[i]
+      v.i = versions[i]
       for (j in 1:n.w) {
-        wr.rows = subset(area.stats.sum, water_cutoff == wr.abrevs[j] & area.stats.sum$version == v)
-        colnames(wr.rows)[4:6] = paste(colnames(wr.rows)[4:6],wr.abrevs[j],v,sep="_")
+        area.wr.rows.ij = subset(area.stats, water_cutoff == wr.abrevs[j] & version == v.i)
+        percent.wr.rows.ij = subset(percent.stats, water_cutoff == wr.abrevs[j] & version == v.i)
+        colnames(area.wr.rows.ij)[4:6] = paste(colnames(area.wr.rows.ij)[4:6], wr.abrevs[j], v.i, sep="_")
+        colnames(percent.wr.rows.ij)[4:6] = paste(colnames(percent.wr.rows.ij)[4:6], wr.abrevs[j], v.i, sep="_")
         area.wide.df = left_join(area.wide.df, 
-                                 wr.rows[,c("NAME",colnames(wr.rows)[4:6])], 
+                                 area.wr.rows.ij[,c("NAME",colnames(area.wr.rows.ij)[4:6])], 
                                  by=c("NAME"))
+        percent.wide.df = left_join(percent.wide.df, 
+                                    percent.wr.rows.ij[,c("NAME",colnames(percent.wr.rows.ij)[4:6])], 
+                                    by=c("NAME"))
       }
     }
-  write.csv(area.wide.df, paste("Dual-Risk-Repo/County_Summaries/wetland_area_totals/step2",years[y],protection_groups[k],"county_wetland_area_totals.csv",sep="_"), 
-            row.names=F)
+    write.csv(area.wide.df, paste("Dual-Risk-Repo/County_Summaries/wetland_area_totals/step2",
+                                  years[y],area.cols.long[k],"county_wetland_area_totals.csv",sep="_"), 
+              row.names=F)
+    write.csv(percent.wide.df, paste("Dual-Risk-Repo/County_Summaries/wetland_area_percentages/step2",
+                                  years[y],area.cols.long[k],"county_wetland_area_percents.csv",sep="_"), 
+              row.names=F)
   }
 }
 
-# calculate differences for each scenario between Brinkerhoff + NLCD 2024 & NHD + NLCD 2023
+# calculate absolute area differences for each scenario between Brinkerhoff + NLCD 2024 & NHD + NLCD 2023
 stats = c("mean","min","max")
 n.s = length(stats)
-for (i in 1:n.g) {
+for (i in 1:n.ac) {
   diff.df = data.frame(matrix(nrow=n.c, ncol=0))
   diff.df$NAME = all.counties
-  nhd_2023_df = read.csv(paste("Dual-Risk-Repo/County_Summaries/wetland_area_totals/step2_2023",protection_groups[i],"county_wetland_area_totals.csv",sep="_"))
-  brf_2024_df = read.csv(paste("Dual-Risk-Repo/County_Summaries/wetland_area_totals/step2_2024",protection_groups[i],"county_wetland_area_totals.csv",sep="_"))
+  nhd_2023_df = read.csv(paste("Dual-Risk-Repo/County_Summaries/wetland_area_totals/step2_2023",
+                               area.cols.long[i],"county_wetland_area_totals.csv",sep="_"))
+  brf_2024_df = read.csv(paste("Dual-Risk-Repo/County_Summaries/wetland_area_totals/step2_2024",
+                               area.cols.long[i],"county_wetland_area_totals.csv",sep="_"))
   for (j in 1:n.s) {
     for (k in 1:n.w) {
       diff_col = paste(stats[j], wr.abrevs[k], "diff", sep="_")
@@ -184,5 +204,30 @@ for (i in 1:n.g) {
       diff.df = left_join(diff.df, new.col, by="NAME")
     }
   }
-  write.csv(diff.df, paste("Dual-Risk-Repo/County_Summaries/wetland_area_differences/step2",protection_groups[i],"county_wetland_area_differences.csv",sep="_"), row.names=F)
+  write.csv(diff.df, paste("Dual-Risk-Repo/County_Summaries/wetland_area_differences/step2",
+                           area.cols.long[i],"county_wetland_area_differences.csv",sep="_"), row.names=F)
+}
+
+# calculate percent area differences for each scenario between Brinkerhoff + NLCD 2024 & NHD + NLCD 2023
+for (i in 1:n.ac) {
+  diff.df = data.frame(matrix(nrow=n.c, ncol=0))
+  diff.df$NAME = all.counties
+  nhd_2023_df = read.csv(paste("Dual-Risk-Repo/County_Summaries/wetland_area_percentages/step2_2023",
+                               area.cols.long[i],"county_wetland_area_percents.csv",sep="_"))
+  brf_2024_df = read.csv(paste("Dual-Risk-Repo/County_Summaries/wetland_area_percentages/step2_2024",
+                               area.cols.long[i],"county_wetland_area_percents.csv",sep="_"))
+  for (j in 1:n.s) {
+    for (k in 1:n.w) {
+      diff_col = paste(stats[j], wr.abrevs[k], "diff", sep="_")
+      new.col = data.frame(matrix(nrow=n.c, ncol=1))
+      colnames(new.col) = c(diff_col)
+      new.col$NAME = all.counties
+      nhd_2023_col = paste(stats[j], wr.abrevs[k], "nhd", sep="_")
+      brf_2024_col = paste(stats[j], wr.abrevs[k], "brinkerhoff", sep="_")
+      new.col[,diff_col] = brf_2024_df[,brf_2024_col] - nhd_2023_df[,nhd_2023_col]
+      diff.df = left_join(diff.df, new.col, by="NAME")
+    }
+  }
+  write.csv(diff.df, paste("Dual-Risk-Repo/County_Summaries/wetland_percentage_differences/step2",
+                           area.cols.long[i],"county_wetland_percent_differences.csv",sep="_"), row.names=F)
 }
