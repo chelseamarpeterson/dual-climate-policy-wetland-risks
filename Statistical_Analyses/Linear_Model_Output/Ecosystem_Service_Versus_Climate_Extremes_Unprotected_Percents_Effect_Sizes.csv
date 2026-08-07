@@ -1,0 +1,81 @@
+"","service","extreme","ssp_time","scope","int_mean","int_lower","int_upper"
+"1","Plant species richness","Frost days","SSP2-4.5 x 2041-2070","Entire state",-0.0133281252499252,-0.939623871233681,0.889627236785556
+"2","Plant species richness","Frost days","SSP2-4.5 x 2071-2100","Entire state",0.0722876985999254,-0.496182664289752,0.64604938752395
+"3","Plant species richness","Frost days","SSP3-7.0 x 2041-2070","Entire state",0.171585818259184,-0.618205056430723,0.843323852696915
+"4","Plant species richness","Frost days","SSP3-7.0 x 2071-2100","Entire state",0.124471098707199,-0.209860093838703,0.455191645823899
+"5","Plant species richness","Days with max. temp. over
+100 deg F (38 deg C)","SSP2-4.5 x 2041-2070","Entire state",-0.577648060303152,-1.11946735532014,-0.0899029065654303
+"6","Plant species richness","Days with max. temp. over
+100 deg F (38 deg C)","SSP2-4.5 x 2071-2100","Entire state",-0.384252174283731,-0.692825921795163,-0.0271944594383704
+"7","Plant species richness","Days with max. temp. over
+100 deg F (38 deg C)","SSP3-7.0 x 2041-2070","Entire state",-0.447069155493368,-0.857294557939588,-0.0457874342291884
+"8","Plant species richness","Days with max. temp. over
+100 deg F (38 deg C)","SSP3-7.0 x 2071-2100","Entire state",-0.202128555781081,-0.37706023843669,-0.018882673543218
+"9","Plant species richness","Consecutive dry days","SSP2-4.5 x 2041-2070","Entire state",-0.630327355182367,-0.931657836205416,-0.29941441979216
+"10","Plant species richness","Consecutive dry days","SSP2-4.5 x 2071-2100","Entire state",-0.406876621767821,-0.576558905942156,-0.24569666110161
+"11","Plant species richness","Consecutive dry days","SSP3-7.0 x 2041-2070","Entire state",-0.387900570090101,-0.624758142279451,-0.174546075852446
+"12","Plant species richness","Consecutive dry days","SSP3-7.0 x 2071-2100","Entire state",-0.233876729191418,-0.383588707461773,-0.102255643308606
+"13","Plant species richness","Consecutive wet days","SSP2-4.5 x 2041-2070","Entire state",-0.250525289131551,-0.509211640641759,0.0346190814849254
+"14","Plant species richness","Consecutive wet days","SSP2-4.5 x 2071-2100","Entire state",0.223379619916172,-0.135601513920958,0.594139479327919
+"15","Plant species richness","Consecutive wet days","SSP3-7.0 x 2041-2070","Entire state",-0.087317370826393,-0.23725514121881,0.0864030535257174
+"16","Plant species richness","Consecutive wet days","SSP3-7.0 x 2071-2100","Entire state",-0.14833817925976,-0.27942894690992,-0.00383412438986346
+"17","Herpetofauna species richness","Frost days","SSP2-4.5 x 2041-2070","Entire state",0.0992817026651784,-0.916635090067347,1.0325473473641
+"18","Herpetofauna species richness","Frost days","SSP2-4.5 x 2071-2100","Entire state",0.136929560530164,-0.469440055501168,0.729003139899059
+"19","Herpetofauna species richness","Frost days","SSP3-7.0 x 2041-2070","Entire state",0.319438686654518,-0.367638461067011,0.99774178126592
+"20","Herpetofauna species richness","Frost days","SSP3-7.0 x 2071-2100","Entire state",0.0809908118498655,-0.233151818391152,0.389986826225868
+"21","Herpetofauna species richness","Days with max. temp. over
+100 deg F (38 deg C)","SSP2-4.5 x 2041-2070","Entire state",-0.350528199461831,-0.833042477084192,0.121671299441726
+"22","Herpetofauna species richness","Days with max. temp. over
+100 deg F (38 deg C)","SSP2-4.5 x 2071-2100","Entire state",-0.212416210232143,-0.52138822273764,0.113670705122529
+"23","Herpetofauna species richness","Days with max. temp. over
+100 deg F (38 deg C)","SSP3-7.0 x 2041-2070","Entire state",-0.279006810634593,-0.680132412635808,0.0886069022271837
+"24","Herpetofauna species richness","Days with max. temp. over
+100 deg F (38 deg C)","SSP3-7.0 x 2071-2100","Entire state",-0.0682503203841511,-0.224294961026425,0.0958677178130348
+"25","Herpetofauna species richness","Consecutive dry days","SSP2-4.5 x 2041-2070","Entire state",-0.234645821392545,-0.629616015653021,0.115740335342675
+"26","Herpetofauna species richness","Consecutive dry days","SSP2-4.5 x 2071-2100","Entire state",-0.238920829025452,-0.417847523937531,-0.0634268347861292
+"27","Herpetofauna species richness","Consecutive dry days","SSP3-7.0 x 2041-2070","Entire state",-0.295988180676184,-0.547395070349303,-0.0535930479564884
+"28","Herpetofauna species richness","Consecutive dry days","SSP3-7.0 x 2071-2100","Entire state",-0.280761485886018,-0.422697665738319,-0.138145838176809
+"29","Herpetofauna species richness","Consecutive wet days","SSP2-4.5 x 2041-2070","Entire state",-0.391483829701086,-0.686671820319757,-0.111859558542108
+"30","Herpetofauna species richness","Consecutive wet days","SSP2-4.5 x 2071-2100","Entire state",-0.0581741335794879,-0.464187401227962,0.390754858029825
+"31","Herpetofauna species richness","Consecutive wet days","SSP3-7.0 x 2041-2070","Entire state",-0.193673409831077,-0.358920392982906,-0.0255655618104242
+"32","Herpetofauna species richness","Consecutive wet days","SSP3-7.0 x 2071-2100","Entire state",-0.172833418760867,-0.311008829719644,-0.0419275929508431
+"33","Carbon storage","Frost days","SSP2-4.5 x 2041-2070","Entire state",-2.33190395713414,-3.19819588540662,-1.37753357409681
+"34","Carbon storage","Frost days","SSP2-4.5 x 2071-2100","Entire state",-1.28972021169231,-1.83881638379534,-0.703968140513959
+"35","Carbon storage","Frost days","SSP3-7.0 x 2041-2070","Entire state",-1.48470373170452,-2.19387884616373,-0.80206852543878
+"36","Carbon storage","Frost days","SSP3-7.0 x 2071-2100","Entire state",-0.804429729911371,-1.12513267293638,-0.492031937654327
+"37","Carbon storage","Days with max. temp. over
+100 deg F (38 deg C)","SSP2-4.5 x 2041-2070","Entire state",1.03161962845431,0.510225621825652,1.51046304010343
+"38","Carbon storage","Days with max. temp. over
+100 deg F (38 deg C)","SSP2-4.5 x 2071-2100","Entire state",0.687709918730361,0.341373436442846,1.01140612213274
+"39","Carbon storage","Days with max. temp. over
+100 deg F (38 deg C)","SSP3-7.0 x 2041-2070","Entire state",0.82460251773384,0.449873950085289,1.26965794490758
+"40","Carbon storage","Days with max. temp. over
+100 deg F (38 deg C)","SSP3-7.0 x 2071-2100","Entire state",0.412795914415535,0.24605863828636,0.597734852621655
+"41","Carbon storage","Consecutive dry days","SSP2-4.5 x 2041-2070","Entire state",0.0746042067726989,-0.28213023267074,0.433652719033567
+"42","Carbon storage","Consecutive dry days","SSP2-4.5 x 2071-2100","Entire state",0.107461470585853,-0.0611600983848211,0.297789074070877
+"43","Carbon storage","Consecutive dry days","SSP3-7.0 x 2041-2070","Entire state",-0.10433731041046,-0.358216343704462,0.139764426772636
+"44","Carbon storage","Consecutive dry days","SSP3-7.0 x 2071-2100","Entire state",-0.0397211889878198,-0.197641099830569,0.105870052930201
+"45","Carbon storage","Consecutive wet days","SSP2-4.5 x 2041-2070","Entire state",0.173612927065807,-0.120090850831674,0.45501221426934
+"46","Carbon storage","Consecutive wet days","SSP2-4.5 x 2071-2100","Entire state",0.599273462294037,0.228823615358109,0.966057437586139
+"47","Carbon storage","Consecutive wet days","SSP3-7.0 x 2041-2070","Entire state",0.234285343032073,0.0621047098413542,0.400594594175282
+"48","Carbon storage","Consecutive wet days","SSP3-7.0 x 2071-2100","Entire state",0.259011935047039,0.0996278036256554,0.386577333522493
+"49","Floodwater storage capacity","Frost days","SSP2-4.5 x 2041-2070","Entire state",-1.03892671558707,-2.0228083217234,-0.0160450692602811
+"50","Floodwater storage capacity","Frost days","SSP2-4.5 x 2071-2100","Entire state",-0.569673520038824,-1.18749109234211,0.0841592427052448
+"51","Floodwater storage capacity","Frost days","SSP3-7.0 x 2041-2070","Entire state",-0.800167153082553,-1.57545092469272,-0.0372168890605494
+"52","Floodwater storage capacity","Frost days","SSP3-7.0 x 2071-2100","Entire state",-0.287728985228425,-0.608708059540884,0.0719529033828107
+"53","Floodwater storage capacity","Days with max. temp. over
+100 deg F (38 deg C)","SSP2-4.5 x 2041-2070","Entire state",0.0415618439606304,-0.468370690024322,0.574139126964212
+"54","Floodwater storage capacity","Days with max. temp. over
+100 deg F (38 deg C)","SSP2-4.5 x 2071-2100","Entire state",0.00786049914514844,-0.330252428308795,0.344988589362382
+"55","Floodwater storage capacity","Days with max. temp. over
+100 deg F (38 deg C)","SSP3-7.0 x 2041-2070","Entire state",0.0220964318712944,-0.406831234627585,0.437609497516606
+"56","Floodwater storage capacity","Days with max. temp. over
+100 deg F (38 deg C)","SSP3-7.0 x 2071-2100","Entire state",0.0143187392474343,-0.16428618969441,0.190009773556151
+"57","Floodwater storage capacity","Consecutive dry days","SSP2-4.5 x 2041-2070","Entire state",-0.239178175928438,-0.606917727577482,0.111792950942526
+"58","Floodwater storage capacity","Consecutive dry days","SSP2-4.5 x 2071-2100","Entire state",-0.134405417435574,-0.328523229907044,0.0515531777091606
+"59","Floodwater storage capacity","Consecutive dry days","SSP3-7.0 x 2041-2070","Entire state",-0.12056150293012,-0.380372608699825,0.116620305117303
+"60","Floodwater storage capacity","Consecutive dry days","SSP3-7.0 x 2071-2100","Entire state",-0.00208375846603647,-0.15493593783787,0.147954764093583
+"61","Floodwater storage capacity","Consecutive wet days","SSP2-4.5 x 2041-2070","Entire state",0.271541235536836,-0.0193786614895882,0.566906919031608
+"62","Floodwater storage capacity","Consecutive wet days","SSP2-4.5 x 2071-2100","Entire state",0.444082644933751,0.0574577677369148,0.848699439839652
+"63","Floodwater storage capacity","Consecutive wet days","SSP3-7.0 x 2041-2070","Entire state",0.096362304600566,-0.0833633190367953,0.27069012683887
+"64","Floodwater storage capacity","Consecutive wet days","SSP3-7.0 x 2071-2100","Entire state",0.105159901807819,-0.0453799766495464,0.250883035556205

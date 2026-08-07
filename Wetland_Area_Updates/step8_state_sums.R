@@ -1,4 +1,4 @@
-setwd("C:/Users/Chels/OneDrive - University of Illinois - Urbana/Ch6_CASC_Project")
+setwd("C:/Users/Chels/OneDrive - University of Illinois - Urbana/Ch5_CASC_Project")
 
 library(ggplot2)
 library(dplyr)
@@ -274,18 +274,18 @@ p2 = ggplot(plot.unpro.areas,
                                  transform = ~ . / state_wetland_areas[["2024"]] * 100 * 1000,
                                  name = "Percent of total state wetland area (%)")) +
             scale_color_manual(values = c("gray10","gray10")) +
-            labs(y="",x="Unprotected non-WOTUS wetland area (1,000 ha)",
+            labs(y="Wetland flood-frequency cutoff",  #y="",
+                 x="Unprotected non-WOTUS wetland area (1,000 ha)",
                  group="",color="",linetype="")  + 
-            annotate("text", x = -Inf, y = Inf, label = "b",
-                     hjust = -0.5, vjust = 1.5, 
-                     size = 8, family = "sans", fontface = "plain") +
-            theme(axis.text.y = element_blank())
-            #theme(text=element_text(size=15),
-            #      axis.text.y = element_text(colour = rev(blues)))
-            #y="Wetland flood-frequency cutoff",
+            #annotate("text", x = -Inf, y = Inf, label = "b",
+            #         hjust = -0.5, vjust = 1.5, 
+            #         size = 8, family = "sans", fontface = "plain") +
+            #theme(axis.text.y = element_blank())
+            theme(text=element_text(size=15),
+                  axis.text.y = element_text(colour = rev(blues)))
 p2
 
 p3 = p1 + p2
 ggsave("Manuscript/Supp_Figures/FigureA3_Total_And_Unprotected_NonWOTUS_Area.jpeg", 
-       plot=p3, width=30, height=12, units="cm", dpi=600)
+       plot=p3, width=30, height=12, units="cm", dpi=800)
 

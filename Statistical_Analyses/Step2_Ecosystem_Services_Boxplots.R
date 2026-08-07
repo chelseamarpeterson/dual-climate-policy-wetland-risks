@@ -39,15 +39,17 @@ p.es.regions = ggplot(eco.melt.df,
                           fill=variable)) + 
                       geom_boxplot() + 
                       facet_wrap(.~variable, 
-                                 scales="free_x", ncol=4) +
+                                 scales="free_x", ncol=2) +
                       labs(x="County-level ecosystem service estimate",y="") +
                       theme(legend.position = "none",
                             text = element_text(size=15)) +
                       scale_fill_manual(values = c("darkgreen","purple4",
                                                    "orangered3","royalblue4"))
 p.es.regions
-ggsave("Manuscript/Supp_Figures/FigureB2_Ecosystem_Service_Region_Distributions.jpeg", 
-        plot=p.es.regions, width=24, height=16, units="cm", dpi=600)
+#ggsave("Manuscript/Supp_Figures/FigureB2_Ecosystem_Service_Region_Distributions.jpeg", 
+#        plot=p.es.regions, width=24, height=16, units="cm", dpi=600)
+ggsave("Presentations/Poster_Figures/FigureB2_Ecosystem_Service_Region_Distributions.jpeg", 
+       plot=p.es.regions, width=36, height=10, units="cm", dpi=800)
 
 ################################################################################
 # unprotected wetland area
@@ -83,7 +85,7 @@ p.un.regions = ggplot(unpro.melt,
                            fill="Wetland flood-frequency cutoff")
 p.un.regions
 ggsave("Manuscript/Supp_Figures/FigureA3_Unprotected_Wetland_Area_Region_Distributions.jpeg", 
-       plot=p.un.regions, width=32, height=16, units="cm", dpi=600)
+       plot=p.un.regions, width=32, height=14, units="cm", dpi=800)
 
 ################################################################################
 # climate extremes
@@ -145,20 +147,19 @@ var.order = c("Frost days",
               "Consecutive wet days")
 p.ex.regions = ggplot(ex.df,
                       aes(x=value,
-                          y=region,
+                          y=factor(region, levels=region.order),
                           fill=ssp_time)) + 
                       geom_boxplot() +
                       facet_wrap(. ~ factor(variable, levels=var.order),
                                  scales = "free_x", ncol=2) +
                       scale_fill_brewer(palette = "Reds")  +
-                      theme(text = element_text(size=15),
-                            axis.text.y = element_blank()) +
+                      theme(text = element_text(size=15)) +
                       labs(y="",x="Change in climate extreme (days)",
-                           fill = "Time interval Shared\nSocioeconomic Pathway (SSP)")
+                           fill = "Time interval x Shared\nSocioeconomic Pathway (SSP)")
 p.ex.regions
 
-ggsave("Manuscript/Supp_Figures/FigureC2_Climate_Extreme_Region_Distributions.jpeg", 
-       plot=p.ex.regions, width=24, height=16, units="cm", dpi=600)
+ggsave("Manuscript/Supp_Figures/FigureC1_Climate_Extreme_Region_Distributions.jpeg", 
+       plot=p.ex.regions, width=32, height=16, units="cm", dpi=800)
 
 # write extremes to csv
 write.csv(ex.df, "Dual-Risk-Repo/County_Summaries/All_County_Climate_Extremes.csv", row.names=F)
