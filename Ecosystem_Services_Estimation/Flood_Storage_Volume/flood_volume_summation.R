@@ -1,4 +1,4 @@
-setwd("F:/Wetland_Climate_Impacts/Flood_Volume_Estimation")
+setwd("C:/Users/Chels/OneDrive - University of Illinois - Urbana/Ch5_CASC_Project/Wetland_Climate_Impacts/Flood_Volume_Estimation")
 
 library(dplyr)
 library(ggplot2)
@@ -26,7 +26,8 @@ county.sums = water.regime.df %>%
               group_by(NAME) %>% 
               summarize(DEM_VolTot = sum(flood_volume_m3))
 
-# calculate percentages at semipermanently flooded cutoff
+# calculate percentages of state total
 county.sums$DEM_VolPer = county.sums$DEM_VolTot / total_gis_flood_vol_m3 * 100
 
-write.csv(county.sums, "F:/Wetland_Climate_Impacts/Flood_Volume_Estimation/County_Volume_Totals.csv",row.names = F)
+# write county totals and percentages to csv
+write.csv(county.sums, "County_Volume_Totals.csv", row.names=F)
