@@ -1,4 +1,4 @@
-setwd("D:/Wetland_Climate_Impacts/Carbon_Storage_Estimation")
+setwd("C:/Users/Chels/OneDrive - University of Illinois - Urbana/Ch5_CASC_Project/Wetland_Climate_Impacts/Carbon_Storage_Estimation")
 
 library(tidyverse)
 library(patchwork)
@@ -14,10 +14,10 @@ colnames(df.wr)[30:31] = c("Polygon_Area_Ac_Geodesic","Polygon_Area_Ac_Planar")
 # sum total DEM- and unit-area-based estimates for each county
 county.sums = df.wr %>%
               group_by(NAME) %>% 
-              summarize(Total_Carbon_Mg = sum(StockC_Mg))
+              summarize(Total_Carbon_Gg = sum(StockC_Mg)/1000)
 colnames(county.sums)[1] = "Name"
 
 # write to file
 write.csv(county.sums, 
-          "D:/Wetland_Climate_Impacts/Carbon_Storage_Estimation/County_Carbon_Totals.csv",
+          "County_Carbon_Totals.csv",
           row.names = F)

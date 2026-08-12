@@ -10,16 +10,15 @@ library(RColorBrewer)
 # read in ES estimates by county and region
 eco.df = read.csv("Dual-Risk-Repo/County_Summaries/All_County_Ecosystem_Services.csv")
 
-# scale carbon and flood storage volume by 1000
-eco.df$Floodwater.storage.capacity = log(eco.df$Floodwater.storage.capacity/1000)
-eco.df$Carbon.storage = eco.df$Carbon.storage/1000
+# take logarithm of flood storage capacity
+eco.df$Floodwater.storage.capacity = log(eco.df$Floodwater.storage.capacity)
 
 # columns
 colnames(eco.df) = c("county","region",
                      "Plant species richness",
                      "Herpetofauna\nspecies richness",
-                     "Carbon storage (1,000 Mg)",
-                     "Log[Floodwater storage\ncapacity (1,000 m3)]")
+                     "Carbon storage (1,000 Gg)",
+                     "Log[Floodwater storage\ncapacity (1,000 m<sup>3</sup>)]")
 
 # melt
 eco.melt.df = melt(eco.df, id.vars = c("county","region"))
@@ -42,14 +41,15 @@ p.es.regions = ggplot(eco.melt.df,
                                  scales="free_x", ncol=2) +
                       labs(x="County-level ecosystem service estimate",y="") +
                       theme(legend.position = "none",
-                            text = element_text(size=15)) +
+                            text = element_text(size=15),
+                            strip.text = element_markdown()) +
                       scale_fill_manual(values = c("darkgreen","purple4",
                                                    "orangered3","royalblue4"))
 p.es.regions
-#ggsave("Manuscript/Supp_Figures/FigureB2_Ecosystem_Service_Region_Distributions.jpeg", 
-#        plot=p.es.regions, width=24, height=16, units="cm", dpi=600)
-ggsave("Presentations/Poster_Figures/FigureB2_Ecosystem_Service_Region_Distributions.jpeg", 
-       plot=p.es.regions, width=36, height=10, units="cm", dpi=800)
+ggsave("Manuscript/Supp_Figures/AppendixB/FigureB1_Ecosystem_Service_Region_Distributions.jpeg", 
+        plot=p.es.regions, width=28, height=18, units="cm", dpi=600)
+#ggsave("Presentations/Poster_Figures/FigureB2_Ecosystem_Service_Region_Distributions.jpeg", 
+#       plot=p.es.regions, width=36, height=10, units="cm", dpi=800)
 
 ################################################################################
 # unprotected wetland area
