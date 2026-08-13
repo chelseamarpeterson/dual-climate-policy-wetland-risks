@@ -3,12 +3,13 @@ setwd("C:/Users/Chels/OneDrive - University of Illinois - Urbana/Ch5_CASC_Projec
 library(reshape2)
 library(tidyverse)
 library(RColorBrewer)
+library(ggtext)
 
 ################################################################################
 # ecosystem services
 
 # read in ES estimates by county and region
-eco.df = read.csv("Dual-Risk-Repo/County_Summaries/All_County_Ecosystem_Services.csv")
+eco.df = read.csv("dual-risk-repo/County_Summaries/All_County_Ecosystem_Services.csv")
 
 # take logarithm of flood storage capacity
 eco.df$Floodwater.storage.capacity = log(eco.df$Floodwater.storage.capacity)
@@ -19,6 +20,11 @@ colnames(eco.df) = c("county","region",
                      "Herpetofauna\nspecies richness",
                      "Carbon storage (1,000 Gg)",
                      "Log[Floodwater storage\ncapacity (1,000 m<sup>3</sup>)]")
+
+# PCA on ES data
+pca_result = prcomp(eco.df[,3:6], 
+                    center = TRUE, scale = TRUE)
+biplot(pca_result)
 
 # melt
 eco.melt.df = melt(eco.df, id.vars = c("county","region"))
@@ -32,11 +38,11 @@ region.order = c("Shawnee Hills/Coastal Plain",
                  "Northeastern Morainal")
 
 # make boxplots
-p.es.regions = ggplot(eco.melt.df,
-                      aes(x=value,
-                          y=factor(region, levels=region.order),
-                          fill=variable)) + 
-                      geom_boxplot() + 
+p.es.regions = ggplot(eco.melt.df) + 
+                      geom_vline(xintercept=0, color="gray10") +
+                      geom_boxplot(aes(x=value,
+                                       y=factor(region, levels=region.order),
+                                       fill=variable)) + 
                       facet_wrap(.~variable, 
                                  scales="free_x", ncol=2) +
                       labs(x="County-level ecosystem service estimate",y="") +
@@ -55,7 +61,7 @@ ggsave("Manuscript/Supp_Figures/AppendixB/FigureB1_Ecosystem_Service_Region_Dist
 # unprotected wetland area
 
 # read in unprotected wetland area estimates
-unpro.df = read.csv("Dual-Risk-Repo/County_Summaries/Step2_County_Unprotected_Wetland_Area_Totals.csv")
+unpro.df = read.csv("dual-risk-repo/County_Summaries/Step2_County_Unprotected_Wetland_Area_Totals.csv")
 unpro.df = unpro.df[,c("NAME","mean_PF_brinkerhoff","mean_IE_brinkerhoff","mean_SPF_brinkerhoff","mean_SF_brinkerhoff")]
 water.reg.labels = c("Permanently Flooded","Intermittently Exposed","Semipermanently Flooded","Seasonally Flooded")
 n.w = length(water.reg.labels)
@@ -107,10 +113,14 @@ n.e = length(extremes)
 # variables
 var.list = list("Temp" = c("FD","TXge100F"),
                 "Precip" = c("dry_spells","wet_spell"))
-var.labels = list("Temp" = c("Frost days", 
-                             "Days with max. temp. over\n100 deg F (38 deg C)"),
-                  "Precip" = c("Consecutive dry days", 
-                               "Consecutive wet days"))
+var.labels = list("Temp" = c("-&Delta;(Frost days)", 
+                             "&Delta;(Days with max. temp. over\n100&deg;F [38&deg;C])"),
+                  "Precip" = c("&Delta;(Max. length dry spell)", 
+                               "&Delta;(Max. length wet spell)"))
+var.order = c("-&Delta;(Frost days)",
+              "&Delta;(Days with max. temp. over\n100&deg;F [38&deg;C])",
+              "&Delta;(Max. length dry spell)", 
+              "&Delta;(Max. length wet spell)")
 
 # put extremes into dataframe
 ex.df = data.frame(matrix(nrow=0, ncol=6))
@@ -119,7 +129,7 @@ for (i in 1:n.e) {
   ex = extremes[i]
   for (j in 1:n.s) {
     for (k in 1:n.t) {
-      df = read.csv(paste(paste("Dual-Risk-Repo/County_Summaries/Step1",ex,"BMA_County_Ave", ssps[j], times[k], sep="_"), ".csv", sep=""))
+      df = read.csv(paste(paste("dual-risk-repo/County_Summaries/Step1",ex,"BMA_County_Ave", ssps[j], times[k], sep="_"), ".csv", sep=""))
       vars = var.list[[ex]]
       labels = var.labels[[ex]]
       for (l in 1:2) {
@@ -130,7 +140,11 @@ for (i in 1:n.e) {
         ex.df.ijkl$county = df$NAME
         ex.df.ijkl$variable = labels[l]
         ex.df.ijkl = inner_join(ex.df.ijkl, eco.df[,c("county","region")], by="county", keep=F)
-        ex.df.ijkl$value  = df[,vars[l]]
+        if (labels[l] == "-&Delta;(Frost days)") {
+          ex.df.ijkl$value  = -df[,vars[l]]
+        } else {
+          ex.df.ijkl$value  = df[,vars[l]]
+        }
         ex.df = rbind(ex.df, ex.df.ijkl)
       }
     }
@@ -138,28 +152,27 @@ for (i in 1:n.e) {
 }
 
 # make column for ssp x time
-ex.df$ssp_time = paste(ex.df$time, ex.df$ssp, sep=" x ")
+ex.df$ssp_time = paste(ex.df$time, ex.df$ssp, sep=" &times; ")
 
 # make boxplots
-var.order = c("Frost days",
-              "Days with max. temp. over\n100 deg F (38 deg C)",
-              "Consecutive dry days", 
-              "Consecutive wet days")
-p.ex.regions = ggplot(ex.df,
-                      aes(x=value,
-                          y=factor(region, levels=region.order),
-                          fill=ssp_time)) + 
-                      geom_boxplot() +
+p.ex.regions = ggplot(ex.df) + 
+                      geom_vline(xintercept=0, color="gray10") +
+                      geom_boxplot(aes(x=value,
+                                       y=factor(region, levels=region.order),
+                                       fill=ssp_time)) +
                       facet_wrap(. ~ factor(variable, levels=var.order),
                                  scales = "free_x", ncol=2) +
                       scale_fill_brewer(palette = "Reds")  +
-                      theme(text = element_text(size=15)) +
+                      theme(text = element_text(size=15),
+                            strip.text = element_markdown(),
+                            legend.text = element_markdown(),
+                            legend.title = element_markdown()) +
                       labs(y="",x="Change in climate extreme (days)",
-                           fill = "Time interval x Shared\nSocioeconomic Pathway (SSP)")
+                           fill = "Time interval &times; Shared<br>Socioeconomic Pathway (SSP)")
 p.ex.regions
 
-ggsave("Manuscript/Supp_Figures/FigureC1_Climate_Extreme_Region_Distributions.jpeg", 
-       plot=p.ex.regions, width=32, height=16, units="cm", dpi=800)
+ggsave("Manuscript/Supp_Figures/AppendixC/FigureC1_Climate_Extreme_Regional_Distributions.jpeg", 
+       plot=p.ex.regions, width=34, height=18, units="cm", dpi=800)
 
 # write extremes to csv
 write.csv(ex.df, "Dual-Risk-Repo/County_Summaries/All_County_Climate_Extremes.csv", row.names=F)
