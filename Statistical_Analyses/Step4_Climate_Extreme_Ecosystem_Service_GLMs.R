@@ -6,6 +6,7 @@ library(patchwork)
 library(RColorBrewer)
 library(brms)
 library(bayestestR)
+library(ggtext)
 
 # read in wetland ecosystem service estimates
 eco.df = read.csv("dual-risk-repo/County_Summaries/All_County_Ecosystem_Services.csv")
@@ -21,19 +22,23 @@ es.shapes = c("circle","square","diamond","triangle")
 
 # PCA on ES data
 eco.pca = prcomp(scale.eco.df[,3:6], center = F, scale = F)
-biplot(eco.pca)
+#biplot(eco.pca)
 eco.pca.df = data.frame(eco.pca$x, county=scale.eco.df$county, region=scale.eco.df$region)
+write.csv(eco.pca.df,"dual-risk-repo/County_Summaries/Ecosystem_Service_PCs.csv", row.names=F)
 
-# read in unprotected wetland area estimates
+# read in unprotected wetland percent and area estimates
 unpro.percent.df = read.csv("dual-risk-repo/County_Summaries/Step2_County_Unprotected_Wetland_Percent_Totals.csv")
-unpro.df = unpro.df[,c("NAME","mean_PF_brinkerhoff","mean_IE_brinkerhoff",
-                       "mean_SPF_brinkerhoff","mean_SF_brinkerhoff")]
-water.reg.labels = c("Permanently Flooded","Intermittently Exposed",
-                     "Semipermanently Flooded","Seasonally Flooded")
+unpro.area.df = read.csv("dual-risk-repo/County_Summaries/Step2_County_Unprotected_Wetland_Area_Totals.csv")
+unpro.percent.df = unpro.percent.df[,c("NAME","mean_PF_brinkerhoff","mean_IE_brinkerhoff","mean_SPF_brinkerhoff","mean_SF_brinkerhoff")]
+unpro.area.df = unpro.area.df[,c("NAME","mean_PF_brinkerhoff","mean_IE_brinkerhoff","mean_SPF_brinkerhoff","mean_SF_brinkerhoff")]
+water.reg.labels = c("Permanently Flooded","Intermittently Exposed","Semipermanently Flooded","Seasonally Flooded")
 n.w = length(water.reg.labels)
-colnames(unpro.df) = c("county",water.reg.labels)
-scale.unpro.df = unpro.df
-scale.unpro.df[,water.reg.labels] = scale(scale.unpro.df[,water.reg.labels], center=T, scale=T)
+colnames(unpro.percent.df) = c("county",water.reg.labels)
+colnames(unpro.area.df) = c("county",water.reg.labels)
+scale.unpro.percent.df = unpro.percent.df
+scale.unpro.area.df = unpro.area.df
+scale.unpro.percent.df[,water.reg.labels] = scale(scale.unpro.percent.df[,water.reg.labels], center=T, scale=T)
+scale.unpro.area.df[,water.reg.labels] = scale(scale.unpro.area.df[,water.reg.labels], center=T, scale=T)
 
 # read in climate data
 climate.df = read.csv("dual-risk-repo/County_Summaries/All_County_Climate_Extremes.csv")
@@ -47,8 +52,7 @@ climate.wide.df = pivot_wider(data = climate.df,
                               names_from = variable,
                               values_from = value)
 scale.climate.df = climate.wide.df
-scale.climate.df[,climate.vars] = scale(climate.wide.df[,climate.vars], 
-                                        center=T, scale=T)
+scale.climate.df[,climate.vars] = scale(climate.wide.df[,climate.vars], center=T, scale=T)
 
 # ssps
 ssps = c("SSP2-4.5","SSP3-7.0")
@@ -57,14 +61,17 @@ n.sp = length(ssps)
 # time intervals
 times = c("2041-2070","2071-2100")
 n.t = length(times)
+ssp.time.order = rev(c(paste(ssps[1], times, sep=" &times; "),
+                       paste(ssps[2], times, sep=" &times; ")))
 
 # county subsets
 scopes = c("Entire state") #,"Counties without ordinances")
 n.sc = length(scopes)
 
 # join service and unprotected wetland area dataframes
-#scale.eco.unpro.df = inner_join(eco.pca.df, scale.unpro.df, by="county")
-scale.eco.unpro.df = inner_join(scale.eco.df, scale.unpro.df, by="county")
+#scale.eco.unpro.percent.df = inner_join(eco.pca.df, scale.unpro.percent.df, by="county")
+scale.eco.unpro.percent.df = inner_join(scale.eco.df, scale.unpro.percent.df, by="county")
+scale.eco.unpro.area.df = inner_join(scale.eco.df, scale.unpro.area.df, by="county")
 
 # counties with wetland protection
 protected.counties = c("Cook","Lake","McHenry","DuPage","DeKalb","Will","Kane","Grundy")
@@ -90,9 +97,9 @@ for (i in 1:n.pc) {
     for (k in 1:n.sc) {
       s.k = scopes[k]
       if (s.k == "Entire state") {
-        scale.eco.df.ij = scale.eco.unpro.df[,c("county","region",es.i,wr.j)]
+        scale.eco.df.ij = scale.eco.unpro.percent.df[,c("county","region",es.i,wr.j)]
       } else {
-        scale.eco.df.ij = subset(scale.eco.unpro.df[,c("county","region",es.i,wr.j)],
+        scale.eco.df.ij = subset(scale.eco.unpro.percent.df[,c("county","region",es.i,wr.j)],
                                  !(county %in% protected.counties))
       }
       colnames(scale.eco.df.ij)[3:4] = c("PC","area")
@@ -137,7 +144,7 @@ for (i in 1:n.pc) {
         # join ecosystem services and climate data for given ssp and time combination
         scale.clim.df.kl = subset(subset(scale.climate.df, ssp == ssp.k & time == time.l),
                                   select=-c(region, ssp_time))
-        scale.eco.clim.df.kl = inner_join(scale.eco.unpro.df, scale.clim.df.kl, by = "county")
+        scale.eco.clim.df.kl = inner_join(scale.eco.unpro.percent.df, scale.clim.df.kl, by = "county")
         
         # subset based on scope
         for (m in 1:n.sc) {
@@ -195,9 +202,6 @@ p.lm.un.es = ggplot(subset(un.es.lm.df, scope=="Entire state")) +
                     theme(text = element_text(size=14),
                           legend.position = "none") +
                     facet_wrap(.~label, scales="free_x",ncol=2)
-
-ssp.time.order = rev(c(paste(ssps[1], times, sep=" &times; "),
-                       paste(ssps[2], times, sep=" &times; ")))
 p.lm.ex.es = ggplot(ex.es.lm.df) +
                     geom_vline(xintercept=0, color="gray25", linetype="dashed") + 
                     geom_point(aes(x=slope_mean,
@@ -248,7 +252,7 @@ for (i in 1:n.pc) {
         # join ecosystem services and climate data for given ssp and time combination
         scale.clim.df.kl = subset(subset(scale.climate.df, ssp == ssp.k & time == time.l),
                                   select=-c(region, ssp_time))
-        scale.eco.clim.unpro.df.kl = inner_join(scale.eco.unpro.df, scale.clim.df.kl, by = "county")
+        scale.eco.clim.unpro.df.kl = inner_join(scale.eco.unpro.percent.df, scale.clim.df.kl, by = "county")
         
         # subset based on scope
         for (m in 1:n.sc) {
@@ -309,10 +313,13 @@ ggsave("Manuscript/Main_Figures/Figure4_Interaction_Effect_Sizes.jpeg",
 
 ################################################################################
 # linear models on all services
+set.seed(785)
 
 # Bivariate models: ecosystem services v. unprotected wetland area
-un.es.lm.df.all = data.frame(matrix(nrow=n.es*n.w*n.sc, ncol=8))
-colnames(un.es.lm.df.all) = c("service","cutoff","scope",
+type.labels = c("Unprotected wetland percentage","Unprotected wetland area")
+n.ty = length(type.labels)
+un.es.lm.df.all = data.frame(matrix(nrow=n.es*n.w*n.ty, ncol=9))
+colnames(un.es.lm.df.all) = c("service","cutoff","metric","rhat",
                               "slope_mean","slope_5","slope_95","slope_25","slope_75")
 un.es.lm.list.all = list()
 n = 1
@@ -322,22 +329,22 @@ for (i in 1:n.es) {
   for (j in 1:n.w) {
     wr.j = water.reg.labels[j]
     un.es.lm.list.all[[es.i]][[wr.j]] = list()
-    for (k in 1:n.sc) {
-      s.k = scopes[k]
-      if (s.k == "Entire state") {
-        scale.eco.df.ij = scale.eco.unpro.df[,c("county","region",es.i,wr.j)]
+    for (k in 1:n.ty) {
+      if (k == 1) {
+        scale.eco.unpro.df = scale.eco.unpro.percent.df[,c("county","region",es.i,wr.j)]
       } else {
-        scale.eco.df.ij = subset(scale.eco.unpro.df[,c("county","region",es.i,wr.j)],
-                                 !(county %in% protected.counties))
+        scale.eco.unpro.df = scale.eco.unpro.area.df[,c("county","region",es.i,wr.j)]
       }
-      colnames(scale.eco.df.ij)[3:4] = c("service","area")
-      lm.ijk = brm(service ~ area, 
-                   data = scale.eco.df.ij,
-                   family = gaussian())
-      un.es.lm.list.all[[es.i]][[wr.j]][[s.k]] = lm.ijk
+      colnames(scale.eco.unpro.df)[3:4] = c("service","metric")
+      lm.ijk = brm(service ~ metric, 
+                   data = scale.eco.unpro.df,
+                   family = gaussian(),
+                   chains=10, iter=10000)
+      un.es.lm.list.all[[es.i]][[wr.j]][[type.labels[k]]] = lm.ijk
       un.es.lm.df.all[n,"service"] = es.labels[i]
       un.es.lm.df.all[n,"cutoff"] = wr.j
-      un.es.lm.df.all[n,"scope"] = s.k
+      un.es.lm.df.all[n,"type"] = type.labels[k]
+      un.es.lm.df.all[n,"rhat"] = summary(lm.ijk)$fixed$Rhat[2]
       un.es.lm.df.all[n,"slope_mean"] = fixef(lm.ijk)[2,1]
       un.es.lm.df.all[n,c("slope_5","slope_95")] = hdi(lm.ijk, ci = 0.90, effects = "fixed")[2,c("CI_low","CI_high")]
       un.es.lm.df.all[n,c("slope_25","slope_75")] = hdi(lm.ijk, ci = 0.50, effects = "fixed")[2,c("CI_low","CI_high")]
@@ -345,13 +352,15 @@ for (i in 1:n.es) {
     }
   }
 }
+un.es.lm.df.all$type[un.es.lm.df.all$type == "Unprotected wetland area"] = "Unprotected wetland percentage"
+un.es.lm.df.all$type[un.es.lm.df.all$type == "Unprotected wetland percent"] = "Unprotected wetland area"
 write.csv(un.es.lm.df.all, 
-          "dual-risk-repo/Statistical_Analyses/Linear_Model_Output/All_Ecosystem_Services_Versus_Unprotected_Percent_Effect_Sizes.csv",
+          "dual-risk-repo/Statistical_Analyses/Linear_Model_Output/All_Ecosystem_Services_Versus_Unprotected_Effect_Sizes.csv",
           row.names=F)
 
 # ecosystem services v. climate extremes
-ex.es.lm.df.all = data.frame(matrix(nrow = n.es*n.ex*n.sp*n.t*n.sc, ncol = 9))
-colnames(ex.es.lm.df.all) = c("service","extreme","ssp_time","scope",
+ex.es.lm.df.all = data.frame(matrix(nrow = n.es*n.ex*n.sp*n.t, ncol = 9))
+colnames(ex.es.lm.df.all) = c("service","extreme","ssp_time","rhat",
                               "slope_mean","slope_5","slope_95","slope_25","slope_75")
 n = 1
 ex.es.lm.list.all = list()
@@ -367,36 +376,26 @@ for (i in 1:n.es) {
       for (l in 1:n.t) {
         time.l = times[l]
         ssp.time.kl = paste(ssp.k, time.l, sep=" &times; ")
-        ex.es.lm.list.all[[es.i]][[ex.j]][[ssp.k]][[time.l]] = list()
         
         # join ecosystem services and climate data for given ssp and time combination
         scale.clim.df.kl = subset(subset(scale.climate.df, ssp == ssp.k & time == time.l),
                                   select=-c(region, ssp_time))
-        scale.eco.clim.df.kl = inner_join(scale.eco.unpro.df, scale.clim.df.kl, by = "county")
-        
-        # subset based on scope
-        for (m in 1:n.sc) {
-          s.m = scopes[m]
-          if (s.m == "Entire state") {
-            scale.eco.clim.df.ijklm = scale.eco.clim.df.kl[,c("county","region",es.i,ex.j)]
-          } else {
-            scale.eco.clim.df.ijklm = subset(scale.eco.clim.df.kl[,c("county","region",es.i,ex.j)],
-                                             !(county %in% protected.counties))
-          }
-          colnames(scale.eco.clim.df.ijklm)[3:4] = c("service","extreme")
-          lm.ijklm = brm(service ~ extreme, 
-                         data = scale.eco.clim.df.ijklm,
-                         family = gaussian())
-          ex.es.lm.list.all[[es.i]][[ex.j]][[ssp.k]][[time.l]][[s.m]] = lm.ijklm
-          ex.es.lm.df.all[n,"service"] = es.labels[i]
-          ex.es.lm.df.all[n,"extreme"] = ex.j
-          ex.es.lm.df.all[n,"ssp_time"] = ssp.time.kl
-          ex.es.lm.df.all[n,"scope"] = s.m
-          ex.es.lm.df.all[n,"slope_mean"] = fixef(lm.ijklm)[2,1]
-          ex.es.lm.df.all[n,c("slope_5","slope_95")] = hdi(lm.ijklm, ci = 0.90, effects = "fixed")[2,c("CI_low","CI_high")]
-          ex.es.lm.df.all[n,c("slope_25","slope_75")] = hdi(lm.ijklm, ci = 0.50, effects = "fixed")[2,c("CI_low","CI_high")]
-          n = n + 1
-        }
+        scale.eco.clim.df.kl = inner_join(scale.eco.df, scale.clim.df.kl, by = "county")
+        scale.eco.clim.df.ijkl = scale.eco.clim.df.kl[,c("county","region",es.i,ex.j)]
+        colnames(scale.eco.clim.df.ijkl)[3:4] = c("service","extreme")
+        lm.ijkl = brm(service ~ extreme, 
+                      data = scale.eco.clim.df.ijkl,
+                      family = gaussian(),
+                      chains=10, iter=10000)
+        ex.es.lm.list.all[[es.i]][[ex.j]][[ssp.k]][[time.l]] = lm.ijkl
+        ex.es.lm.df.all[n,"service"] = es.labels[i]
+        ex.es.lm.df.all[n,"extreme"] = ex.j
+        ex.es.lm.df.all[n,"ssp_time"] = ssp.time.kl
+        ex.es.lm.df.all[n,"rhat"] = summary(lm.ijkl)$fixed$Rhat[2]
+        ex.es.lm.df.all[n,"slope_mean"] = fixef(lm.ijkl)[2,1]
+        ex.es.lm.df.all[n,c("slope_5","slope_95")] = hdi(lm.ijkl, ci = 0.90, effects = "fixed")[2,c("CI_low","CI_high")]
+        ex.es.lm.df.all[n,c("slope_25","slope_75")] = hdi(lm.ijkl, ci = 0.50, effects = "fixed")[2,c("CI_low","CI_high")]
+        n = n + 1
       }
     }
   }
@@ -428,7 +427,7 @@ for (i in 1:n.es) {
         # join ecosystem services and climate data for given ssp and time combination
         scale.clim.df.kl = subset(subset(scale.climate.df, ssp == ssp.k & time == time.l),
                                   select=-c(region, ssp_time))
-        scale.eco.clim.unpro.df.kl = inner_join(scale.eco.unpro.df, scale.clim.df.kl, by = "county")
+        scale.eco.clim.unpro.df.kl = inner_join(scale.eco.unpro.percent.df, scale.clim.df.kl, by = "county")
         
         # subset based on scope
         for (m in 1:n.sc) {
@@ -461,7 +460,7 @@ write.csv(es.ex.un.lm.df.all,
           "dual-risk-repo/Statistical_Analyses/Linear_Model_Output/All_Ecosystem_Services_Versus_Climate_Extremes_Unprotected_Percents_Effect_Sizes.csv")
 
 # bivariate plots for all ecosystem services
-un.es.lm.df.all$label = "Unprotected wetland percent"
+un.es.lm.df.all = read.csv("dual-risk-repo/Statistical_Analyses/Linear_Model_Output/All_Ecosystem_Services_Versus_Unprotected_Effect_Sizes.csv")
 p.lm.un.es.all = ggplot(un.es.lm.df.all) +
                         geom_vline(xintercept=0, color="gray25", linetype="dashed") +
                         geom_point(aes(x=slope_mean,
@@ -469,27 +468,29 @@ p.lm.un.es.all = ggplot(un.es.lm.df.all) +
                                        color=factor(service, levels=es.labels),
                                        shape=factor(service, levels=es.labels),
                                        size=factor(service, levels=es.labels)),
-                                   position=position_dodge(0.3)) +
+                                   position=position_dodge(0.6)) +
                         geom_errorbar(aes(xmin=slope_5,xmax=slope_95,
                                           y=factor(cutoff, levels=water.reg.labels),
                                           color=factor(service, levels=es.labels)),
-                                      position=position_dodge(0.3),
-                                      width=0.3) +
+                                      position=position_dodge(0.6),
+                                      width=0.5) +
                         geom_errorbar(aes(xmin=slope_25,xmax=slope_75,
                                           y=factor(cutoff, levels=water.reg.labels),
                                           color=factor(service, levels=es.labels)),
-                                      position=position_dodge(0.3),
-                                      width=0, linewidth=1.4) +
+                                      position=position_dodge(0.6),
+                                      width=0, linewidth=1.1) +
                         labs(y="Wetland flood-freqency cutoff",
-                             x="Effect size") +
+                             x="Main effect size") +
                         scale_size_manual(values=c(2,2,2.5,2)) +
                         scale_color_manual(values=es.colors) +
                         scale_shape_manual(values=es.shapes) +
                         theme(text = element_text(size=14),
-                              legend.position = "none") + xlim(-1,0) +
-                        facet_wrap(.~label, scales="free_x",ncol=2) 
+                              legend.position = "none") + 
+                        xlim(-3,2.3) +
+                        facet_wrap(.~type, scales="free_x",ncol=1) 
 p.lm.un.es.all
 
+ex.es.lm.df.all = read.csv("dual-risk-repo/Statistical_Analyses/Linear_Model_Output/All_Ecosystem_Services_Versus_Climate_Extremes_Effect_Sizes.csv")
 p.lm.ex.es.all = ggplot(ex.es.lm.df.all) +
                         geom_vline(xintercept=0, color="gray25", linetype="dashed") + 
                         geom_point(aes(x=slope_mean,
@@ -497,19 +498,19 @@ p.lm.ex.es.all = ggplot(ex.es.lm.df.all) +
                                        color=factor(service, levels=es.labels),
                                        shape=factor(service, levels=es.labels),
                                        size=factor(service, levels=es.labels)),
-                                   position=position_dodge(0.5)) +
+                                   position=position_dodge(0.6)) +
                         geom_errorbar(aes(xmin=slope_5,xmax=slope_95,
                                           y=factor(ssp_time, levels=ssp.time.order),
                                           color=factor(service, levels=es.labels)),
-                                      position=position_dodge(0.5),
+                                      position=position_dodge(0.6),
                                       width=0.5) +
                         geom_errorbar(aes(xmin=slope_25,xmax=slope_75,
                                           y=factor(ssp_time, levels=ssp.time.order),
                                           color=factor(service, levels=es.labels)),
-                                      position=position_dodge(0.5),
-                                      width=0, linewidth=1.4) +
+                                      position=position_dodge(0.6),
+                                      width=0, linewidth=1.1) +
                         labs(y="Shared socioeconomic pathway\nby climatology period",
-                             x="Effect size",color="Ecosystem service",
+                             x="Main effect size",color="Ecosystem service",
                              shape="Ecosystem service",
                              size="Ecosystem service") +
                         scale_size_manual(values=c(2,2,2.5,2)) +
@@ -517,15 +518,17 @@ p.lm.ex.es.all = ggplot(ex.es.lm.df.all) +
                         scale_shape_manual(values=es.shapes) +
                         theme(text = element_text(size=14),
                               strip.text = element_markdown(),
-                              axis.text.y = element_markdown()) +
+                              axis.text.y = element_markdown()) + 
+                        xlim(-3,2.3) +
                         facet_wrap(.~factor(extreme, levels=climate.vars.order), ncol=2) 
 p.lm.ex.es.all
 p.glm.all = p.lm.un.es.all + p.lm.ex.es.all + plot_layout(widths = c(1,2))
-
-ggsave("Manuscript/Supp_Figures/AppendixD/FigureD1_Linear_Model_Main_Effect_Sizes_By_Service.jpeg", 
-       plot=p.glm.all, width=44, height=15, units="cm", dpi=600)
+p.glm.all
+ggsave("Manuscript/Main_Figures/Figure3_Linear_Model_Main_Effect_Sizes_By_Service.jpeg", 
+       plot=p.glm.all, width=43, height=16, units="cm", dpi=600)
 
 # interaction plots
+es.ex.un.lm.df.all = read.csv("dual-risk-repo/Statistical_Analyses/Linear_Model_Output/All_Ecosystem_Services_Versus_Climate_Extremes_Unprotected_Percents_Effect_Sizes.csv")
 p.int.all = ggplot(es.ex.un.lm.df.all) +
                    geom_vline(xintercept=0, color="gray25", linetype="dashed") + 
                    geom_point(aes(x=int_mean,
@@ -533,17 +536,17 @@ p.int.all = ggplot(es.ex.un.lm.df.all) +
                                   color=factor(service, levels=es.labels),
                                   shape=factor(service, levels=es.labels),
                                   size=factor(service, levels=es.labels)),
-                              position=position_dodge(0.5)) +
+                              position=position_dodge(0.6)) +
                    geom_errorbar(aes(xmin=int_5,xmax=int_95,
                                      y=factor(ssp_time, levels=ssp.time.order),
                                      color=factor(service, levels=es.labels)),
-                                 position=position_dodge(0.5),
+                                 position=position_dodge(0.6),
                                  width=0.5) +
                    geom_errorbar(aes(xmin=int_25,xmax=int_75,
                                      y=factor(ssp_time, levels=ssp.time.order),
                                      color=factor(service, levels=es.labels)),
-                                 position=position_dodge(0.5),
-                                 width=0, linewidth=1.4) +
+                                 position=position_dodge(0.6),
+                                 width=0, linewidth=1.1) +
                    labs(y="Shared socioeconomic pathway\nby climatology period",
                         x="Interaction effect size",
                         color="Ecosystem service",
@@ -557,14 +560,14 @@ p.int.all = ggplot(es.ex.un.lm.df.all) +
                          axis.text.y = element_markdown()) +
                    facet_wrap(.~factor(extreme, levels=climate.vars.order), ncol=2)
 p.int.all
-ggsave("Manuscript/Supp_Figures/AppendixD/FigureD2_Interaction_Effect_Sizes_By_Service.jpeg", 
+ggsave("Manuscript/Main_Figures/Figure4_Interaction_Effect_Sizes_By_Service.jpeg", 
        plot=p.int.all, width=30, height=15, units="cm", dpi=600)
 
 ################################################################################
 # plot lines for univariate models
 
-un.area.seq = seq(min(scale.eco.unpro.df[,water.reg.labels]),
-                  max(scale.eco.unpro.df[,water.reg.labels]), by=0.1)
+un.area.seq = seq(min(scale.eco.unpro.percent.df[,water.reg.labels]),
+                  max(scale.eco.unpro.percent.df[,water.reg.labels]), by=0.1)
 n.un = length(un.area.seq)
 un.es.line.df = data.frame(matrix(nrow=0,ncol=7))
 colnames(un.es.line.df) = c("service","cutoff","scope","area",
@@ -613,8 +616,8 @@ write.csv(un.es.line.df,
 
 # plot lines
 un.es.line.df = read.csv("dual-risk-repo/Statistical_Analyses/Linear_Model_Output/Ecosystem_Service_Versus_Unprotected_Percent_Lines_SPF.csv")
-colnames(scale.eco.unpro.df)[3:6] = es.labels
-scale.eco.unpro.melt.spf = melt(scale.eco.unpro.df[,c("county","region",es.labels,water.reg.labels[3])], 
+colnames(scale.eco.unpro.percent.df)[3:6] = es.labels
+scale.eco.unpro.melt.spf = melt(scale.eco.unpro.percent.df[,c("county","region",es.labels,water.reg.labels[3])], 
                                 id.vars=c("county","region",water.reg.labels[3]))
 colnames(scale.eco.unpro.melt.spf)[3:4] = c("area","service")
 p.un.es.linear = ggplot() +

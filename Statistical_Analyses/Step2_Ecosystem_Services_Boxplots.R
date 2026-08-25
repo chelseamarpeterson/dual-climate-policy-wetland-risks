@@ -90,7 +90,7 @@ p.un.regions = ggplot(unpro.melt,
                       labs(x="Unprotected non-WOTUS wetland area (1,000 ha)",y="",
                            fill="Wetland flood-frequency cutoff")
 p.un.regions
-ggsave("Manuscript/Supp_Figures/FigureA3_Unprotected_Wetland_Area_Region_Distributions.jpeg", 
+ggsave("Manuscript/Supp_Figures/AppendixA/FigureA3_Unprotected_Wetland_Area_Region_Distributions.jpeg", 
        plot=p.un.regions, width=32, height=14, units="cm", dpi=800)
 
 ################################################################################
