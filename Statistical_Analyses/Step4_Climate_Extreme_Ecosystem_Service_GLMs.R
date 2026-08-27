@@ -522,7 +522,7 @@ p.lm.ex.es.all = ggplot(ex.es.lm.df.all) +
                         xlim(-3,2.3) +
                         facet_wrap(.~factor(extreme, levels=climate.vars.order), ncol=2) 
 p.lm.ex.es.all
-p.glm.all = p.lm.un.es.all + p.lm.ex.es.all + plot_layout(widths = c(1,2))
+p.glm.all = p.lm.un.es.all + p.lm.ex.es.all + plot_layout(widths = c(1,2), axis_titles = "collect")
 p.glm.all
 ggsave("Manuscript/Main_Figures/Figure3_Linear_Model_Main_Effect_Sizes_By_Service.jpeg", 
        plot=p.glm.all, width=43, height=16, units="cm", dpi=600)

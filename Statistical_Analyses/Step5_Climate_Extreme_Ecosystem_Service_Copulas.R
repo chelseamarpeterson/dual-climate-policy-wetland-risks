@@ -12,6 +12,7 @@ library(grid)
 library(metR)
 library(gridExtra)
 library(cowplot)
+library(ggtext)
 
 # read in wetland ecosystem service estimates
 eco.df = read.csv("dual-risk-repo/County_Summaries/All_County_Ecosystem_Services.csv")
@@ -22,17 +23,22 @@ es.vars = colnames(scale.eco.df)[3:6]
 n.es = length(es.vars)
 es.labels = c("Plant species richness","Herpetofauna species richness",
               "Carbon storage","Floodwater storage capacity")
+es.colors = c("darkgreen","purple4","orangered","royalblue4")
+es.shapes = c("circle","square","diamond","triangle")
 
-# read in unprotected wetland area estimates
-unpro.df = read.csv("dual-risk-repo/County_Summaries/Step2_County_Unprotected_Wetland_Percent_Totals.csv")
-unpro.df = unpro.df[,c("NAME","mean_PF_brinkerhoff","mean_IE_brinkerhoff",
-                       "mean_SPF_brinkerhoff","mean_SF_brinkerhoff")]
-water.reg.labels = c("Permanently Flooded","Intermittently Exposed",
-                     "Semipermanently Flooded","Seasonally Flooded")
+# read in unprotected wetland percent and area estimates
+unpro.percent.df = read.csv("dual-risk-repo/County_Summaries/Step2_County_Unprotected_Wetland_Percent_Totals.csv")
+unpro.area.df = read.csv("dual-risk-repo/County_Summaries/Step2_County_Unprotected_Wetland_Area_Totals.csv")
+unpro.percent.df = unpro.percent.df[,c("NAME","mean_PF_brinkerhoff","mean_IE_brinkerhoff","mean_SPF_brinkerhoff","mean_SF_brinkerhoff")]
+unpro.area.df = unpro.area.df[,c("NAME","mean_PF_brinkerhoff","mean_IE_brinkerhoff","mean_SPF_brinkerhoff","mean_SF_brinkerhoff")]
+water.reg.labels = c("Permanently Flooded","Intermittently Exposed","Semipermanently Flooded","Seasonally Flooded")
 n.w = length(water.reg.labels)
-colnames(unpro.df) = c("county",water.reg.labels)
-scale.unpro.df = unpro.df
-scale.unpro.df[,water.reg.labels] = scale(scale.unpro.df[,water.reg.labels], center=T, scale=T)
+colnames(unpro.percent.df) = c("county",water.reg.labels)
+colnames(unpro.area.df) = c("county",water.reg.labels)
+scale.unpro.percent.df = unpro.percent.df
+scale.unpro.area.df = unpro.area.df
+scale.unpro.percent.df[,water.reg.labels] = scale(scale.unpro.percent.df[,water.reg.labels], center=T, scale=T)
+scale.unpro.area.df[,water.reg.labels] = scale(scale.unpro.area.df[,water.reg.labels], center=T, scale=T)
 
 # read in climate data
 climate.df = read.csv("Dual-Risk-Repo/County_Summaries/All_County_Climate_Extremes.csv")
@@ -59,7 +65,19 @@ ssp.time.order = rev(c(paste(ssps[1], times, sep=" &times; "),
                        paste(ssps[2], times, sep=" &times; ")))
 
 # join service and unprotected wetland area dataframes
-scale.eco.unpro.df = inner_join(scale.eco.df, scale.unpro.df, by="county")
+scale.eco.unpro.percent.df = inner_join(scale.eco.df, scale.unpro.percent.df[,c("county",water.reg.labels)], by="county")
+scale.eco.unpro.area.df = inner_join(scale.eco.df, scale.unpro.area.df[,c("county",water.reg.labels)], by="county")
+#colnames(scale.eco.unpro.percent.df)[7] = "Unpro.percent.SPF"
+#scale.eco.unpro.df = inner_join(scale.eco.unpro.percent.df, 
+#                                scale.unpro.area.df[,c("county",water.reg.labels[3])], 
+#                                by="county")
+#colnames(scale.eco.unpro.df)[8] = "Unpro.area.SPF"
+#scale.eco.unpro.clim.df = inner_join(scale.eco.unpro.df, 
+#                                     subset(scale.climate.df, ssp == ssps[1] & time == times[1]), 
+#                                     by=c("county","region"))
+#colnames(scale.eco.unpro.clim.df)[12:15] = c("Frost.days","Max.temp.100F",
+#                                             "Max.len.dry","Max.len.wet")
+#write.csv(scale.eco.unpro.clim.df, "dual-risk-repo/County_Summaries/County_Ecosystem_Services_Unprotected_Areas_Climate_Extremes_SSP245_2041_2070_Scaled.csv")
 
 # copulas that I plan to test
 cop.names = c("Gaussian","t","Clayton")
@@ -69,68 +87,151 @@ all.cop.nums = list("1" = c(1),
                     "3" = c(3,13,23,33))
 n.c = length(cop.names)
 
-## copula comparison for ecosystem services v. unprotected wetland area
-es.un.fits = list()
-es.un.best.cop.number = data.frame(matrix(nrow=n.w,ncol=n.es))
-es.un.best.cop.family = data.frame(matrix(nrow=n.w,ncol=n.es))
-es.un.best.tail.dep.lower = data.frame(matrix(nrow=n.w,ncol=n.es))
-es.un.best.tail.dep.upper = data.frame(matrix(nrow=n.w,ncol=n.es))
-colnames(es.un.best.cop.number) = es.labels
-colnames(es.un.best.cop.family) = es.labels
-colnames(es.un.best.tail.dep.lower) = es.labels
-colnames(es.un.best.tail.dep.upper) = es.labels
-row.names(es.un.best.cop.number) = water.reg.labels
-row.names(es.un.best.cop.family) = water.reg.labels
-row.names(es.un.best.tail.dep.lower) = water.reg.labels
-row.names(es.un.best.tail.dep.upper) = water.reg.labels
+################################################################################
+# fit copulas for ecosystem services v. unprotected wetland percents
+
+# make dataframes and lists
+es.un.perc.fits = list()
+es.un.perc.best.cop.number = data.frame(matrix(nrow=n.w, ncol=n.es))
+es.un.perc.best.cop.family = data.frame(matrix(nrow=n.w, ncol=n.es))
+es.un.perc.best.tail.dep.cross = data.frame(matrix(nrow=n.w, ncol=n.es))
+es.un.perc.best.tail.dep.upper = data.frame(matrix(nrow=n.w, ncol=n.es))
+es.un.perc.best.tau = data.frame(matrix(nrow=n.w, ncol=n.es))
+
+# assign column names
+colnames(es.un.perc.best.cop.number) = es.labels
+colnames(es.un.perc.best.cop.family) = es.labels
+colnames(es.un.perc.best.tail.dep.cross) = es.labels
+colnames(es.un.perc.best.tail.dep.upper) = es.labels
+colnames(es.un.perc.best.tau) = es.labels
+
+# assign row names
+row.names(es.un.perc.best.cop.number) = water.reg.labels
+row.names(es.un.perc.best.cop.family) = water.reg.labels
+row.names(es.un.perc.best.tail.dep.cross) = water.reg.labels
+row.names(es.un.perc.best.tail.dep.upper) = water.reg.labels
+row.names(es.un.perc.best.tau) = water.reg.labels
+
+# identify copula that minimizes AIC
 for (i in 1:n.es) {
   # make list for copula fits given a specific ES
   es.i = es.vars[i]
-  es.un.fits[[es.i]] = list()
+  es.un.perc.fits[[es.i]] = list()
   
   for(j in 1:n.w) {
     # get water regime label and make lists
     wr.j = water.reg.labels[j]
-    es.un.fits[[es.i]][[wr.j]] = list()
+    es.un.perc.fits[[es.i]][[wr.j]] = list()
     
     # convert variables to ranks
-    u = rank(scale.eco.unpro.df[,wr.j]) / (length(scale.eco.unpro.df[,wr.j]) + 1)
-    u_inv = rank(-scale.eco.unpro.df[,wr.j]) / (length(scale.eco.unpro.df[,wr.j]) + 1)
-    v = rank(scale.eco.unpro.df[,es.i]) / (length(scale.eco.unpro.df[,es.i]) + 1) 
+    u = rank(scale.eco.unpro.percent.df[,wr.j]) / (length(scale.eco.unpro.percent.df[,wr.j]) + 1)
+    v = rank(scale.eco.unpro.percent.df[,es.i]) / (length(scale.eco.unpro.percent.df[,es.i]) + 1) 
+    v_inv = rank(-scale.eco.unpro.percent.df[,es.i]) / (length(scale.eco.unpro.percent.df[,es.i]) + 1) 
     
     # fit each copula model
-    for (k in 1:n.c) { es.un.fits[[es.i]][[wr.j]][[cop.names[k]]] = BiCopSelect(u, v, familyset = cop.nums[k]) }
+    for (k in 1:n.c) { es.un.perc.fits[[es.i]][[wr.j]][[cop.names[k]]] = BiCopSelect(u, v, familyset = cop.nums[k]) }
     
     # compare copulas with AIC and BIC
-    es.fits = es.un.fits[[es.i]][[wr.j]]
+    es.fits = es.un.perc.fits[[es.i]][[wr.j]]
     aic.df = sapply(list(es.fits[["Gaussian"]],es.fits[["t"]], es.fits[["Clayton"]]),
                     function(f) c(family = f$family, AIC = f$AIC))
     
     # save best copula number in matrix
     best.cop.number = as.integer(aic.df[1,which.min(aic.df[2,])])
-    es.un.best.cop.number[wr.j,es.labels[i]] = best.cop.number
-    es.un.best.tail.dep.lower[wr.j,es.labels[i]] = BiCopPar2TailDep(BiCopSelect(u_inv, v, familyset = best.cop.number))$lower
-    es.un.best.tail.dep.upper[wr.j,es.labels[i]] = BiCopPar2TailDep(BiCopSelect(u_inv, v, familyset = best.cop.number))$upper    
+    es.un.perc.best.cop.number[wr.j,es.labels[i]] = best.cop.number
+    es.un.perc.best.tail.dep.cross[wr.j,es.labels[i]] = BiCopPar2TailDep(BiCopSelect(u, v_inv, familyset = best.cop.number))$upper
+    es.un.perc.best.tail.dep.upper[wr.j,es.labels[i]] = BiCopPar2TailDep(BiCopSelect(u, v, familyset = best.cop.number))$upper
+    es.un.perc.best.tau[wr.j,es.labels[i]] = BiCopSelect(u, v, familyset = best.cop.number)$tau
     for (k in 1:n.c) {
       potential.cop.nums = all.cop.nums[[k]]
       if (best.cop.number %in% potential.cop.nums) { best.cop.family = cop.names[k] }
     }
-    es.un.best.cop.family[wr.j,es.labels[i]] = best.cop.family
+    es.un.perc.best.cop.family[wr.j,es.labels[i]] = best.cop.family
   }
 }
-es.colors = c("darkgreen","purple4","orangered","royalblue4")
-es.shapes = c("circle","square","diamond","triangle")
 
+################################################################################
+# fit copulas for ecosystem services v. unprotected wetland areas
+
+# make dataframes and lists
+es.un.area.fits = list()
+es.un.area.best.cop.number = data.frame(matrix(nrow=n.w, ncol=n.es))
+es.un.area.best.cop.family = data.frame(matrix(nrow=n.w, ncol=n.es))
+es.un.area.best.tail.dep.cross = data.frame(matrix(nrow=n.w, ncol=n.es))
+es.un.area.best.tail.dep.upper = data.frame(matrix(nrow=n.w, ncol=n.es))
+es.un.area.best.tau = data.frame(matrix(nrow=n.w, ncol=n.es))
+
+# assign column names
+colnames(es.un.area.best.cop.number) = es.labels
+colnames(es.un.area.best.cop.family) = es.labels
+colnames(es.un.area.best.tail.dep.cross) = es.labels
+colnames(es.un.area.best.tail.dep.upper) = es.labels
+colnames(es.un.area.best.tau) = es.labels
+
+# assign row names
+row.names(es.un.area.best.cop.number) = water.reg.labels
+row.names(es.un.area.best.cop.family) = water.reg.labels
+row.names(es.un.area.best.tail.dep.cross) = water.reg.labels
+row.names(es.un.area.best.tail.dep.upper) = water.reg.labels
+row.names(es.un.area.best.tau) = water.reg.labels
+
+# identify copula that minimizes AIC
+for (i in 1:n.es) {
+  # make list for copula fits given a specific ES
+  es.i = es.vars[i]
+  es.un.area.fits[[es.i]] = list()
+  
+  for(j in 1:n.w) {
+    # get water regime label and make lists
+    wr.j = water.reg.labels[j]
+    es.un.area.fits[[es.i]][[wr.j]] = list()
+    
+    # convert variables to ranks
+    u = rank(scale.eco.unpro.area.df[,wr.j]) / (length(scale.eco.unpro.area.df[,wr.j]) + 1)
+    v = rank(scale.eco.unpro.area.df[,es.i]) / (length(scale.eco.unpro.area.df[,es.i]) + 1) 
+    v_inv = rank(-scale.eco.unpro.area.df[,es.i]) / (length(scale.eco.unpro.area.df[,es.i]) + 1) 
+    
+    # fit each copula model
+    for (k in 1:n.c) { es.un.area.fits[[es.i]][[wr.j]][[cop.names[k]]] = BiCopSelect(u, v, familyset = cop.nums[k]) }
+    
+    # compare copulas with AIC and BIC
+    es.fits = es.un.area.fits[[es.i]][[wr.j]]
+    aic.df = sapply(list(es.fits[["Gaussian"]], es.fits[["t"]], es.fits[["Clayton"]]),
+                    function(f) c(family = f$family, AIC = f$AIC))
+    
+    # save best copula number in matrix
+    best.cop.number = as.integer(aic.df[1,which.min(aic.df[2,])])
+    es.un.area.best.cop.number[wr.j,es.labels[i]] = best.cop.number
+    es.un.area.best.tail.dep.cross[wr.j,es.labels[i]] = BiCopPar2TailDep(BiCopSelect(u, v_inv, familyset = best.cop.number))$upper
+    es.un.area.best.tail.dep.upper[wr.j,es.labels[i]] = BiCopPar2TailDep(BiCopSelect(u, v, familyset = best.cop.number))$upper
+    es.un.area.best.tau[wr.j,es.labels[i]] = BiCopSelect(u, v, familyset = best.cop.number)$tau
+    for (k in 1:n.c) {
+      potential.cop.nums = all.cop.nums[[k]]
+      if (best.cop.number %in% potential.cop.nums) { best.cop.family = cop.names[k] }
+    }
+    es.un.area.best.cop.family[wr.j,es.labels[i]] = best.cop.family
+  }
+}
+
+################################################################################
 # copula comparison for ecosystem services v. climate extremes
+
+# make dataframes and lists
 ex.es.fits = list()
 ex.es.best.cop.number = data.frame(matrix(nrow=n.s*n.t*n.ex*n.es, ncol=5))
 ex.es.best.cop.family = data.frame(matrix(nrow=n.s*n.t*n.ex*n.es, ncol=5))
-ex.es.best.tail.dep.lower = data.frame(matrix(nrow=n.s*n.t*n.ex*n.es, ncol=5))
+ex.es.best.tail.dep.cross = data.frame(matrix(nrow=n.s*n.t*n.ex*n.es, ncol=5))
 ex.es.best.tail.dep.upper = data.frame(matrix(nrow=n.s*n.t*n.ex*n.es, ncol=5))
+ex.es.best.tau = data.frame(matrix(nrow=n.s*n.t*n.ex*n.es, ncol=5))
+
+# update column names
 colnames(ex.es.best.cop.number) = c("ssp","time","extreme","service","value")
 colnames(ex.es.best.cop.family) = c("ssp","time","extreme","service","value")
-colnames(ex.es.best.tail.dep.lower) = c("ssp","time","extreme","service","value")
+colnames(ex.es.best.tail.dep.cross) = c("ssp","time","extreme","service","value")
 colnames(ex.es.best.tail.dep.upper) = c("ssp","time","extreme","service","value")
+colnames(ex.es.best.tau) = c("ssp","time","extreme","service","value")
+
+# fit copulas
 n = 1
 for (i in 1:n.s) {
   ssp.i = ssps[i]
@@ -153,6 +254,7 @@ for (i in 1:n.s) {
         # prepare data (U and V must be nonexceedance probabilities between 0 and 1)
         u = rank(eco.climate.df[,ex.l]) / (length(eco.climate.df[,ex.l]) + 1)
         v = rank(eco.climate.df[,es.k]) / (length(eco.climate.df[,es.k]) + 1)
+        v_inv = rank(-eco.climate.df[,es.k]) / (length(eco.climate.df[,es.k]) + 1)
         
         # fit each copula model
         for (m in 1:n.c) {
@@ -178,11 +280,17 @@ for (i in 1:n.s) {
         ex.es.best.tail.dep.upper[n,"extreme"] = ex.l
         ex.es.best.tail.dep.upper[n,"value"] = BiCopPar2TailDep(BiCopSelect(u, v, familyset = best.cop.number))$upper  
         
-        ex.es.best.tail.dep.lower[n,"ssp"] = ssp.i
-        ex.es.best.tail.dep.lower[n,"time"] = time.j
-        ex.es.best.tail.dep.lower[n,"service"] = es.labels[k]
-        ex.es.best.tail.dep.lower[n,"extreme"] = ex.l
-        ex.es.best.tail.dep.lower[n,"value"] = BiCopPar2TailDep(BiCopSelect(u, v, familyset = best.cop.number))$lower    
+        ex.es.best.tail.dep.cross[n,"ssp"] = ssp.i
+        ex.es.best.tail.dep.cross[n,"time"] = time.j
+        ex.es.best.tail.dep.cross[n,"service"] = es.labels[k]
+        ex.es.best.tail.dep.cross[n,"extreme"] = ex.l
+        ex.es.best.tail.dep.cross[n,"value"] = BiCopPar2TailDep(BiCopSelect(u, v_inv, familyset = best.cop.number))$upper    
+        
+        ex.es.best.tau[n,"ssp"] = ssp.i
+        ex.es.best.tau[n,"time"] = time.j
+        ex.es.best.tau[n,"service"] = es.labels[k]
+        ex.es.best.tau[n,"extreme"] = ex.l
+        ex.es.best.tau[n,"value"] = BiCopSelect(u, v, familyset = best.cop.number)$tau
         
         for (m in 1:n.c) {
           potential.cop.nums = all.cop.nums[[m]]
@@ -202,12 +310,13 @@ for (i in 1:n.s) {
 ################################################################################
 # upper tail dependence plots
 
-es.un.best.tail.dep.upper$cutoff = water.reg.labels
-es.un.tail.dep.upper.melt = melt(es.un.best.tail.dep.upper, id.var="cutoff")
-es.un.tail.dep.upper.melt$label = "Unprotected wetland percent"
-ex.es.best.tail.dep.upper$ssp_time = paste(ex.es.best.tail.dep.upper$ssp,
-                                           ex.es.best.tail.dep.upper$time,
-                                           sep = " &times; ")
+es.un.area.best.tail.dep.upper$metric = "Unprotected wetland area"
+es.un.perc.best.tail.dep.upper$metric = "Unprotected wetland percentage"
+es.un.area.best.tail.dep.upper$cutoff = water.reg.labels
+es.un.perc.best.tail.dep.upper$cutoff = water.reg.labels
+es.un.best.tail.dep.upper = rbind(es.un.area.best.tail.dep.upper,
+                                  es.un.perc.best.tail.dep.upper)
+es.un.tail.dep.upper.melt = melt(es.un.best.tail.dep.upper, id.var=c("cutoff","metric"))
 p.un.es.upper = ggplot(es.un.tail.dep.upper.melt,
                        aes(x=value,
                            y=factor(cutoff, levels=water.reg.labels),
@@ -220,15 +329,20 @@ p.un.es.upper = ggplot(es.un.tail.dep.upper.melt,
                        scale_color_manual(values=es.colors) +
                        scale_shape_manual(values=es.shapes) +
                        theme(legend.position = "none",
-                             text = element_text(size=14),
+                             text = element_text(size=16),
                              axis.text.y = element_markdown(),
                              axis.title.x = element_markdown()) +
-                       facet_wrap(.~label) +
+                       facet_wrap(.~metric, ncol=1) +
                        labs(y="Wetland flood-frequency cutoff",
                             color="Ecosystem service",
                             shape="Ecosystem service",
                             size="Ecosystem service",
-                            x="Upper tail dependence coefficient (&lambda;<sub><em>U</em></sub>)")
+                            x="Tail dependence coefficient (high risk &times; high service)")
+p.un.es.upper
+
+ex.es.best.tail.dep.upper$ssp_time = paste(ex.es.best.tail.dep.upper$ssp,
+                                           ex.es.best.tail.dep.upper$time,
+                                           sep = " &times; ")
 p.ex.es.upper = ggplot(ex.es.best.tail.dep.upper,
                        aes(x=value,
                            y=factor(ssp_time, levels=ssp.time.order),
@@ -240,7 +354,7 @@ p.ex.es.upper = ggplot(ex.es.best.tail.dep.upper,
                       scale_size_manual(values=c(3,3,4,3)) +
                       scale_color_manual(values=es.colors) +
                       scale_shape_manual(values=es.shapes) +
-                      theme(text = element_text(size=14),
+                      theme(text = element_text(size=16),
                             strip.text = element_markdown(),
                             axis.text.y = element_markdown(),
                             axis.title.x = element_markdown()) + 
@@ -249,22 +363,23 @@ p.ex.es.upper = ggplot(ex.es.best.tail.dep.upper,
                            color="Ecosystem service",
                            shape="Ecosystem service",
                            size="Ecosystem service",
-                           x="Upper tail dependence coefficient (&lambda;<sub><em>U</em></sub>)")
+                           x="Tail dependence coefficient (high risk &times; high service)")
 p.upper = p.un.es.upper + p.ex.es.upper + plot_layout(widths = c(1,2), axis_titles = "collect")
 p.upper
-ggsave("Manuscript/Main_Figures/Figure4_Bivariate_Copulas_Upper_Tail_Dependence.jpeg", 
-       plot=p.upper, width=44, height=16, units="cm", dpi=600)
+ggsave("Manuscript/Main_Figures/Figure5_Bivariate_Copulas_Upper_Tail_Dependence.jpeg", 
+       plot=p.upper, width=48, height=18, units="cm", dpi=800)
 
 ################################################################################
-# lower tail dependence plots
+# cross tail dependence plots
 
-ex.es.best.tail.dep.lower$ssp_time = paste(ex.es.best.tail.dep.lower$ssp,
-                                           ex.es.best.tail.dep.lower$time,
-                                           sep = " &times; ")
-es.un.best.tail.dep.lower$cutoff = water.reg.labels
-es.un.tail.dep.lower.melt = melt(es.un.best.tail.dep.lower, id.var="cutoff")
-es.un.tail.dep.lower.melt$label = "Unprotected wetland percent"
-p.un.es.lower = ggplot(es.un.tail.dep.lower.melt,
+es.un.area.best.tail.dep.cross$metric = "Unprotected wetland area"
+es.un.perc.best.tail.dep.cross$metric = "Unprotected wetland percentage"
+es.un.area.best.tail.dep.cross$cutoff = water.reg.labels
+es.un.perc.best.tail.dep.cross$cutoff = water.reg.labels
+es.un.best.tail.dep.cross = rbind(es.un.area.best.tail.dep.cross,
+                                  es.un.perc.best.tail.dep.cross)
+es.un.tail.dep.cross.melt = melt(es.un.best.tail.dep.cross, id.var=c("cutoff","metric"))
+p.un.es.cross = ggplot(es.un.tail.dep.cross.melt,
                        aes(x=value,
                            y=factor(cutoff, levels=water.reg.labels),
                            color=factor(variable, levels=es.labels),
@@ -276,16 +391,21 @@ p.un.es.lower = ggplot(es.un.tail.dep.lower.melt,
                        scale_color_manual(values=es.colors) +
                        scale_shape_manual(values=es.shapes) +
                        theme(legend.position = "none",
-                             text = element_text(size=14),
+                             text = element_text(size=16),
                              axis.text.y = element_markdown(),
                              axis.title.x = element_markdown()) +
-                       facet_wrap(.~label) +
+                       facet_wrap(.~metric, ncol=1) +
                        labs(y="Wetland flood-frequency cutoff",
                             color="Ecosystem service",
                             shape="Ecosystem service",
                             size="Ecosystem service",
-                            x="Lower tail dependence coefficient (&lambda;<sub><em>L</em></sub>)")
-p.ex.es.lower = ggplot(ex.es.best.tail.dep.lower,
+                            x="Tail dependence coefficient (high risk &times; low service)")
+p.un.es.cross
+
+ex.es.best.tail.dep.cross$ssp_time = paste(ex.es.best.tail.dep.cross$ssp,
+                                           ex.es.best.tail.dep.cross$time,
+                                           sep = " &times; ")
+p.ex.es.cross = ggplot(ex.es.best.tail.dep.cross,
                        aes(x=value,
                            y=factor(ssp_time, levels=ssp.time.order),
                            color=factor(service, levels=es.labels),
@@ -296,7 +416,7 @@ p.ex.es.lower = ggplot(ex.es.best.tail.dep.lower,
                        scale_size_manual(values=c(3,3,4,3)) +
                        scale_color_manual(values=es.colors) +
                        scale_shape_manual(values=es.shapes) +
-                       theme(text = element_text(size=14),
+                       theme(text = element_text(size=16),
                              strip.text = element_markdown(),
                              axis.text.y = element_markdown(),
                              axis.title.x = element_markdown()) + 
@@ -305,27 +425,88 @@ p.ex.es.lower = ggplot(ex.es.best.tail.dep.lower,
                             color="Ecosystem service",
                             shape="Ecosystem service",
                             size="Ecosystem service",
-                            x="Lower tail dependence coefficient (&lambda;<sub><em>L</em></sub>)")
-p.lower = p.un.es.lower + p.ex.es.lower + plot_layout(widths = c(1,2), axis_titles = "collect")
-p.lower
-ggsave("Manuscript/Supp_Figures/AppendixD/FigureD3_Bivariate_Copulas_Lower_Tail_Dependence.jpeg", 
-       plot=p.lower, width=44, height=16, units="cm", dpi=600)
+                            x="Tail dependence coefficient (high risk &times; low service)")
+p.cross = p.un.es.cross + p.ex.es.cross + plot_layout(widths = c(1,2), axis_titles = "collect")
+p.cross
+ggsave("Manuscript/Main_Figures/Figure6_Bivariate_Copulas_Cross_Tail_Dependence.jpeg", 
+       plot=p.cross, width=48, height=18, units="cm", dpi=800)
+
+################################################################################
+# kendall tau plots
+
+es.un.area.best.tau$metric = "Unprotected wetland area"
+es.un.perc.best.tau$metric = "Unprotected wetland percentage"
+es.un.area.best.tau$cutoff = water.reg.labels
+es.un.perc.best.tau$cutoff = water.reg.labels
+es.un.best.tau = rbind(es.un.area.best.tau,
+                       es.un.perc.best.tau)
+es.un.tau.melt = melt(es.un.best.tau, id.var=c("cutoff","metric"))
+p.un.es.tau = ggplot(es.un.tau.melt) +
+                     geom_vline(xintercept=0, color="gray25", linetype="dashed") +
+                     geom_point(aes(x=value,
+                                    y=factor(cutoff, levels=water.reg.labels),
+                                    color=factor(variable, levels=es.labels),
+                                    shape=factor(variable, levels=es.labels),
+                                    size=factor(variable, levels=es.labels))) + 
+                     scale_size_manual(values=c(3,3,4,3)) +
+                     scale_color_manual(values=es.colors) +
+                     scale_shape_manual(values=es.shapes) +
+                     theme(legend.position = "none",
+                           text = element_text(size=14),
+                           axis.text.y = element_markdown(),
+                           axis.title.x = element_markdown()) +
+                     facet_wrap(.~metric, ncol=1) +
+                     labs(y="Wetland flood-frequency cutoff",
+                          color="Ecosystem service",
+                          shape="Ecosystem service",
+                          size="Ecosystem service",
+                          x="Kendall's &tau;") + xlim(-0.55,0.55)
+p.un.es.tau
+
+ex.es.best.tau$ssp_time = paste(ex.es.best.tau$ssp,
+                                ex.es.best.tau$time,
+                                sep = " &times; ")
+p.ex.es.tau = ggplot(ex.es.best.tau) +
+                     geom_vline(xintercept=0, color="gray25", linetype="dashed") +
+                     geom_point(aes(x=value,
+                                    y=factor(ssp_time, levels=ssp.time.order),
+                                    color=factor(service, levels=es.labels),
+                                    shape=factor(service, levels=es.labels),
+                                    size=factor(service, levels=es.labels))) +
+                     facet_wrap(.~extreme) +
+                     scale_size_manual(values=c(3,3,4,3)) +
+                     scale_color_manual(values=es.colors) +
+                     scale_shape_manual(values=es.shapes) +
+                     theme(text = element_text(size=14),
+                           strip.text = element_markdown(),
+                           axis.text.y = element_markdown(),
+                           axis.title.x = element_markdown()) + 
+                     labs(y="Shared socioeconomic pathway\nby climatology period",
+                          color="Ecosystem service",
+                          shape="Ecosystem service",
+                          size="Ecosystem service",
+                          x="Kendall's &tau;") + xlim(-0.55,0.55)
+p.tau = p.un.es.tau + p.ex.es.tau + plot_layout(widths = c(1,2), axis_titles = "collect")
+p.tau
+ggsave("Manuscript/Supp_Figures/AppendixD/FigureD4_Bivariate_Copulas_Tau.jpeg", 
+       plot=p.tau, width=43, height=16, units="cm", dpi=600)
 
 ################################################################################
 # lack of protection bivariate copula plots
 
-best_bicop_model_list = list()
-melted_density_all = data.frame(matrix(nrow=0, ncol=4))
-colnames(melted_density_all) = c("x","y","value","service")
+# unprotected percents
+un_perc_best_bicop_model_list = list()
+un_perc_melted_density_all = data.frame(matrix(nrow=0, ncol=4))
+colnames(un_perc_melted_density_all) = c("x","y","value","service")
 grid_seq = seq(-2.5, 2.5, length.out=100)
 for (i in 1:n.es) {
   # get model with least AIC/BIC
   es.i = es.vars[i]
-  best_bicop_model_list[[es.i]] = es.un.fits[[es.i]][[water.reg.labels[3]]][[es.un.best.cop.family[i,3]]]
+  un_perc_best_bicop_model_list[[es.i]] = es.un.perc.fits[[es.i]][[water.reg.labels[3]]][[es.un.perc.best.cop.family[i,3]]]
   
   # create grid sequence
   density_matrix = outer(grid_seq, grid_seq, 
-                         function(x, y) {BiCopPDF(pnorm(x), pnorm(y), best_bicop_model_list[[es.vars[i]]]) * dnorm(x) * dnorm(y)})
+                         function(x, y) {BiCopPDF(pnorm(x), pnorm(y), un_perc_best_bicop_model_list[[es.vars[i]]]) * dnorm(x) * dnorm(y)})
   dimnames(density_matrix) = list(x = grid_seq, y = grid_seq)
   
   # melt dataframe for plotting
@@ -333,71 +514,232 @@ for (i in 1:n.es) {
   melted_density$service = es.labels[i]
   
   # upend to large matrix
-  melted_density_all = rbind(melted_density_all, melted_density)
+  un_perc_melted_density_all = rbind(un_perc_melted_density_all, melted_density)
 }
 
-p1.un = ggplot(subset(melted_density_all, service == "Plant species richness"), 
-               aes(x = x, y = y, z = value)) +
-               metR::geom_contour_fill(breaks=seq(0,0.25,length.out=10)) +
-               scale_fill_distiller(palette = "Greens",
-                                    direction = 2,
-                                    limits=c(0,0.25)) +
-               coord_equal() +
-               labs(x = "Unprotected wetland percent (z)",
-                    y = "Ecosystem service (z)",
-                    color = "Density", fill = "Density") +
-               facet_wrap(.~service)
-p2.un = ggplot(subset(melted_density_all, service == "Herpetofauna species richness"), 
-               aes(x = x, y = y, z = value)) +
-               metR::geom_contour_fill(breaks=seq(0,0.25,length.out=10)) +
-               scale_fill_distiller(palette = "Purples",
-                                    direction = 2,
-                                    limits=c(0,0.25)) +
-               coord_equal() +
-               labs(x = "Unprotected wetland percent (z)",
-                    y = "",
-                    color = "Density", fill = "Density") +
-               facet_wrap(.~service)
-p2.un
-p3.un = ggplot(subset(melted_density_all, service == "Carbon storage"), 
-               aes(x = x, y = y, z = value)) +
-               metR::geom_contour_fill(breaks=seq(0,0.25,length.out=10)) +
-               scale_fill_distiller(palette = "Oranges",
-                                    direction = 2,
-                                    limits=c(0,0.25)) +
-               coord_equal() +
-               labs(x = "Unprotected wetland percent (z)",
-                    y = "",
-                    color = "Density", fill = "Density") +
-               facet_wrap(.~service)
-p3.un
-p4.un = ggplot(subset(melted_density_all, service == "Floodwater storage capacity"), 
-               aes(x = x, y = y, z = value)) +
-               metR::geom_contour_fill(breaks=seq(0,0.25,length.out=10)) +
-               scale_fill_distiller(palette = "Blues",
-                                    direction = 2,
-                                    limits=c(0,0.25)) +
-               coord_equal() +
-               labs(x = "Unprotected wetland percent (z)",
-                    y = "",
-                    color = "Density", fill = "Density") +
-               facet_wrap(.~service)
-p4.un
+# apply rank transformation to full dataframe: U ~ U(0,1)
+u.eco.unpro.percent.df = scale.eco.unpro.percent.df[,c(es.vars,water.reg.labels[3])]
+u.cols = colnames(u.eco.unpro.percent.df)
+for (i in 1:length(u.cols)) {
+  u.eco.unpro.percent.df[,u.cols[i]] = rank(scale.eco.unpro.percent.df[,u.cols[i]]) / (length(scale.eco.unpro.percent.df[,u.cols[i]]) + 1)
+}
+
+# apply the inverse cumulative distribution fuction of the standard normal distribution
+z.eco.unpro.percent.df = u.eco.unpro.percent.df
+for (i in 1:length(u.cols)) {
+  z.eco.unpro.percent.df[,u.cols[i]] = qnorm(z.eco.unpro.percent.df[,u.cols[i]])
+}
+colnames(z.eco.unpro.percent.df)[1:4] = es.labels
+z.eco.unpro.percent.melt = melt(z.eco.unpro.percent.df, id.vars=c(water.reg.labels[3]))
+colnames(z.eco.unpro.percent.melt) = c("x","service","y")
+
+# make plots by service
+p1.un.perc = ggplot() +
+             metR::geom_contour_fill(data=subset(un_perc_melted_density_all, service == "Plant species richness"), 
+                                     aes(x = x, y = y, z = value),
+                                     breaks=seq(0,0.3,length.out=10)) +
+             scale_fill_distiller(palette = "Greens",
+                                  direction = 2,
+                                  limits=c(0,0.31)) +
+             coord_equal() +
+             geom_point(data=subset(z.eco.unpro.percent.melt, service == "Plant species richness"),
+                        aes(x=x,
+                            y=y),
+                        color="darkgreen", size=0.5) +
+             labs(x = "Unprotected wetland percent (z)",
+                  y = "Ecosystem service (z)",
+                  color = "Density", fill = "Density") +
+             facet_wrap(.~service)
+p1.un.perc 
+p2.un.perc = ggplot() +
+             metR::geom_contour_fill(data=subset(un_perc_melted_density_all, service == "Herpetofauna species richness"), 
+                                     aes(x = x, y = y, z = value),
+                                     breaks=seq(0,0.3,length.out=10)) +
+             scale_fill_distiller(palette = "Purples",
+                                  direction = 2,
+                                  limits=c(0,0.31)) +
+             coord_equal() +
+             geom_point(data=subset(z.eco.unpro.percent.melt, service == "Herpetofauna species richness"),
+                        aes(x=x,
+                            y=y),
+                        color="darkorchid4", size=0.5) +
+             labs(x = "Unprotected wetland percent (z)",
+                  y = "",
+                  color = "Density", fill = "Density") +
+             facet_wrap(.~service)
+p2.un.perc
+p3.un.perc = ggplot() +
+             metR::geom_contour_fill(data=subset(un_perc_melted_density_all, service == "Carbon storage"), 
+                                     aes(x = x, y = y, z = value),
+                                     breaks=seq(0,0.3,length.out=10)) +
+             scale_fill_distiller(palette = "Oranges",
+                                  direction = 2,
+                                  limits=c(0,0.31)) +
+             coord_equal() +
+             geom_point(data=subset(z.eco.unpro.percent.melt, service == "Carbon storage"),
+                        aes(x=x,
+                            y=y),
+                        color="darkorange3", size=0.5) +
+             labs(x = "Unprotected wetland percent (z)",
+                  y = "",
+                  color = "Density", fill = "Density") +
+             facet_wrap(.~service)
+p3.un.perc
+p4.un.perc = ggplot() +
+             metR::geom_contour_fill(data=subset(un_perc_melted_density_all, service == "Floodwater storage capacity"), 
+                                     aes(x = x, y = y, z = value),
+                                     breaks=seq(0,0.3,length.out=10)) +
+             scale_fill_distiller(palette = "Blues",
+                                  direction = 2,
+                                  limits=c(0,0.31)) +
+             coord_equal() +
+             geom_point(data=subset(z.eco.unpro.percent.melt, service == "Floodwater storage capacity"),
+                        aes(x=x,
+                            y=y),
+                        color="steelblue4", size=0.5) +
+             labs(x = "Unprotected wetland percent (z)",
+                  y = "",
+                  color = "Density", fill = "Density") +
+             facet_wrap(.~service)
+p4.un.perc
 strip_axes = theme(axis.title.x = element_blank(),
                    text = element_text(size=12),
                    legend.title = element_text(size = 11),
                    legend.text = element_text(size = 8))
-combo.un = plot_grid(p1.un + strip_axes,
-                     p2.un + strip_axes,
-                     p3.un + strip_axes,
-                     p4.un + strip_axes, nrow = 1)
-combo.un.lab = ggdraw(combo.un) + 
+combo.un.perc = plot_grid(p1.un.perc + strip_axes,
+                          p2.un.perc + strip_axes,
+                          p3.un.perc + strip_axes,
+                          p4.un.perc + strip_axes, nrow = 1)
+combo.un.perc.lab = ggdraw(combo.un.perc) + 
                       draw_label("Unprotected wetland percent (z)", 
                                  y = 0.02, x = 0.5, 
                                  angle=0, vjust = 0.8, size=12) + 
                       theme(plot.margin = margin(5, 5, 10, 10))
-ggsave("Manuscript/Supp_Figures/AppendixD/FigureD1_Bivariate_Copulas_Services_Versus_Unprotected_Percents.jpeg", 
-       combo.un.lab, width = 16, height = 3.5, dpi = 600)
+
+# unprotected areas
+un_area_best_bicop_model_list = list()
+un_area_melted_density_all = data.frame(matrix(nrow=0, ncol=4))
+colnames(un_area_melted_density_all) = c("x","y","value","service")
+grid_seq = seq(-2.5, 2.5, length.out=100)
+for (i in 1:n.es) {
+  # get model with least AIC/BIC
+  es.i = es.vars[i]
+  un_area_best_bicop_model_list[[es.i]] = es.un.area.fits[[es.i]][[water.reg.labels[3]]][[es.un.area.best.cop.family[i,3]]]
+  
+  # create grid sequence
+  density_matrix = outer(grid_seq, grid_seq, 
+                         function(x, y) {BiCopPDF(pnorm(x), pnorm(y), un_area_best_bicop_model_list[[es.vars[i]]]) * dnorm(x) * dnorm(y)})
+  dimnames(density_matrix) = list(x = grid_seq, y = grid_seq)
+  
+  # melt dataframe for plotting
+  melted_density = melt(density_matrix, varnames = c("x", "y"))
+  melted_density$service = es.labels[i]
+  
+  # upend to large matrix
+  un_area_melted_density_all = rbind(un_area_melted_density_all, melted_density)
+}
+
+# apply rank transformation to full dataframe: U ~ U(0,1)
+u.eco.unpro.area.df = scale.eco.unpro.area.df[,c(es.vars,water.reg.labels[3])]
+u.cols = colnames(u.eco.unpro.area.df)
+for (i in 1:length(u.cols)) {
+  u.eco.unpro.area.df[,u.cols[i]] = rank(scale.eco.unpro.area.df[,u.cols[i]]) / (length(scale.eco.unpro.area.df[,u.cols[i]]) + 1)
+}
+
+# apply the inverse cumulative distribution fuction of the standard normal distribution
+z.eco.unpro.area.df = u.eco.unpro.area.df
+for (i in 1:length(u.cols)) {
+  z.eco.unpro.area.df[,u.cols[i]] = qnorm(u.eco.unpro.area.df[,u.cols[i]])
+}
+colnames(z.eco.unpro.area.df)[1:4] = es.labels
+z.eco.unpro.area.melt = melt(z.eco.unpro.area.df, id.vars=c(water.reg.labels[3]))
+colnames(z.eco.unpro.area.melt) = c("x","service","y")
+
+# make plots by service
+p1.un.area = ggplot() +
+             metR::geom_contour_fill(data=subset(un_area_melted_density_all, service == "Plant species richness"), 
+                                     aes(x = x, y = y, z = value),
+                                     breaks=seq(0,0.3,length.out=10)) +
+             scale_fill_distiller(palette = "Greens",
+                                  direction = 2,
+                                  limits=c(0,0.31)) +
+             coord_equal() +
+             geom_point(data=subset(z.eco.unpro.area.melt, service == "Plant species richness"),
+                        aes(x=x,
+                            y=y),
+                        color="darkgreen", size=0.5) +
+             labs(x = "Unprotected wetland area (z)",
+                  y = "Ecosystem service (z)",
+                  color = "Density", fill = "Density") +
+             facet_wrap(.~service)
+p1.un.area
+p2.un.area = ggplot() +
+             metR::geom_contour_fill(data=subset(un_area_melted_density_all, service == "Herpetofauna species richness"), 
+                                     aes(x = x, y = y, z = value),
+                                     breaks=seq(0,0.3,length.out=10)) +
+             scale_fill_distiller(palette = "Purples",
+                                  direction = 2,
+                                  limits=c(0,0.31)) +
+             coord_equal() +
+             geom_point(data=subset(z.eco.unpro.area.melt, service == "Herpetofauna species richness"),
+                        aes(x=x,
+                            y=y),
+                        color="darkorchid4", size=0.5) +
+             labs(x = "Unprotected wetland area (z)",
+                  y = "",
+                  color = "Density", fill = "Density") +
+             facet_wrap(.~service)
+p2.un.area
+p3.un.area = ggplot() +
+             metR::geom_contour_fill(data=subset(un_area_melted_density_all, service == "Carbon storage"), 
+                                     aes(x = x, y = y, z = value),
+                                     breaks=seq(0,0.3,length.out=10)) +
+             scale_fill_distiller(palette = "Oranges",
+                                  direction = 2,
+                                  limits=c(0,0.31)) +
+             coord_equal() +
+             geom_point(data=subset(z.eco.unpro.area.melt, service == "Carbon storage"),
+                        aes(x=x,
+                            y=y),
+                        color="darkorange3", size=0.5) +
+             labs(x = "Unprotected wetland area (z)",
+                  y = "",
+                  color = "Density", fill = "Density") +
+             facet_wrap(.~service)
+p3.un.area
+p4.un.area = ggplot() +
+             metR::geom_contour_fill(data=subset(un_area_melted_density_all, service == "Floodwater storage capacity"), 
+                                     aes(x = x, y = y, z = value),
+                                     breaks=seq(0,0.3,length.out=10)) +
+             scale_fill_distiller(palette = "Blues",
+                                  direction = 2,
+                                  limits=c(0,0.31)) +
+             coord_equal() +
+             geom_point(data=subset(z.eco.unpro.area.melt, service == "Floodwater storage capacity"),
+                        aes(x=x,
+                            y=y),
+                        color="steelblue4", size=0.5) +
+             labs(x = "Unprotected wetland percent (z)",
+                  y = "",
+                  color = "Density", fill = "Density") +
+             facet_wrap(.~service)
+p4.un.area
+strip_axes = theme(axis.title.x = element_blank(),
+                   text = element_text(size=12),
+                   legend.title = element_text(size = 11),
+                   legend.text = element_text(size = 8))
+combo.un.perc = plot_grid(p1.un.perc + strip_axes,
+                          p2.un.perc + strip_axes,
+                          p3.un.perc + strip_axes,
+                          p4.un.perc + strip_axes, nrow = 1)
+combo.un.perc.lab = ggdraw(combo.un.perc) + 
+  draw_label("Unprotected wetland percent (z)", 
+             y = 0.02, x = 0.5, 
+             angle=0, vjust = 0.8, size=12) + 
+  theme(plot.margin = margin(5, 5, 10, 10))
+
+#ggsave("Manuscript/Supp_Figures/AppendixD/FigureD1_Bivariate_Copulas_Services_Versus_Unprotected_Percents_Areas.jpeg", 
+#       combo.un.perc.lab, width = 16, height = 3.5, dpi = 600)
 
 ################################################################################
 # climate extreme bivariate copula plots
@@ -657,214 +999,69 @@ combo.mwsl.lab = ggdraw(combo.mwsl) +
 combo.mwsl.lab
 
 combo.all = plot_grid(combo.fd.lab, combo.mxt100.lab, combo.mdsl.lab, combo.mwsl.lab, nrow=4) 
-ggsave("Manuscript/Supp_Figures/AppendixD/FigureD2_Bivariate_Copulas_Services_Versus_Climate_Extremes.jpeg", 
-       combo.all, width = 16, height = 14, dpi = 600)
-
-
-
-
+#ggsave("Manuscript/Supp_Figures/AppendixD/FigureD2_Bivariate_Copulas_Services_Versus_Climate_Extremes.jpeg", 
+#       combo.all, width = 16, height = 14, dpi = 600)
 
 
 ################################################################################
-# fit three-way copula and simulate joint exceedance probabilities
+# fit copulas between unprotecgted wetland areas/percents and climate extremes
 
-set.seed(2718)
+unpro.types = c("area","percentage")
+n.ut = length(unpro.types)
 
-# estimate joint exceedance probability for climate and unprotected area:
-# P (climate_extreme > q & unprotected_area > q | ecosystem service value)
-wr = "Semipermanently Flooded"
-q = 0.75
-n_sim = 1e4
-for (j in 1:n.s) {
-  for (k in 1:n.t) {
-    conditional.climate.risk.df = scale.eco.df
-    for (i in 1:n.es) {
-      es.i = es.vars[i]
-      ex.i = climate.vars.order[i]
-      
-      # make dataframe for specific ecosystem service, ssp, and time interval
-      climate.df.st = subset(scale.climate.df,
-                             ssp == ssps[j] & time == times[k])
-      eco.un.clim.df = left_join(scale.eco.df[,c("county",es.i)], 
-                                 scale.unpro.df[,c("county",wr)], 
-                                 by="county")
-      eco.un.clim.df = left_join(eco.un.clim.df,
-                                 climate.df.st[,c("county",ex.i)],
-                                 by="county")
-      if (ex.i == "Frost days") { eco.un.clim.df[,ex.i] = -eco.un.clim.df[,ex.i] }
-      
-      # make empirical CDFs
-      u.es = rank(eco.un.clim.df[,es.i]) / (length(eco.un.clim.df[,es.i]) + 1)
-      u.un = rank(eco.un.clim.df[,wr]) / (length(eco.un.clim.df[,wr]) + 1)
-      u.ex = rank(eco.un.clim.df[,ex.i]) / (length(eco.un.clim.df[,ex.i]) + 1)
-      u_df = cbind(u.es, u.un, u.ex)
-      colnames(u_df) = c("ecosystem_service","unprotected_area","climate_extreme")
-      
-      # fit vine copula
-      fit_vine = RVineStructureSelect(data = u_df,
-                                      familyset     = NA, 
-                                      type          = 0,      # 0 = RVine
-                                      selectioncrit = "AIC",  
-                                      indeptest     = TRUE,   
-                                      level         = 0.1, 
-                                      trunclevel    = NA,
-                                      rotations = TRUE)
-      
-      cond_joint_exceedance = sapply(u_df[, "ecosystem_service"], function(u1_obs) {
-        
-        # simulate U2 and U3 marginally
-        p2_sim = runif(n_sim)
-        p3_sim = runif(n_sim)
-        
-        # Tree 1: condition U2 on U1
-        # Hinv1 inverts h1(u2|u1) = P(U2 <= u2 | U1 = u1); thus, must return u2 | u1
-        u2_cond = BiCopHinv1(
-          u1  = rep(u1_obs, n_sim),
-          u2  = p2_sim,
-          obj = BiCop(family = fit_vine$family[2, 1],   # Tree 1, pair 1
-                      par    = fit_vine$par[2, 1],
-                      par2   = fit_vine$par2[2, 1]))
-        
-        # Tree 1: compute pseudo observation for Tree 2: h1(u2 | u1) = P(U2 <= u2 | U1 = u1)
-        h_u2_given_u1 = BiCopHfunc1(
-          u1 = rep(u1_obs, n_sim),
-          u2 = u2_cond,
-          obj = BiCop(family = fit_vine$family[2, 1],   # Tree 1, pair 1
-                      par    = fit_vine$par[2, 1],
-                      par2   = fit_vine$par2[2, 1]))
-        
-        # Tree 1: condition U3 on U2
-        h_u3_given_u2 = BiCopHfunc1(
-          u1 = u2_cond,
-          u2 = p3_sim,
-          obj = BiCop(
-            family = fit_vine$family[3, 2], # Tree 1, pair 2
-            par    = fit_vine$par[3, 2],
-            par2   = fit_vine$par2[3, 2]))
-        
-        # Tree 2: condition U3 on U2 | U1
-        # invert the Tree 2 h-function to get U3 draws conditional on both U1 and U2
-        # h1(u3|u2) = P(U3 <= u3 | U2 = u1), so Hinv1 returns u3 | u2
-        u3_cond = BiCopHinv1(
-          u1  = h_u2_given_u1,
-          u2  = h_u3_given_u2,
-          obj = BiCop(
-            family = fit_vine$family[3, 1],
-            par    = fit_vine$par[3, 1],
-            par2   = fit_vine$par2[3, 1]))
-        
-        # compute joint exceedance
-        mean(u2_cond > q & u3_cond > q)
-      })  
-        
-      # add to dataframe
-      conditional.climate.risk.df[,es.i] = cond_joint_exceedance
-      
-      # write csv
-      write.csv(conditional.climate.risk.df,
-                paste(paste("Dual-Risk-Repo/County_Summaries/Conditional_Joint_Exceedance_Risk_75th_Percentile_Simulation_Method",
-                            ssps[j], times[k], sep="_"),
-                      ".csv", sep=""),
-                row.names=F)
-    }
-  }
-}
+# make dataframes and lists
+ex.es.fits = list()
+ex.es.best.cop.number = data.frame(matrix(nrow=n.s*n.t*n.ex*n.es, ncol=5))
+ex.es.best.cop.family = data.frame(matrix(nrow=n.s*n.t*n.ex*n.es, ncol=5))
+ex.es.best.tail.dep.cross = data.frame(matrix(nrow=n.s*n.t*n.ex*n.es, ncol=5))
+ex.es.best.tail.dep.upper = data.frame(matrix(nrow=n.s*n.t*n.ex*n.es, ncol=5))
+ex.es.best.tau = data.frame(matrix(nrow=n.s*n.t*n.ex*n.es, ncol=5))
 
-################################################################################
-# fit three-way copula and calculate exact joint exceedance probabilities
-library(cubature)
-set.seed(2718)
+# update column names
+colnames(ex.es.best.cop.number) = c("ssp","time","extreme","service","value")
+colnames(ex.es.best.cop.family) = c("ssp","time","extreme","service","value")
+colnames(ex.es.best.tail.dep.cross) = c("ssp","time","extreme","service","value")
+colnames(ex.es.best.tail.dep.upper) = c("ssp","time","extreme","service","value")
+colnames(ex.es.best.tau) = c("ssp","time","extreme","service","value")
 
-# estimate joint exceedance probability for climate and unprotected area:
-# P (climate_extreme > q & unprotected_area > q | ecosystem service value)
-wr = "Semipermanently Flooded"
-q = 0.75
-for (j in 1:n.s) {
-  for (k in 1:n.t) {
-    conditional.climate.risk.df = scale.eco.df
-    for (i in 1:n.es) {
-      es.i = es.vars[i]
-      ex.i = climate.vars.order[i]
-      
-      # make dataframe for specific ecosystem service, ssp, and time interval
-      climate.df.st = subset(scale.climate.df,
-                             ssp == ssps[j] & time == times[k])
-      eco.un.clim.df = left_join(scale.eco.df[,c("county",es.i)], 
-                                 scale.unpro.df[,c("county",wr)], 
-                                 by="county")
-      eco.un.clim.df = left_join(eco.un.clim.df,
-                                 climate.df.st[,c("county",ex.i)],
-                                 by="county")
-      if (ex.i == "Frost days") { eco.un.clim.df[,ex.i] = -eco.un.clim.df[,ex.i] }
-      
-      # make empirical CDFs
-      u.es = rank(eco.un.clim.df[,es.i]) / (length(eco.un.clim.df[,es.i]) + 1)
-      u.un = rank(eco.un.clim.df[,wr]) / (length(eco.un.clim.df[,wr]) + 1)
-      u.ex = rank(eco.un.clim.df[,ex.i]) / (length(eco.un.clim.df[,ex.i]) + 1)
-      u_df = cbind(u.es, u.un, u.ex)
-      colnames(u_df) = c("ecosystem_service","unprotected_area","climate_extreme")
-      
-      # fit vine copula
-      fit_vine = RVineStructureSelect(data = u_df,
-                                      familyset     = NA, 
-                                      type          = 0,      # 0 = RVine
-                                      selectioncrit = "AIC",  
-                                      indeptest     = TRUE,   
-                                      level         = 0.1, 
-                                      trunclevel    = NA,
-                                      rotations = TRUE)
-      
-      cond_joint_exceedance <- sapply(u_df[, "ecosystem_service"], function(u1_obs) {
-        integrand <- function(uv) {
-          u2 = uv[1]
-          u3 = uv[2]
-          
-          # conditional density f(u2, u3 | u1)
-          f12 = BiCopPDF(rep(u1_obs,1), u2,
-                         obj = BiCop(family = fit_vine$family[2, 1],
-                                     par    = fit_vine$par[2, 1],
-                                     par2   = fit_vine$par2[2, 1]))
-          
-          f23 = BiCopPDF(u2, u3,
-                         obj = BiCop(family = fit_vine$family[3, 2],  
-                                     par    = fit_vine$par[3, 2],
-                                     par2   = fit_vine$par2[3, 2]))
-          
-          h_u2 = BiCopHfunc1(rep(u1_obs,1), u2,
-                             obj = BiCop(family = fit_vine$family[2, 1],
-                                         par    = fit_vine$par[2, 1],
-                                         par2   = fit_vine$par2[2, 1]))
-          
-          h_u3 = BiCopHfunc1(u2, u3,
-                             obj = BiCop(family = fit_vine$family[3, 2],
-                                         par    = fit_vine$par[3, 2],
-                                         par2   = fit_vine$par2[3, 2]))
-          
-          f13_2 = BiCopPDF(h_u2, h_u3,
-                           obj = BiCop(family = fit_vine$family[3, 1],
-                                       par    = fit_vine$par[3, 1],
-                                       par2   = fit_vine$par2[3, 1]))
-          
-          f12 * f23 * f13_2
+# unprotected areas
+for (i in 1:n.s) {
+  ssp.i = ssps[i]
+  ex.un.fits[[ssp.i]] = list()
+  for (j in 1:n.t) {
+    time.j = times[j]
+    ex.un.fits[[ssp.i]][[time.j]] = list()
+    for (k in 1:n.ex) {
+      ex.k = climate.vars.order[k]
+      ex.un.fits[[ssp.i]][[time.j]][[ex.k]] = list()
+      for (l in 1:n.ut) {
+        type.l = unpro.types[l]
+        ex.un.fits[[ssp.i]][[time.j]][[es.k]][[type.l]] = list()
+        climate.df.ij = subset(subset(scale.climate.df, ssp == ssp.i & time == time.j),
+                               select=-c(region, ssp_time))
+        if (l == 1) {
+          unpro.climate.df = inner_join(scale.unpro.area.df, climate.df.ij, by = "county")
+        } else {
+          unpro.climate.df = inner_join(scale.unpro.percent.df, climate.df.ij, by = "county")
         }
         
-        # Integrate over exceedance region
-        result <- adaptIntegrate(integrand,
-                                 lowerLimit = c(q, q),
-                                 upperLimit = c(1, 1),
-                                 tol        = 1e-4)
-        result$integral
-      })
-      
-      # add to dataframe
-      conditional.climate.risk.df[,es.i] = cond_joint_exceedance
-      
-      # write csv
-      write.csv(conditional.climate.risk.df,
-                paste(paste("Dual-Risk-Repo/County_Summaries/Conditional_Joint_Exceedance_Risk_75th_Percentile_Integration_Method",
-                            ssps[j], times[k], sep="_"),
-                      ".csv", sep=""),
-                row.names=F)
+        # prepare data (U and V must be nonexceedance probabilities between 0 and 1)
+        u = rank(unpro.climate.df[,ex.k]) / (length(unpro.climate.df[,ex.k]) + 1)
+        v = rank(unpro.climate.df[,water.reg.labels[3]]) / (length(unpro.climate.df[,water.reg.labels[3]]) + 1)
+        
+        # fit each copula model
+        for (m in 1:n.c) {
+          ex.un.fits[[ssp.i]][[time.j]][[es.k]][[type.l]][[cop.names[m]]] = BiCopSelect(u, v, familyset = cop.nums[m])
+        }
+        
+        # compare AICs manually
+        ex.fits = ex.es.fits[[ssp.i]][[time.j]][[es.k]][[type.l]]
+        aic.df = sapply(list(ex.fits[["Gaussian"]],ex.fits[["t"]], ex.fits[["Clayton"]]),
+                        function(f) c(family = f$family, AIC = f$AIC))
+        
+        
+      }
     }
   }
 }
+  
