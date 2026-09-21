@@ -1,4 +1,4 @@
-setwd("C:/Users/Chels/OneDrive - University of Illinois - Urbana/Ch5_CASC_Project/dual-risk-repo/County_Summaries")
+setwd("C:/Users/Chels/OneDrive - University of Illinois - Urbana/Ch5_Dual_Wetland_Risk/dual-risk-repo/County_Summaries")
 
 library(tidyverse)
 library(purrr)
