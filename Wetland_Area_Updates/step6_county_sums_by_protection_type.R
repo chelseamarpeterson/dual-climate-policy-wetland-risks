@@ -29,8 +29,10 @@ version.labs = c("NHD-based","Brinkerhoff-updated")
 n.v = length(versions)
 
 # water regimes
-water.regimes = c("Permanently Flooded","Intermittently Exposed","Semipermanently Flooded","Seasonally Flooded")
-water.reg.labels = c("Permanently Flooded","Intermittently Exposed","Semipermanently Flooded","Seasonally Flooded")
+water.regimes = c("Permanently Flooded","Intermittently Exposed",
+                  "Semipermanently Flooded","Seasonally Flooded")
+water.reg.labels = c("Permanently Flooded","Intermittently Exposed",
+                     "Semipermanently Flooded","Seasonally Flooded")
 wr.abrevs = c("PF","IE","SPF","SF")
 n.w = length(water.regimes)
 
@@ -54,12 +56,14 @@ n.c = length(all.counties)
 # step 2: estimate area with different types of protection
 
 # sum wetland area in each protection status category by county and water cutoff
-county.area.df = data.frame(matrix(nrow=n.y*n.v*n.c*n.w*n.p*n.b, ncol=15))
+county.area.df = data.frame(matrix(nrow=n.y*n.v*n.c*n.w*n.p*n.b, ncol=18))
 colnames(county.area.df) = c("year","version","NAME","water_cutoff","stream_perm","buf_dist","total_area",
                              "wotus_locally_unprotected_area","nonwotus_locally_unprotected_area",
                              "wotus_managed_biodiversity_area","nonwotus_managed_biodiversity_area",
                              "wotus_managed_multuses_area","nonwotus_managed_multuses_area",
-                             "wotus_county_ordinance_area","nonwotus_county_ordinance_area")
+                             "wotus_county_ordinance_area","nonwotus_county_ordinance_area",
+                             "total_nonwotus_behind_levee_area","total_nonwotus_isolated_area",
+                             "total_nonwotus_too_dry_area")
 n = 1
 for (y in 1:n.y) {
   # read in wetland dataframe for corresponding year
@@ -115,6 +119,9 @@ for (y in 1:n.y) {
             county.area.df[n,"nonwotus_managed_multuses_area"] = sum(gap.df.sub[non.jurisdictional.inds == 1 & gap.df.sub$protected_status == "Managed for multiple uses","Polygon_Area_Ha_Geodesic"])
             county.area.df[n,"wotus_county_ordinance_area"] = sum(gap.df.sub[non.jurisdictional.inds == 0 & gap.df.sub$protected_status == "County permitting and mitigation","Polygon_Area_Ha_Geodesic"])
             county.area.df[n,"nonwotus_county_ordinance_area"] = sum(gap.df.sub[non.jurisdictional.inds == 1 & gap.df.sub$protected_status == "County permitting and mitigation","Polygon_Area_Ha_Geodesic"])
+            county.area.df[n,"total_nonwotus_behind_levee_area"] = sum(gap.df.sub[gap.df.sub$Within_Levee == 1,"Polygon_Area_Ha_Geodesic"])
+            county.area.df[n,"total_nonwotus_isolated_area"] = sum(gap.df.sub[gap.df.sub[,buf.ws.col] == 0,"Polygon_Area_Ha_Geodesic"])
+            county.area.df[n,"total_nonwotus_too_dry_area"] = sum(gap.df.sub[wrs.inds,"Polygon_Area_Ha_Geodesic"])
             n = n + 1
           }
         }
@@ -127,17 +134,22 @@ for (y in 1:n.y) {
 area.cols.long = c("wotus_locally_unprotected_area","nonwotus_locally_unprotected_area",
                    "wotus_managed_biodiversity_area","nonwotus_managed_biodiversity_area",
                    "wotus_managed_multuses_area","nonwotus_managed_multuses_area",
-                   "wotus_county_ordinance_area","nonwotus_county_ordinance_area")
+                   "wotus_county_ordinance_area","nonwotus_county_ordinance_area",
+                   "total_nonwotus_behind_levee_area","total_nonwotus_isolated_area",
+                   "total_nonwotus_too_dry_area")
 area.cols.short = c("WOT_UP_AR","NWOT_UP_AR",
                     "WOT_MB_AR","NWOT_MB_AR",
                     "WOT_MU_AR","NWOT_MU_AR",
-                    "WOT_CO_AR","NWOT_CO_AR")
+                    "WOT_CO_AR","NWOT_CO_AR",
+                    "TNWOT_LEV","TNWOT_ISO",
+                    "TNWOT_DRY")
 n.ac = length(area.cols.long)
 for (y in 1:n.y) {
   for (k in 1:n.ac) {
     # calculate mean, min, and max areas across scenarios for each county and water regime
     group.area.df = county.area.df[county.area.df$year == years[y],
-                                   c("version","NAME","water_cutoff","stream_perm","buf_dist", area.cols.long[k], "total_area")] 
+                                   c("version","NAME","water_cutoff","stream_perm",
+                                     "buf_dist", area.cols.long[k], "total_area")] 
     colnames(group.area.df)[6:7] = c("partial_area","total_area")
     area.stats = group.area.df %>% 
                  group_by(version, NAME, water_cutoff) %>%

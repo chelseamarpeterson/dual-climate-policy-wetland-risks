@@ -99,7 +99,7 @@ area.stats.df = area.df %>%
                           max = max(area))
 percent.stats.df = area.stats.df
 for (i in 1:n.y) {
-  percent.stats.df[percent.stats.df$year == years[i],c("mean","min","max")] = percent.stats.df[percent.stats.df$year == years[i],c("mean","min","max")]/state_wetland_areas[[years[i]]]*100
+  percent.stats.df[percent.stats.df$year == years[i],c("mean","min","max")] = percent.stats.df[percent.stats.df$year == years[i],c("mean","min","max")]/state_wetland_areas[[years[2]]]*100
 }
 
 # print total non-WOTUS area stats for table
@@ -112,7 +112,7 @@ areas.2024 = area.stats.df[area.stats.df$year == "2024" & area.stats.df$version 
 wr.ind = 0
 for (i in 1:n.w) { wr.ind[i] = which(areas.2024$water_cutoff == rev(water.regimes)[i]) }
 round(data.frame(areas.2024[wr.ind, c("mean","min","max")]),1)
-round(data.frame(areas.2024[wr.ind, c("mean","min","max")]) - data.frame(areas.2023[wr.ind, c("mean","min","max")]),1)
+round(data.frame(areas.2024[wr.ind, c("mean","max","min")]) - data.frame(areas.2023[wr.ind, c("mean","max","min")]),1)
 
 # print non-WOTUS percent stats for table
 percents.2023 = percent.stats.df[percent.stats.df$year == "2023" & percent.stats.df$version == "NHD-based",]
@@ -124,7 +124,7 @@ percents.2024 = percent.stats.df[percent.stats.df$year == "2024" & percent.stats
 wr.ind = 0
 for (i in 1:n.w) { wr.ind[i] = which(percents.2024$water_cutoff == rev(water.regimes)[i]) }
 round(data.frame(percents.2024[wr.ind, c("mean","min","max")]),1)
-round(data.frame(percents.2024[wr.ind, c("mean","min","max")]) - data.frame(percents.2023[wr.ind, c("mean","min","max")]),1)
+round(data.frame(percents.2024[wr.ind, c("mean","max","min")]) - data.frame(percents.2023[wr.ind, c("mean","max","min")]),1)
 
 # plot area comparison between each NHD version
 plot.total.areas = rbind(areas.2023, areas.2024)
@@ -146,14 +146,14 @@ p1 = ggplot(plot.total.areas,
                                 name = "Percent of total state wetland area (%)",
                                 breaks = seq(60,100, by=10))) +
             scale_color_manual(values = c("gray10","gray10")) +
-            labs(y="Wetland flood-frequency cutoff",
+            labs(y="Wetland flood-duration cutoff",
                  x="Total non-WOTUS wetland area (1,000 ha)",
                  group="",color="",linetype="") + 
-            annotate("text", x = -Inf, y = Inf, label = "a",
-                     hjust = -0.5, vjust = 1.5, 
-                     size = 8, family = "sans", fontface = "plain") +
-            theme(legend.position="none") #,
-                  #text=element_text(size=15))
+            #annotate("text", x = -Inf, y = Inf, label = "a",
+            #         hjust = -0.5, vjust = 1.5, 
+            #         size = 8, family = "sans", fontface = "plain") +
+            theme(legend.position="none",
+                  text=element_text(size=12))
 p1
  
 ################################################################################
@@ -226,7 +226,7 @@ unpro.area.stats.df = unpro.area.df %>%
                                 max = max(area))
 unpro.percent.stats.df = unpro.area.stats.df
 for (i in 1:n.y) {
-  unpro.percent.stats.df[unpro.percent.stats.df$year == years[i],c("mean","min","max")] = unpro.percent.stats.df[unpro.percent.stats.df$year == years[i],c("mean","min","max")]/state_wetland_areas[[years[i]]]*100
+  unpro.percent.stats.df[unpro.percent.stats.df$year == years[i],c("mean","min","max")] = unpro.percent.stats.df[unpro.percent.stats.df$year == years[i],c("mean","min","max")]/state_wetland_areas[[years[2]]]*100
 }
 
 # print area stats for table
@@ -239,7 +239,7 @@ unpro.areas.2024 = unpro.area.stats.df[unpro.area.stats.df$year == "2024" & unpr
 wr.ind = 0
 for (i in 1:n.w) { wr.ind[i] = which(unpro.areas.2024$water_cutoff == rev(water.regimes)[i]) }
 round(data.frame(unpro.areas.2024[wr.ind, c("mean","min","max")]),1)
-round(data.frame(unpro.areas.2024[wr.ind, c("mean","min","max")]) - data.frame(unpro.areas.2023[wr.ind, c("mean","min","max")]),1)
+round(data.frame(unpro.areas.2024[wr.ind, c("mean","max","min")]) - data.frame(unpro.areas.2023[wr.ind, c("mean","max","min")]),1)
 
 # print percent stats for table
 unpro.percents.2023 = unpro.percent.stats.df[unpro.percent.stats.df$year == "2023" & unpro.percent.stats.df$version == "NHD-based",]
@@ -251,7 +251,7 @@ unpro.percents.2024 = unpro.percent.stats.df[unpro.percent.stats.df$year == "202
 wr.ind = 0
 for (i in 1:n.w) { wr.ind[i] = which(unpro.percents.2024$water_cutoff == rev(water.regimes)[i]) }
 round(data.frame(unpro.percents.2024[wr.ind, c("mean","min","max")]),1)
-round(data.frame(unpro.percents.2024[wr.ind, c("mean","min","max")]) - data.frame(unpro.percents.2023[wr.ind, c("mean","min","max")]),1)
+round(data.frame(unpro.percents.2024[wr.ind, c("mean","max","min")]) - data.frame(unpro.percents.2023[wr.ind, c("mean","max","min")]),1)
 
 # plot area comparison between each NHD version
 plot.unpro.areas = rbind(unpro.areas.2023, unpro.areas.2024)
@@ -274,18 +274,20 @@ p2 = ggplot(plot.unpro.areas,
                                  transform = ~ . / state_wetland_areas[["2024"]] * 100 * 1000,
                                  name = "Percent of total state wetland area (%)")) +
             scale_color_manual(values = c("gray10","gray10")) +
-            labs(y="Wetland flood-frequency cutoff",  #y="",
+            labs(y="", #"Wetland flood-frequency cutoff",
                  x="Unprotected non-WOTUS wetland area (1,000 ha)",
-                 group="",color="",linetype="")  + 
+                 group="",color="",linetype="") + 
             #annotate("text", x = -Inf, y = Inf, label = "b",
             #         hjust = -0.5, vjust = 1.5, 
             #         size = 8, family = "sans", fontface = "plain") +
-            #theme(axis.text.y = element_blank())
-            theme(text=element_text(size=15),
-                  axis.text.y = element_text(colour = rev(blues)))
+            theme(text=element_text(size=12),
+                  axis.text.y = element_blank())
+#axis.text.y = element_text(colour = rev(blues) 
 p2
 
+p1+p2
+
 p3 = p1 + p2
-ggsave("Manuscript/Supp_Figures/FigureA3_Total_And_Unprotected_NonWOTUS_Area.jpeg", 
-       plot=p3, width=30, height=12, units="cm", dpi=800)
+ggsave("Manuscript/Supp_Figures/AppendixA/FigureA2_Total_And_Unprotected_NonWOTUS_Area.jpeg", 
+       plot=p3, width=30, height=9, units="cm", dpi=1000)
 
