@@ -7,6 +7,7 @@ library(bayestestR)
 library(ggtext)
 library(VineCopula)
 library(factoextra)
+library(patchwork)
 
 # read in cluster results
 cluster.df = read.csv("dual-risk-repo/County_Summaries/County_Ecosystem_Services_Unprotected_Areas_Climate_Extremes_SSP245_2041_2070_Clusters.csv")
@@ -125,6 +126,7 @@ write.csv(v.int.df, "dual-risk-repo/Statistical_Analyses/Cluster_Comparison_Resu
 write.csv(v.int.df.rescale, "dual-risk-repo/Statistical_Analyses/Cluster_Comparison_Results/Variable_Posteriors_Natural_Scale.csv", row.names=F)
 
 # make ecosystem service plots
+v.int.df.rescale = read.csv("dual-risk-repo/Statistical_Analyses/Cluster_Comparison_Results/Variable_Posteriors_Natural_Scale.csv")
 var_name_update = c("Plant species richness", 
                     "Herpetofauna species richness", 
                     "Carbon storage (1,000 Gg)", 
@@ -144,8 +146,9 @@ p.int = ggplot(v.int.df.rescale) +
                geom_vline(xintercept=0, color="gray") + 
                geom_point(aes(x=mean,
                               y=factor(cluster, levels=cluster.order),
-                              color=factor(cluster, levels=cluster.order)),
-                          size=3) +
+                              color=factor(cluster, levels=cluster.order),
+                              shape=factor(cluster, levels=cluster.order),
+                              size=factor(cluster, levels=cluster.order))) +
                geom_errorbar(aes(xmin=CI_5,
                                  xmax=CI_95,
                                  y=factor(cluster, levels=cluster.order),
@@ -165,6 +168,8 @@ p.int = ggplot(v.int.df.rescale) +
                      plot.margin = margin(t = 6, r = 12, b = 6, l = 2, unit = "pt")) +
                labs(y="",x="Posterior interval",color="Cluster") +
                scale_color_manual(values=cluster.color) +
+               scale_shape_manual(values=seq(18,15)) +
+               scale_size_manual(values=c(4,3,3,3)) +
                scale_x_continuous(labels = scales::label_comma())
 p.int
 ggsave("dual-risk-repo/Statistical_Analyses/Cluster_Comparison_Results/Figure5_Cluster_Posterior_Comparisons.jpeg", 
@@ -207,13 +212,15 @@ p.biplot = fviz_pca_biplot(pca_result,
                 pointsize = 3) +
                 scale_fill_manual(values = c("gray20","gray60","salmon2","red4")) +
                 scale_color_manual(values = c("gray20","gray60","salmon2","red4")) +
-                scale_shape_manual(values = seq(15,19)) +
+                scale_shape_manual(values = seq(15,18)) +
+                scale_size_manual(values = c(3,3,3,4)) +
                 labs(title = NULL, 
-                     x="PC1 (29.8%) &rarr; Higher climate risk, agricultural conversion, & unprotected area",
-                     y="PC2 (24.1%) &rarr; Higher ecosystem services & urban conversion",
+                     x="PC1 (29.8%)",
+                     y="PC2 (24.1%)",
                      color="Cluster",
                      shape="Cluster",
-                     fill="Cluster") + 
+                     fill="Cluster",
+                     size="Cluster") + 
                 scale_y_continuous(limits=c(-4,8),
                                    breaks=seq(-4,8,by=2)) +
                 theme(axis.title.x = element_markdown(),
@@ -226,24 +233,11 @@ ggsave("Manuscript/Main_Figures/Figure5_PCA.jpeg",
        p.biplot, width = 14, height = 12, dpi = 800)
 
 ################################################################################
-
-library(patchwork)
+# bivariate copula
 
 # run PCAs on services and risks separately
 pca_services = prcomp(cluster.df[,pca_cols[1:4]], center = T, scale. = T)
 pca_risks = prcomp(cluster.df[,pca_cols[5:12]], center = T, scale. = T)
-
-# write PCs to file
-#pca.services.df = cbind(cluster.df[,c("county","region")],
-#                        pca_services$x)
-#pca.risks.df = cbind(cluster.df[,c("county","region")],
-#                     pca_risks$x)
-#write.csv(pca.services.df, 
-#          "dual-risk-repo/County_Summaries/Ecosystem_Service_PCs.csv",
-#          row.names=F)
-#write.csv(pca.risks.df, 
-#          "dual-risk-repo/County_Summaries/Climate_Risk_PCs.csv",
-#          row.names=F)
 
 # scree plots
 fviz_eig(pca_services, 
@@ -254,6 +248,7 @@ fviz_eig(pca_risks,
          addlabels = TRUE,  
          ylim = c(0, 70),   
          main = "Scree Plot")
+
 # services PCA biplot
 p.services = fviz_pca_biplot(pca_services, 
                            label="var", 
@@ -266,7 +261,7 @@ p.services = fviz_pca_biplot(pca_services,
                            pointsize = 3) +
                   scale_fill_manual(values = c("gray20","gray60","salmon2","red4")) +
                   scale_color_manual(values = c("gray20","gray60","salmon2","red4")) +
-                  scale_shape_manual(values = seq(15,19)) +
+                  scale_shape_manual(values = seq(15,18)) +
                   labs(title = NULL, 
                        x="PC1 (49.4%)",
                        y="PC2 (20.0%)",
@@ -293,7 +288,7 @@ p.risks = fviz_pca_biplot(pca_risks,
                           pointsize = 3) +
                           scale_fill_manual(values = c("gray20","gray60","salmon2","red4")) +
                           scale_color_manual(values = c("gray20","gray60","salmon2","red4")) +
-                          scale_shape_manual(values = seq(15,19)) +
+                          scale_shape_manual(values = seq(15,18)) +
                           labs(title = NULL, 
                                x="PC1 (41.9%)",
                                y="PC2 (17.3%)",
@@ -316,7 +311,7 @@ x = pca_risks$x[,"PC1"]
 y = pca_services$x[,"PC1"]
 n = length(x)
 u = rank(x) / (n + 1)
-v = rank(-y) / (n + 1)
+v = rank(y) / (n + 1)
 
 # apply inverse CDF to get z scores
 z.df = data.frame(x=qnorm(u), y=qnorm(v), cluster=cluster.df$CLUSTER_NAME)
@@ -350,13 +345,19 @@ p.copula = ggplot() +
             geom_point(data=z.df,
                        aes(x=x,
                            y=y,
-                           color=cluster),
-                       size=3) +
+                           color=cluster,
+                           shape=cluster,
+                           size=cluster)) +
             stat_ellipse() +
             scale_color_manual(values = c("gray20","gray60","salmon2","red4")) +
+            scale_shape_manual(values = seq(15,18)) +
+            scale_size_manual(values = c(3, 3, 3, 4)) +
             labs(y = "Wetland ecosystem service axis (z)",
                  x = "Risk axis (z)",
-                 color = "Cluster", fill = "Density") +
+                 color = "Cluster", 
+                 shape = "Cluster",
+                 size = "Cluster",
+                 fill = "Density") +
             theme(axis.title.x = element_markdown(),
                   axis.title.y = element_markdown(),
                   text = element_text(size=16),
